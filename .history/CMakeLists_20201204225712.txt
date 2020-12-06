@@ -1,0 +1,3 @@
+project(CreationEngine)
+find_package(bgfx CONFIG REQUIRED)
+add_executable(helloworld helloworld.cpp)
