@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.0)
-project(CreationEngine)
-find_package(SDL2 REQUIRED CONFIG)
-find_package(bgfx REQUIRED CONFIG)
-find_package(imgui REQUIRED CONFIG)
-add_executable(helloworld helloworld.cpp)

@@ -3,10 +3,10 @@
 # compile shaders
 
 # simple shader
-./third-party/build/bin/shaderc  \
+shaderc  \
 -f shader/v_simple.sc -o shader/v_simple.bin  \
---platform osx --type vertex --verbose -i ./ -p metal
+--platform linux --type vertex --verbose -i ./shader
 
-./third-party/build/bin/shaderc \
+shaderc \
 -f shader/f_simple.sc -o shader/f_simple.bin \
---platform osx --type fragment --verbose -i ./ -p metal
+--platform linux --type fragment --verbose -i ./shader

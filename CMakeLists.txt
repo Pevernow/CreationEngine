@@ -11,6 +11,8 @@ target_sources(
     ${PROJECT_NAME} PRIVATE
     src/main.cpp
     src/Config.cpp
+    src/utils.cpp
+    src/Block.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE src/)
 

@@ -1,12 +1,13 @@
+#include "Config.h"
 #include "SDL.h"
 #include "SDL_syswm.h"
-#include "bgfx-imgui/imgui_impl_bgfx.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 #include "bx/math.h"
 #include "file-ops.h"
-#include "imgui.h"
-#include "sdl-imgui/imgui_impl_sdl.h"
+#include <map>
+
+Block world[10][10][10];
 
 struct PosColorVertex
 {
@@ -37,15 +38,20 @@ static bgfx::ShaderHandle createShader(
     return handle;
 }
 
+map<string, string> config;
+
 int main(int argc, char** argv)
 {
+    // init
+    ReadConfig("CE.conf", config);
+    PrintConfig(config);
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize. SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
-    const int width = 800;
-    const int height = 600;
+    const int width = stoi(config["width"]);
+    const int height = stoi(config["height"]);
     SDL_Window* window = SDL_CreateWindow(
         argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,
         height, SDL_WINDOW_SHOWN);
@@ -84,16 +90,6 @@ int main(int argc, char** argv)
         0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x6495EDFF, 1.0f, 0);
     bgfx::setViewRect(0, 0, 0, width, height);
 
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-
-    ImGui_Implbgfx_Init(255);
-#if BX_PLATFORM_WINDOWS
-    ImGui_ImplSDL2_InitForD3D(window);
-#elif BX_PLATFORM_OSX
-    ImGui_ImplSDL2_InitForMetal(window);
-#endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX
-
     bgfx::VertexLayout pos_col_vert_layout;
     pos_col_vert_layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
@@ -124,23 +120,15 @@ int main(int argc, char** argv)
     int prev_mouse_x = 0;
     int prev_mouse_y = 0;
 
+    // update loop
     for (bool quit = false; !quit;) {
         SDL_Event currentEvent;
         while (SDL_PollEvent(&currentEvent) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&currentEvent);
             if (currentEvent.type == SDL_QUIT) {
                 quit = true;
                 break;
             }
         }
-
-        ImGui_Implbgfx_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window);
-
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow(); // your drawing here
-        ImGui::Render();
-        ImGui_Implbgfx_RenderDrawLists(ImGui::GetDrawData());
 
         // simple input code for orbit camera
         int mouse_x, mouse_y;
@@ -186,18 +174,14 @@ int main(int argc, char** argv)
         bgfx::frame();
     }
 
+    // shutdown
     bgfx::destroy(vbh);
     bgfx::destroy(ibh);
     bgfx::destroy(program);
-
-    ImGui_ImplSDL2_Shutdown();
-    ImGui_Implbgfx_Shutdown();
-
-    ImGui::DestroyContext();
     bgfx::shutdown();
 
     SDL_DestroyWindow(window);
     SDL_Quit();
-    printf("quit");
+    WriteConfig("CE.conf", config);
     return 0;
 }
