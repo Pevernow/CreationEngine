@@ -13,7 +13,7 @@ public:
     int x;
     int y;
     int z;
-    string type = "fieldstone";
+    string type = "default_dirt";
 };
 
 struct PosColorVertex
