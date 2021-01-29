@@ -9,7 +9,7 @@
 
 map<string, bgfx::TextureHandle> Blockmodels;
 
-Block world[10][10][10];
+Block world[10][10][20];
 
 map<string, string> config;
 
