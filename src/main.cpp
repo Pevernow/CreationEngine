@@ -1,9 +1,9 @@
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 #include "block.h"
-#include "camera.h"
 #include "config.h"
 #include "renderer.h"
+#include "world.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <map>
@@ -12,7 +12,7 @@ Renderer renderer;
 
 map<string, bgfx::TextureHandle> Blockmodels;
 
-Block world[10][10][10];
+World world;
 
 Camera camera;
 
@@ -40,6 +40,7 @@ int main(int argc, char** argv)
     camera.height = height;
 
     Gen_block_model();
+    world.mapgen();
     // update loop
     for (bool quit = false; !quit;) {
         SDL_Event currentEvent;

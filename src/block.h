@@ -23,13 +23,15 @@ struct PosColorVertex
     float z;
     uint32_t abgr;
     int16_t u;
-	int16_t v;
+    int16_t v;
 };
 
 bool Gen_block_model();
 
-void Draw_blocks();
-
 void destroy();
+
+bool is_type_registed(string type);
+
+void Draw_blocks();
 
 #endif

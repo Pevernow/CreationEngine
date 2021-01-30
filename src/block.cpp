@@ -1,12 +1,13 @@
 #include "block.h"
 #include "file-ops.h"
 #include "utils.h"
+#include "world.h"
 #include <bx/math.h>
 #include <iostream>
 #include <map>
 
 extern map<string, bgfx::TextureHandle> Blockmodels;
-extern Block world[10][10][10];
+extern World world;
 
 bgfx::VertexBufferHandle block_vbh;
 bgfx::IndexBufferHandle block_ibh;
@@ -108,38 +109,47 @@ bool Gen_block_model()
     return 0;
 }
 
-void Draw_blocks()
-{
-    for (int x = 0; x < 10; x++) {
-        for (int y = 0; y < 10; y++) {
-            for (int z = 0; z < 10; z++) {
-                if (Blockmodels.find(world[x][y][z].type) !=
-                    Blockmodels.end()) {
-                    float mtx[16];
-                    bx::mtxTranslate(mtx, x, y, z);
-                    bgfx::setTransform(mtx);
-                    bgfx::setVertexBuffer(0, block_vbh);
-                    bgfx::setIndexBuffer(block_ibh);
-                    // bgfx::setTexture(
-                    //   0, block_tex, Blockmodels[world[x][y][z].type]);
-                    bgfx::setTexture(0, block_tex, Blockmodels["default_dirt"]);
-                    bgfx::setState(
-                        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                        BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                        BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
-                    bgfx::submit(0, program);
-                } else {
-                    cout << world[x][y][z].type << "not found at" << x << ' '
-                         << y << ' ' << z << endl;
-                }
-            }
-        }
-    }
-}
-
 void destroy()
 {
     bgfx::destroy(block_ibh);
     bgfx::destroy(block_vbh);
     bgfx::destroy(program);
+}
+
+bool is_type_registed(string type)
+{
+    if (Blockmodels.find(type) == Blockmodels.end()) {
+        return false;
+    }
+    return true;
+}
+
+void Draw_blocks()
+{
+    for (int i = 0, l = world.worldmap.size(); i < l; i++) {
+        int mx = world.worldmap[i].blocks[0][0][0].x;
+        int my = world.worldmap[i].blocks[0][0][0].y;
+        int mz = world.worldmap[i].blocks[0][0][0].z;
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    float mtx[16];
+                    bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
+                    bgfx::setTransform(mtx);
+                    bgfx::setVertexBuffer(0, block_vbh);
+                    bgfx::setIndexBuffer(block_ibh);
+                    // bgfx::setTexture(
+                    //   0, block_tex, Blockmodels[world[x][y][z].type]);
+                    bgfx::setTexture(
+                        0, block_tex,
+                        Blockmodels[world.worldmap[i].blocks[x][y][z].type]);
+                    bgfx::setState(
+                        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                        BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+                        BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+                    bgfx::submit(0, program);
+                }
+            }
+        }
+    }
 }

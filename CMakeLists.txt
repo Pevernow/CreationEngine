@@ -13,8 +13,8 @@ target_sources(
     src/config.cpp
     src/utils.cpp
     src/block.cpp
-    src/camera.cpp
     src/renderer.cpp
+    src/world.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE src/ ${SDL2_INCLUDE_DIRS})
 

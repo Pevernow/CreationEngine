@@ -1,28 +1,23 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <vector>
-#include <map>
+#include "block.h"
 #include <string>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "Node.h"
+#include <vector>
 using namespace std;
 
-class Chunk{
-    public:
-    Chunk(glm::vec3 min);
+class Chunk
+{
+public:
+    Chunk(int minx, int miny, int minz);
     Block blocks[16][16][16];
 };
-class World{
-    public:
-    Block& get_node(int x,int y,int z);
-    Block& get_node(glm::vec3 pos);
-    void set_node(int x,int y,int z,string type);
-    private:
+class World
+{
+public:
+    Block& get_node(int x, int y, int z);
+    void set_node(int x, int y, int z, string type);
+    void mapgen();
     vector<Chunk> worldmap;
 };
-
-void genMap();
 #endif
