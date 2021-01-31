@@ -56,5 +56,5 @@ void World::set_node(int x, int y, int z, string type)
 void World::mapgen()
 {
     worldmap.push_back(Chunk(0, 0, 0));
-    worldmap.push_back(Chunk(0, 0, 16));
+    // worldmap.push_back(Chunk(0, 0, 16));
 }

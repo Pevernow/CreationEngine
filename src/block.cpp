@@ -127,9 +127,10 @@ bool is_type_registed(string type)
 void Draw_blocks()
 {
     for (int i = 0, l = world.worldmap.size(); i < l; i++) {
-        int mx = world.worldmap[i].blocks[0][0][0].x;
-        int my = world.worldmap[i].blocks[0][0][0].y;
-        int mz = world.worldmap[i].blocks[0][0][0].z;
+        Block mblock = world.worldmap[i].blocks[0][0][0];
+        int mx = mblock.x;
+        int my = mblock.y;
+        int mz = mblock.z;
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -138,11 +139,12 @@ void Draw_blocks()
                     bgfx::setTransform(mtx);
                     bgfx::setVertexBuffer(0, block_vbh);
                     bgfx::setIndexBuffer(block_ibh);
-                    // bgfx::setTexture(
-                    //   0, block_tex, Blockmodels[world[x][y][z].type]);
+                    /*
                     bgfx::setTexture(
                         0, block_tex,
                         Blockmodels[world.worldmap[i].blocks[x][y][z].type]);
+                        */
+                    bgfx::setTexture(0, block_tex, Blockmodels["default_dirt"]);
                     bgfx::setState(
                         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |

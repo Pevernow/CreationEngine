@@ -1,8 +1,10 @@
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 #include "block.h"
+#include "camera.h"
 #include "config.h"
-#include "renderer.h"
+#include "io.h"
+#include "window.h"
 #include "world.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -18,6 +20,10 @@ Camera camera;
 
 map<string, string> config;
 
+bool quit = false;
+
+int _FPS_Timer;
+
 int main(int argc, char** argv)
 {
     // init
@@ -27,7 +33,7 @@ int main(int argc, char** argv)
     if (config.count("maxfps") == 1) {
         max_frame_time = 1000 / stoi(config["maxfps"]);
     }
-    int _FPS_Timer = max_frame_time;
+    _FPS_Timer = max_frame_time;
 
     const int width = stoi(config["width"]);
     const int height = stoi(config["height"]);
@@ -42,30 +48,25 @@ int main(int argc, char** argv)
     Gen_block_model();
     world.mapgen();
     // update loop
-    for (bool quit = false; !quit;) {
-        SDL_Event currentEvent;
-        while (SDL_PollEvent(&currentEvent) != 0) {
-            if (currentEvent.type == SDL_QUIT) {
-                quit = true;
-                break;
-            }
-        }
-
-        camera.view();
-
-        Draw_blocks();
-
-        bgfx::frame();
+    while (!quit) {
+        processEvent(renderer.sdl_window);
 
         // FPS_limit
         if (SDL_GetTicks() - _FPS_Timer < max_frame_time) {
             SDL_Delay(max_frame_time - SDL_GetTicks() + _FPS_Timer);
         }
         _FPS_Timer = SDL_GetTicks();
+
+        camera.view();
+
+        Draw_blocks();
+
+        bgfx::frame();
     }
 
     // shutdown
     renderer.shutdown();
     WriteConfig("CE.conf", config);
+    SDL_ShowCursor(true);
     return 0;
 }
