@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-Perlin perlin;
-
 Chunk::Chunk(int minx, int miny, int minz)
 {
     for (int x = 0; x < 16; x++) {
@@ -87,15 +85,9 @@ void World::generate_map()
     Chunk chunk(0, 0, 0);
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
-            double yt = perlin.PerlinNoise(x, z) * 100 / 7;
-            std::cout << yt << '\n' << endl;
-            if (yt < 0) {
-                yt = yt * -1;
-            }
-            if (yt >= 16) {
-                yt = 15;
-            }
-            for (int y = 0; y < yt; y++) {
+            float f = simplex2(x * 0.05, z * 0.05, 3, 0.5, 2);
+            int h = (f + 1) / 2 * (16 - 1) + 1;
+            for (int y = 0; y < h; y++) {
                 chunk.blocks[x][y][z].type = "default_dirt";
             }
         }
