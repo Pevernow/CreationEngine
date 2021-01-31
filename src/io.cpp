@@ -74,5 +74,15 @@ void processEvent(SDL_Window* window)
         camera.processKeyboard(RIGHT, SDL_GetTicks() - _FPS_Timer);
     }
 
+    if (state[SDL_SCANCODE_SPACE]) {
+        camera.processKeyboard(JUMP, SDL_GetTicks() - _FPS_Timer);
+    }
+
+    if (state[SDL_SCANCODE_ESCAPE]) {
+        quit = true;
+    }
+
+    camera.update_camera_position(SDL_GetTicks() - _FPS_Timer);
+
     return;
 }

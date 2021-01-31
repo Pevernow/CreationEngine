@@ -23,7 +23,9 @@ public:
         float deltaTime); // dir:0-GO,1-BACK,2-LEFT,3-RIGHT，4-UP
     void update_camera_vectors();
     void process_mouse_movement(float xoffset, float yoffset);
+    void update_camera_position(float deltaTime);
     glm::vec3 position;
+    float ys;
     float yaw, pitch, scale;
     float width, height;
     glm::vec3 front;

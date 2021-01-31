@@ -13,7 +13,7 @@ public:
     int x;
     int y;
     int z;
-    string type = "default_dirt";
+    string type = "air";
 };
 
 struct PosColorVertex

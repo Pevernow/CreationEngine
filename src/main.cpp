@@ -46,7 +46,8 @@ int main(int argc, char** argv)
     camera.height = height;
 
     Gen_block_model();
-    world.mapgen();
+    world.generate_map();
+    _FPS_Timer = SDL_GetTicks();
     // update loop
     while (!quit) {
         processEvent(renderer.sdl_window);

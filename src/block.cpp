@@ -16,47 +16,47 @@ bgfx::ProgramHandle program;
 
 float vertices[] = {
     // Back face
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // Bottom-left
-    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
-    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,  // bottom-right
-    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom-left
-    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,  // top-left
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Bottom-left
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+    1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
     // Front face
-    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
-    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,  // bottom-right
-    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
-    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,   // top-right
-    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,  // top-left
-    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-right
+    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top-right
+    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top-right
+    0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // top-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
     // Left face
-    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
-    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-left
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
-    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // top-right
-                                     // Right face
-    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
-    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
-    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,   // top-right
-    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,  // bottom-right
-    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,    // top-left
-    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,   // bottom-left
+    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-right
+    0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-left
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-right
+    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-right
+                                  // Right face
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-left
+    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-left
+    1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
     // Bottom face
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
-    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,  // top-left
-    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
-    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,   // bottom-left
-    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,  // bottom-right
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top-right
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // top-right
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-right
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // top-right
     // Top face
-    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
-    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
-    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,  // top-right
-    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,   // bottom-right
-    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top-left
-    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f   // bottom-left
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom-right
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+    0.0f, 1.0f, 1.0f, 0.0f, 0.0f  // bottom-left
 };
 
 static const uint16_t s_cubeIndices[36] = {
@@ -134,22 +134,22 @@ void Draw_blocks()
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    float mtx[16];
-                    bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
-                    bgfx::setTransform(mtx);
-                    bgfx::setVertexBuffer(0, block_vbh);
-                    bgfx::setIndexBuffer(block_ibh);
-                    /*
-                    bgfx::setTexture(
-                        0, block_tex,
-                        Blockmodels[world.worldmap[i].blocks[x][y][z].type]);
-                        */
-                    bgfx::setTexture(0, block_tex, Blockmodels["default_dirt"]);
-                    bgfx::setState(
-                        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                        BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                        BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
-                    bgfx::submit(0, program);
+                    if (world.worldmap[i].blocks[x][y][z].type != "air") {
+                        float mtx[16];
+                        bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
+                        bgfx::setTransform(mtx);
+                        bgfx::setVertexBuffer(0, block_vbh);
+                        bgfx::setIndexBuffer(block_ibh);
+                        bgfx::setTexture(
+                            0, block_tex,
+                            Blockmodels
+                                [world.worldmap[i].blocks[x][y][z].type]);
+                        bgfx::setState(
+                            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                            BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+                            BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+                        bgfx::submit(0, program);
+                    }
                 }
             }
         }

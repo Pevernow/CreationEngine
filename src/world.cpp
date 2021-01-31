@@ -1,4 +1,9 @@
 #include "world.h"
+#include "mapgen.h"
+
+#include <iostream>
+
+Perlin perlin;
 
 Chunk::Chunk(int minx, int miny, int minz)
 {
@@ -53,8 +58,47 @@ void World::set_node(int x, int y, int z, string type)
     return;
 }
 
+Chunk& World::get_chunk(int x, int y, int z)
+{
+
+    for (int i = 0, l = worldmap.size(); i < l; i++) {
+        Chunk& chunk = worldmap[i];
+        if (chunk.blocks[0][0][0].x <= x && chunk.blocks[0][0][0].y <= y &&
+            chunk.blocks[0][0][0].z <= z && chunk.blocks[15][15][15].x >= x &&
+            chunk.blocks[15][15][15].y >= y &&
+            chunk.blocks[15][15][15].z >= z) {
+            // in chunk
+            return chunk;
+        }
+    }
+    return (Chunk&)worldmap[0];
+}
+
+/*
 void World::mapgen()
 {
     worldmap.push_back(Chunk(0, 0, 0));
     // worldmap.push_back(Chunk(0, 0, 16));
+}
+*/
+
+void World::generate_map()
+{
+    Chunk chunk(0, 0, 0);
+    for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
+            double yt = perlin.PerlinNoise(x, z) * 100 / 7;
+            std::cout << yt << '\n' << endl;
+            if (yt < 0) {
+                yt = yt * -1;
+            }
+            if (yt >= 16) {
+                yt = 15;
+            }
+            for (int y = 0; y < yt; y++) {
+                chunk.blocks[x][y][z].type = "default_dirt";
+            }
+        }
+    }
+    worldmap.push_back(chunk);
 }

@@ -17,6 +17,7 @@ target_sources(
     src/world.cpp
     src/io.cpp
     src/camera.cpp
+    src/mapgen.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE src/ ${SDL2_INCLUDE_DIRS})
 

@@ -17,7 +17,8 @@ class World
 public:
     Block& get_node(int x, int y, int z);
     void set_node(int x, int y, int z, string type);
-    void mapgen();
+    Chunk& get_chunk(int x, int y, int z);
+    void generate_map();
     vector<Chunk> worldmap;
 };
 #endif
