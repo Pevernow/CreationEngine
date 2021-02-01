@@ -1,5 +1,5 @@
 #include "world.h"
-#include "mapgen.h"
+#include "noise.h"
 
 #include <iostream>
 

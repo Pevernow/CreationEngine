@@ -1,5 +1,29 @@
-#include "mapgen.h"
-#include <cmath>
+/*
+noise.h and noise.cpp are derived from this project:
+https://github.com/caseman/noise
+Copyright (c) 2008 Casey Duncan
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Renamed noise.c to noise.cpp for working with cmake.
+*/
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define F2 0.3660254037844386f
 #define G2 0.21132486540518713f
@@ -16,7 +40,7 @@ const static float GRAD3[16][3] = {
     {1, 0, -1}, {-1, 0, -1}, {0, 1, 1},  {0, -1, 1},  {0, 1, -1}, {0, -1, -1},
     {1, 0, -1}, {-1, 0, -1}, {0, -1, 1}, {0, 1, 1}};
 
-const static unsigned char PERM[] = {
+static unsigned char PERM[] = {
     151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,
     225, 140, 36,  103, 30,  69,  142, 8,   99,  37,  240, 21,  10,  23,  190,
     6,   148, 247, 120, 234, 75,  0,   26,  197, 62,  94,  252, 219, 203, 117,
@@ -52,6 +76,25 @@ const static unsigned char PERM[] = {
     184, 84,  204, 176, 115, 121, 50,  45,  127, 4,   150, 254, 138, 236, 205,
     93,  222, 114, 67,  29,  24,  72,  243, 141, 128, 195, 78,  66,  215, 61,
     156, 180};
+
+void seed(unsigned int x)
+{
+    srand(x);
+    for (int i = 0; i < 256; i++) {
+        PERM[i] = i;
+    }
+    for (int i = 255; i > 0; i--) {
+        int j;
+        int n = i + 1;
+        while (n <= (j = rand() / (RAND_MAX / n)))
+            ;
+        unsigned char a = PERM[i];
+        unsigned char b = PERM[j];
+        PERM[i] = b;
+        PERM[j] = a;
+    }
+    memcpy(PERM + 256, PERM, sizeof(unsigned char) * 256);
+}
 
 float noise2(float x, float y)
 {
@@ -178,7 +221,7 @@ float simplex2(
         max += amp;
         total += noise2(x * freq, y * freq) * amp;
     }
-    return total / max;
+    return (1 + total / max) / 2;
 }
 
 float simplex3(
@@ -195,5 +238,5 @@ float simplex3(
         max += amp;
         total += noise3(x * freq, y * freq, z * freq) * amp;
     }
-    return total / max;
+    return (1 + total / max) / 2;
 }

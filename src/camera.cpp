@@ -19,7 +19,7 @@ Camera::Camera()
     height = 480;
     worldup = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
-    this->movement_speed = 0.1f;
+    this->movement_speed = 0.05f;
     this->mouse_sensitivity = 0.1f;
 }
 

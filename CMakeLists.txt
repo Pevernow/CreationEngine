@@ -17,9 +17,9 @@ target_sources(
     src/world.cpp
     src/io.cpp
     src/camera.cpp
-    src/mapgen.cpp
+    deps/noise.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE src/ ${SDL2_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS})
 
 target_link_libraries(
     ${PROJECT_NAME} PRIVATE
