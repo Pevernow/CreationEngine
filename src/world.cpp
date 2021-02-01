@@ -11,6 +11,12 @@ Chunk::Chunk(int minx, int miny, int minz)
                 blocks[x][y][z].x = minx + x;
                 blocks[x][y][z].y = miny + y;
                 blocks[x][y][z].z = minz + z;
+                float f =
+                    simplex2((minx + x) * 0.05, (minz + z) * 0.05, 3, 0.5, 2);
+                int h = (f + 1) / 2 * (16 - 1) + 1;
+                for (int i = 0; i < h; i++) {
+                    blocks[x][i][z].type = "default_dirt";
+                }
             }
         }
     }
@@ -69,17 +75,16 @@ Chunk& World::get_chunk(int x, int y, int z)
             return chunk;
         }
     }
-    return (Chunk&)worldmap[0];
+    // not in chunk
+    worldmap.push_back(Chunk(x - (x % 16), y - (y % 16), z - (z % 16)));
+    return (Chunk&)worldmap[worldmap.size() - 1];
 }
 
-/*
-void World::mapgen()
+void World::generate_map()
 {
     worldmap.push_back(Chunk(0, 0, 0));
-    // worldmap.push_back(Chunk(0, 0, 16));
 }
-*/
-
+/*
 void World::generate_map()
 {
     Chunk chunk(0, 0, 0);
@@ -94,3 +99,4 @@ void World::generate_map()
     }
     worldmap.push_back(chunk);
 }
+*/

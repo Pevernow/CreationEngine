@@ -52,6 +52,8 @@ int main(int argc, char** argv)
     while (!quit) {
         processEvent(renderer.sdl_window);
 
+        camera.update_camera_position(SDL_GetTicks() - _FPS_Timer);
+
         // FPS_limit
         if (SDL_GetTicks() - _FPS_Timer < max_frame_time) {
             SDL_Delay(max_frame_time - SDL_GetTicks() + _FPS_Timer);

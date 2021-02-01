@@ -25,7 +25,6 @@ Camera::Camera()
 
 void Camera::update_camera_position(float deltaTime)
 {
-    // WIP: only work in one chunk
     Chunk& chunk = world.get_chunk(position.x, position.y, position.z);
     if (chunk
             .blocks[int(position.x) % 16][int(position.y) % 16 - 1]
@@ -40,6 +39,10 @@ void Camera::update_camera_position(float deltaTime)
         ys = 0;
     }
     position.y += ys * deltaTime * movement_speed;
+    if (position.y > 15) {
+        position.y = 15;
+    }
+
     return;
 }
 
@@ -84,10 +87,10 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
                 .type != "air")
             ys += 1;
 
-    if (chunk
-            .blocks[int(position.x) % 16][int(position.y) % 16]
-                   [int(position.z) % 16]
-            .type != "air") {
+    if (position.x < 0 || position.y < 0 || position.z < 0 ||
+        chunk.blocks[int(position.x) % 16][int(position.y) % 16]
+                    [int(position.z) % 16]
+                        .type != "air") {
         position = lastpos;
     }
     return;

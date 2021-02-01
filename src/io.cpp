@@ -82,7 +82,5 @@ void processEvent(SDL_Window* window)
         quit = true;
     }
 
-    camera.update_camera_position(SDL_GetTicks() - _FPS_Timer);
-
     return;
 }
