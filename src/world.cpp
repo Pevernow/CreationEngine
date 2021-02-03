@@ -32,7 +32,7 @@ Block& World::get_node(int x, int y, int z)
             worldmap[i].blocks[15][15][15].y >= y &&
             worldmap[i].blocks[15][15][15].z >= z) {
             // in chunk
-            return worldmap[i].blocks[int(x) % 16][int(y) % 16][int(z) % 16];
+            return worldmap[i].blocks[x % 16][y % 16][z % 16];
         }
     }
     // new chunk

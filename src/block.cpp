@@ -118,7 +118,7 @@ void destroy()
 
 bool is_type_registed(string type)
 {
-    if (Blockmodels.find(type) == Blockmodels.end()) {
+    if (type != "air" && Blockmodels.find(type) == Blockmodels.end()) {
         return false;
     }
     return true;

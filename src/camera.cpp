@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "block.h"
 #include "bx/math.h"
+#include "ray.h"
 #include "world.h"
 #include <SDL2/SDL.h>
 
@@ -10,7 +11,7 @@ extern World world;
 
 Camera::Camera()
 {
-    position = glm::vec3(3.0f, 15.0f, 0.0f);
+    position = glm::vec3(0.0f, 15.0f, 0.0f);
     yaw = -90.0f;
     pitch = 0.0f;
     scale = 0.01f;
@@ -19,7 +20,7 @@ Camera::Camera()
     height = 480;
     worldup = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
-    this->movement_speed = 0.05f;
+    this->movement_speed = 0.01f;
     this->mouse_sensitivity = 0.1f;
 }
 
@@ -50,7 +51,7 @@ void Camera::view()
 {
 
     float view[16];
-    bx::Vec3 Position = {position.x, position.y, position.z};
+    bx::Vec3 Position = {position.x, position.y + 0.5, position.z};
     glm::vec3 tmp = position + front;
     bx::Vec3 Tmp = {tmp.x, tmp.y, tmp.z};
     bx::Vec3 Up = {up.x, up.y, up.z};
@@ -130,4 +131,45 @@ void Camera::process_mouse_movement(float xoffset, float yoffset)
     // update Front, Right and Up Vectors using the updated Euler angles
     update_camera_vectors();
     return;
+}
+
+glm::vec3 Camera::get_rotation()
+{
+    glm::vec3 dir = position;
+    dir.x = cos(yaw) * cos(pitch);
+    dir.y = sin(yaw) * cos(pitch);
+    dir.z = sin(pitch);
+    return dir;
+}
+
+void Camera::on_left_click()
+{
+    Chunk& chunk = world.get_chunk(position.x, position.y, position.z);
+    glm::vec3 lastPosition = {0, 0, 0};
+    glm::vec3 viewPosition = position;
+    viewPosition.y += 0.5;
+    for (Ray ray(viewPosition, yaw, pitch); ray.getLength() < 6;
+         ray.step(0.1)) {
+        int x = ray.getEnd().x;
+        int y = ray.getEnd().y;
+        int z = ray.getEnd().z;
+
+        Block& block = world.get_node(x, y, z);
+        if (block.type != "air") {
+            std::cerr << x << ' ' << y << ' ' << z << ' ' << block.type << '\n';
+            lastPosition = ray.getEnd();
+            break;
+        }
+    }
+    std::cerr << "at" << position.x << ' ' << position.y << ' ' << position.z
+              << '\n';
+    std::cerr
+        << "old"
+        << world.get_node(lastPosition.x, lastPosition.y, lastPosition.z).type
+        << '\n';
+    world.set_node(lastPosition.x, lastPosition.y, lastPosition.z, "air");
+    std::cerr
+        << "new"
+        << world.get_node(lastPosition.x, lastPosition.y, lastPosition.z).type
+        << '\n';
 }

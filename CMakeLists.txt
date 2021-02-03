@@ -15,9 +15,9 @@ target_sources(
     src/block.cpp
     src/window.cpp
     src/world.cpp
-    src/io.cpp
     src/camera.cpp
     deps/noise.cpp
+    deps/ray.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS})
 

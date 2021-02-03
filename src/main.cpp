@@ -3,7 +3,6 @@
 #include "block.h"
 #include "camera.h"
 #include "config.h"
-#include "io.h"
 #include "window.h"
 #include "world.h"
 #include <SDL2/SDL.h>
@@ -23,6 +22,52 @@ map<string, string> config;
 bool quit = false;
 
 int _FPS_Timer;
+
+void processEvent(SDL_Window* window)
+{
+    // Event polling
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT)
+            quit = true;
+        if (e.type == SDL_MOUSEMOTION) {
+            camera.process_mouse_movement(
+                e.motion.x - camera.width / 2, camera.height / 2 - e.motion.y);
+            SDL_WarpMouseInWindow(window, camera.width / 2, camera.height / 2);
+        }
+        if (e.type == SDL_MOUSEBUTTONUP) {
+            if (e.button.button = SDL_BUTTON_LEFT) {
+                camera.on_left_click();
+            }
+        }
+    }
+
+    // process move event
+    const Uint8* state;
+    state = SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_W]) {
+        camera.processKeyboard(FORWARD, SDL_GetTicks() - _FPS_Timer);
+    }
+    if (state[SDL_SCANCODE_S]) {
+        camera.processKeyboard(BACKWARD, SDL_GetTicks() - _FPS_Timer);
+    }
+    if (state[SDL_SCANCODE_A]) {
+        camera.processKeyboard(LEFT, SDL_GetTicks() - _FPS_Timer);
+    }
+    if (state[SDL_SCANCODE_D]) {
+        camera.processKeyboard(RIGHT, SDL_GetTicks() - _FPS_Timer);
+    }
+
+    if (state[SDL_SCANCODE_SPACE]) {
+        camera.processKeyboard(JUMP, SDL_GetTicks() - _FPS_Timer);
+    }
+
+    if (state[SDL_SCANCODE_ESCAPE]) {
+        quit = true;
+    }
+
+    return;
+}
 
 int main(int argc, char** argv)
 {
