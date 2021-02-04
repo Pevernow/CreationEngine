@@ -3,11 +3,16 @@
 #include "block.h"
 #include "camera.h"
 #include "config.h"
+#include "gui.h"
 #include "window.h"
 #include "world.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <map>
+
+int FPS;
+
+GUImanager gui;
 
 Renderer renderer;
 
@@ -86,6 +91,7 @@ int main(int argc, char** argv)
     if (renderer.init(width, height) == 1) {
         return 1;
     }
+    gui.init();
 
     camera.width = width;
     camera.height = height;
@@ -99,10 +105,13 @@ int main(int argc, char** argv)
 
         camera.update_camera_position(SDL_GetTicks() - _FPS_Timer);
 
+        gui.view();
+
         // FPS_limit
         if (SDL_GetTicks() - _FPS_Timer < max_frame_time) {
             SDL_Delay(max_frame_time - SDL_GetTicks() + _FPS_Timer);
         }
+        FPS = 1000 / (SDL_GetTicks() - _FPS_Timer);
         _FPS_Timer = SDL_GetTicks();
 
         camera.view();

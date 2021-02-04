@@ -24,6 +24,8 @@ Chunk::Chunk(int minx, int miny, int minz)
 
 Block& World::get_node(int x, int y, int z)
 {
+    if (x < 0 || y < 0 || z < 0 || y > 15)
+        return worldmap[0].blocks[0][0][0];
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         if (worldmap[i].blocks[0][0][0].x <= x &&
             worldmap[i].blocks[0][0][0].y <= y &&
@@ -36,7 +38,7 @@ Block& World::get_node(int x, int y, int z)
         }
     }
     // new chunk
-    worldmap.push_back(Chunk((x % 16) * 16, (y % 16) * 16, (z % 16) * 16));
+    worldmap.push_back(Chunk(x - (x % 16), y - (y % 16), z - (z % 16)));
     return worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16];
 }
 

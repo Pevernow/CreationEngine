@@ -16,8 +16,15 @@ target_sources(
     src/window.cpp
     src/world.cpp
     src/camera.cpp
+    src/gui.cpp
     deps/noise.cpp
     deps/ray.cpp
+    deps/imgui/imgui.cpp
+    deps/imgui/imgui_widgets.cpp
+    deps/imgui/imgui_draw.cpp
+    deps/imgui/imgui_tables.cpp
+    deps/bgfx-imgui/imgui_impl_bgfx.cpp
+    deps/sdl-imgui/imgui_impl_sdl.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS})
 

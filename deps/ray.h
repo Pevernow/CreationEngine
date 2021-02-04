@@ -6,7 +6,7 @@
 class Ray
 {
 public:
-    Ray(const glm::vec3& position, float yaw, float pitch);
+    Ray(const glm::vec3& position, const glm::vec3& front);
 
     void step(float scale);
 
@@ -17,8 +17,7 @@ public:
 private:
     glm::vec3 m_rayStart;
     glm::vec3 m_rayEnd;
-    float yaw;
-    float pitch;
+    glm::vec3 front;
 };
 
 #endif // RAY_H_INCLUDED

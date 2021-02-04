@@ -106,6 +106,7 @@ bool Gen_block_model()
 
     // Blockmodels["fieldstone"] = loadTexture("textures/aeq62-oqx7h.dds");
     Blockmodels["default_dirt"] = loadTexture("textures/default_dirt.png");
+    Blockmodels["blue_wool"] = loadTexture("textures/mcl_wool_light_blue.png");
     return 0;
 }
 

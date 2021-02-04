@@ -25,7 +25,6 @@ public:
     void process_mouse_movement(float xoffset, float yoffset);
     void update_camera_position(float deltaTime);
     void on_left_click();
-    glm::vec3 get_rotation();
     glm::vec3 position;
     float ys;
     float yaw, pitch, scale;
@@ -36,5 +35,6 @@ public:
     glm::vec3 worldup;
     float movement_speed;
     float mouse_sensitivity;
+    glm::vec3 choosepos;
 };
 #endif
