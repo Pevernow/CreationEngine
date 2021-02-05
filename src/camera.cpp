@@ -22,6 +22,7 @@ Camera::Camera()
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
     this->movement_speed = 0.01f;
     this->mouse_sensitivity = 0.1f;
+    wielditem = "default_dirt";
 }
 
 void Camera::update_camera_position(float deltaTime)
@@ -46,7 +47,7 @@ void Camera::update_camera_position(float deltaTime)
 
     glm::vec3 lastPosition = {0, 0, 0};
     glm::vec3 viewPosition = position;
-    viewPosition.y += 0.5;
+    // viewPosition.y += 0.5;
     for (Ray ray(viewPosition, front); ray.getLength() < 6; ray.step(0.05)) {
         int x = ray.getEnd().x;
         int y = ray.getEnd().y;
@@ -58,7 +59,7 @@ void Camera::update_camera_position(float deltaTime)
             break;
         }
     }
-    choosepos = lastPosition;
+    choosepos = round(lastPosition);
 
     return;
 }
@@ -156,4 +157,11 @@ void Camera::process_mouse_movement(float xoffset, float yoffset)
 void Camera::on_left_click()
 {
     world.set_node(choosepos.x, choosepos.y, choosepos.z, "air");
+    return;
+}
+
+void Camera::on_right_click()
+{
+    world.set_node(choosepos.x, choosepos.y, choosepos.z, wielditem);
+    return;
 }

@@ -41,8 +41,11 @@ void processEvent(SDL_Window* window)
             SDL_WarpMouseInWindow(window, camera.width / 2, camera.height / 2);
         }
         if (e.type == SDL_MOUSEBUTTONUP) {
-            if (e.button.button = SDL_BUTTON_LEFT) {
+            if (e.button.button == SDL_BUTTON_LEFT) {
                 camera.on_left_click();
+            }
+            if (e.button.button == SDL_BUTTON_RIGHT) {
+                camera.on_right_click();
             }
         }
     }

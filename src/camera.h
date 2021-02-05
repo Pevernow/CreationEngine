@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <string>
+
 enum Camera_Movement
 {
     FORWARD,
@@ -25,6 +27,7 @@ public:
     void process_mouse_movement(float xoffset, float yoffset);
     void update_camera_position(float deltaTime);
     void on_left_click();
+    void on_right_click();
     glm::vec3 position;
     float ys;
     float yaw, pitch, scale;
@@ -36,5 +39,6 @@ public:
     float movement_speed;
     float mouse_sensitivity;
     glm::vec3 choosepos;
+    std::string wielditem;
 };
 #endif
