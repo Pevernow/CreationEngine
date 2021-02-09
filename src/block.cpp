@@ -6,7 +6,9 @@
 #include <iostream>
 #include <map>
 
-extern map<string, bgfx::TextureHandle> Blockmodels;
+using namespace std;
+
+map<string, bgfx::TextureHandle> Blockmodels;
 extern World world;
 
 bgfx::VertexBufferHandle block_vbh;
@@ -106,7 +108,6 @@ bool Gen_block_model()
 
     // Blockmodels["fieldstone"] = loadTexture("textures/aeq62-oqx7h.dds");
     Blockmodels["default_dirt"] = loadTexture("textures/default_dirt.png");
-    Blockmodels["blue_wool"] = loadTexture("textures/mcl_wool_light_blue.png");
     return 0;
 }
 
@@ -155,4 +156,9 @@ void Draw_blocks()
             }
         }
     }
+}
+void register_node(const char* name, const char* texture_path)
+{
+    Blockmodels[name] = loadTexture(texture_path);
+    cout << name << " registed" << endl;
 }

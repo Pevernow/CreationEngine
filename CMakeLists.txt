@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.15)
 
 project(CreationEngine LANGUAGES CXX)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/deps/cmake/" ${CMAKE_MODULE_PATH})
+
 find_package(SDL2 REQUIRED)
 find_package(bgfx REQUIRED CONFIG)
+find_package(LuaJIT REQUIRED)
 #find_package(imgui REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME})
@@ -17,6 +20,7 @@ target_sources(
     src/world.cpp
     src/camera.cpp
     src/gui.cpp
+    src/lua/mod.cpp
     deps/noise.cpp
     deps/ray.cpp
     deps/imgui/imgui.cpp
@@ -26,10 +30,11 @@ target_sources(
     deps/bgfx-imgui/imgui_impl_bgfx.cpp
     deps/sdl-imgui/imgui_impl_sdl.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
 
 target_link_libraries(
     ${PROJECT_NAME} PRIVATE
+    ${LUA_LIBRARY}
     bgfx::bgfx
     ${SDL2_LIBRARIES}
 )

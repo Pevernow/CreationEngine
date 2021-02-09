@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "config.h"
 #include "gui.h"
+#include "lua/mod.h"
 #include "window.h"
 #include "world.h"
 #include <SDL2/SDL.h>
@@ -12,11 +13,11 @@
 
 int FPS;
 
+Luaenv luaenv;
+
 GUImanager gui;
 
 Renderer renderer;
-
-map<string, bgfx::TextureHandle> Blockmodels;
 
 World world;
 
@@ -96,6 +97,9 @@ int main(int argc, char** argv)
     }
     gui.init();
 
+    luaenv.init();
+    luaenv.execmods();
+
     camera.width = width;
     camera.height = height;
 
@@ -125,6 +129,7 @@ int main(int argc, char** argv)
     }
 
     // shutdown
+    luaenv.destory();
     renderer.shutdown();
     WriteConfig("CE.conf", config);
     SDL_ShowCursor(true);

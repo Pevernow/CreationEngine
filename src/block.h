@@ -34,4 +34,6 @@ bool is_type_registed(string type);
 
 void Draw_blocks();
 
+void register_node(const char* name, const char* texture_path);
+
 #endif
