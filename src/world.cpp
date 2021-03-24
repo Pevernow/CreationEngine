@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+extern TypeManager typemanager;
+
 Chunk::Chunk(int minx, int miny, int minz)
 {
     for (int x = 0; x < 16; x++) {
@@ -15,9 +17,9 @@ Chunk::Chunk(int minx, int miny, int minz)
                     simplex2((minx + x) * 0.05, (minz + z) * 0.05, 3, 0.5, 2);
                 int h = (f + 1) / 2 * (16 - 1) + 1;
                 for (int i = 0; i < h - 1; i++) {
-                    blocks[x][i][z].type = "default_dirt";
+                    blocks[x][i][z].id = 1;
                 }
-                blocks[x][h - 1][z].type = "default_grass";
+                blocks[x][h - 1][z].id = 2;
             }
         }
     }
@@ -45,7 +47,8 @@ Block& World::get_node(int x, int y, int z)
 
 void World::set_node(int x, int y, int z, string type)
 {
-    if (is_type_registed(type) == false) {
+    int id = typemanager.nameToID(type);
+    if (id == -1) {
         return;
     }
     for (int i = 0, l = worldmap.size(); i < l; i++) {
@@ -56,12 +59,12 @@ void World::set_node(int x, int y, int z, string type)
             worldmap[i].blocks[15][15][15].y >= y &&
             worldmap[i].blocks[15][15][15].z >= z) {
             // in chunk
-            worldmap[i].blocks[x % 16][y % 16][z % 16].type = type;
+            worldmap[i].blocks[x % 16][y % 16][z % 16].id = id;
             return;
         }
     }
     worldmap.push_back(Chunk((x % 16) * 16, (y % 16) * 16, (z % 16) * 16));
-    worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16].type = type;
+    worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16].id = id;
     return;
 }
 

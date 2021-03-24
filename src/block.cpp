@@ -4,12 +4,11 @@
 #include "world.h"
 #include <bx/math.h>
 #include <iostream>
-#include <map>
 
 using namespace std;
 
-map<string, bgfx::TextureHandle> Blockmodels;
 extern World world;
+extern TypeManager typemanager;
 
 bgfx::VertexBufferHandle block_vbh;
 bgfx::IndexBufferHandle block_ibh;
@@ -78,7 +77,7 @@ static bgfx::ShaderHandle createShader(
     return handle;
 }
 
-bool Gen_block_model()
+bool GenBlockModel()
 {
     bgfx::VertexLayout pos_col_vert_layout;
     pos_col_vert_layout.begin()
@@ -105,22 +104,16 @@ bool Gen_block_model()
     bgfx::ShaderHandle fsh = createShader(fshader, "fshader");
 
     program = bgfx::createProgram(vsh, fsh, true);
+
+    typemanager.registerNode("air",nullptr);
     return 0;
 }
 
-void destroy()
+void Block_destroy()
 {
     bgfx::destroy(block_ibh);
     bgfx::destroy(block_vbh);
     bgfx::destroy(program);
-}
-
-bool is_type_registed(string type)
-{
-    if (type != "air" && Blockmodels.find(type) == Blockmodels.end()) {
-        return false;
-    }
-    return true;
 }
 
 void Draw_blocks()
@@ -133,7 +126,7 @@ void Draw_blocks()
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    if (world.worldmap[i].blocks[x][y][z].type != "air") {
+                    if (world.worldmap[i].blocks[x][y][z].id != 0) {
                         float mtx[16];
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
@@ -141,8 +134,8 @@ void Draw_blocks()
                         bgfx::setIndexBuffer(block_ibh);
                         bgfx::setTexture(
                             0, block_tex,
-                            Blockmodels
-                                [world.worldmap[i].blocks[x][y][z].type]);
+                            typemanager.blockmodel
+                                [world.worldmap[i].blocks[x][y][z].id].textureData);
                         bgfx::setState(
                             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -154,8 +147,28 @@ void Draw_blocks()
         }
     }
 }
-void register_node(const char* name, const char* texture_path)
+
+Blockmodel::Blockmodel(
+    string blockName, uint16_t blockID, const char* texture_path)
 {
-    Blockmodels[name] = loadTexture(texture_path);
+    name = blockName;
+    id = blockID;
+    textureData = loadTexture(texture_path);
+}
+
+void TypeManager::registerNode(const char* name, const char* texture_path)
+{
+    int id = blockmodel.size();
+    nameIndex[name] = id;
+    blockmodel.push_back(Blockmodel(name, id, texture_path));
     cout << name << " registed" << endl;
+}
+
+int TypeManager::nameToID(string name)
+{
+    map<string, int>::iterator iter = nameIndex.find(name);
+    if (iter != nameIndex.end()) {
+        return iter->second;
+    }
+    return -1;
 }

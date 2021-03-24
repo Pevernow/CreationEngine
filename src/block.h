@@ -4,16 +4,36 @@
 #include <bgfx/bgfx.h>
 #include <map>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Block
 {
 public:
-    int x;
-    int y;
-    int z;
-    string type = "air";
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    uint16_t id=0;
+};
+
+class Blockmodel
+{
+public:
+    Blockmodel(string name, uint16_t id, const char* texture_path);
+    string name;
+    bgfx::TextureHandle textureData;
+    uint16_t id;
+};
+
+class TypeManager
+{
+public:
+    vector<Blockmodel> blockmodel;
+    void registerNode(const char* name, const char* texture_path);
+    int nameToID(string name); // use id to index map of blockmodels.
+private:
+    map<string, int> nameIndex;
 };
 
 struct PosColorVertex
@@ -26,14 +46,10 @@ struct PosColorVertex
     int16_t v;
 };
 
-bool Gen_block_model();
+bool GenBlockModel();
 
-void destroy();
-
-bool is_type_registed(string type);
+void Block_destroy();
 
 void Draw_blocks();
-
-void register_node(const char* name, const char* texture_path);
 
 #endif

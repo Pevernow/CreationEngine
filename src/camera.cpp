@@ -31,12 +31,12 @@ void Camera::update_camera_position(float deltaTime)
     if (chunk
             .blocks[int(position.x) % 16][int(position.y) % 16 - 1]
                    [int(position.z) % 16]
-            .type == "air") {
+            .id == 0) {
         ys -= 0.1;
     }
     if (chunk.blocks[int(position.x) % 16][int(position.y) % 16 - 1]
                     [int(position.z) % 16]
-                        .type != "air" &&
+                        .id != 0 &&
         ys <= 0) {
         ys = 0;
     }
@@ -54,7 +54,7 @@ void Camera::update_camera_position(float deltaTime)
         int z = ray.getEnd().z;
 
         Block& block = world.get_node(x, y, z);
-        if (block.type != "air") {
+        if (block.id != 0) {
             lastPosition = ray.getEnd();
             break;
         }
@@ -102,13 +102,13 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
         if (chunk
                 .blocks[int(position.x) % 16][int(position.y) % 16 - 1]
                        [int(position.z) % 16]
-                .type != "air")
+                .id != 0)
             ys += 1;
 
     if (position.x < 0 || position.y < 0 || position.z < 0 ||
         chunk.blocks[int(position.x) % 16][int(position.y) % 16]
                     [int(position.z) % 16]
-                        .type != "air") {
+                        .id != 0) {
         position = lastpos;
     }
     return;

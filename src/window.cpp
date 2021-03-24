@@ -62,7 +62,7 @@ bool Renderer::init(int width, int height)
 
 void Renderer::shutdown()
 {
-    destroy();
+    Block_destroy();
     bgfx::shutdown();
     SDL_DestroyWindow(sdl_window);
     SDL_Quit();

@@ -11,11 +11,13 @@ extern "C" {
 #include <iostream>
 using namespace std;
 
+extern TypeManager typemanager;
+
 static int api_register_node(lua_State* L)
 {
     const char* name = luaL_checkstring(L, 1);
     const char* texture_path = luaL_checkstring(L, 2);
-    register_node(name, texture_path);
+    typemanager.registerNode(name, texture_path);
     lua_pushnil(L);
     return 1;
 }

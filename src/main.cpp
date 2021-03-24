@@ -23,6 +23,8 @@ World world;
 
 Camera camera;
 
+TypeManager typemanager;
+
 map<string, string> config;
 
 bool quit = false;
@@ -97,13 +99,14 @@ int main(int argc, char** argv)
     }
     gui.init();
 
+    GenBlockModel();
+    
     luaenv.init();
     luaenv.execmods();
 
     camera.width = width;
     camera.height = height;
 
-    Gen_block_model();
     world.generate_map();
     _FPS_Timer = SDL_GetTicks();
     // update loop

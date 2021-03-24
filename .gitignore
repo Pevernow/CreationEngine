@@ -1,4 +1,4 @@
-cmakebuild/
+build/
 install/
 !third-party/libs/README.md
 imgui.ini
