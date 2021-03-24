@@ -14,9 +14,10 @@ Chunk::Chunk(int minx, int miny, int minz)
                 float f =
                     simplex2((minx + x) * 0.05, (minz + z) * 0.05, 3, 0.5, 2);
                 int h = (f + 1) / 2 * (16 - 1) + 1;
-                for (int i = 0; i < h; i++) {
+                for (int i = 0; i < h - 1; i++) {
                     blocks[x][i][z].type = "default_dirt";
                 }
+                blocks[x][h - 1][z].type = "default_grass";
             }
         }
     }

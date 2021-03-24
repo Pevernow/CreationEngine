@@ -1,1 +1,2 @@
-register_node("blue_wool","textures/mcl_wool_light_blue.png")
+register_node("default_dirt","textures/default_dirt.png")
+register_node("default_grass","textures/default_grass.png")

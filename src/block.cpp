@@ -105,9 +105,6 @@ bool Gen_block_model()
     bgfx::ShaderHandle fsh = createShader(fshader, "fshader");
 
     program = bgfx::createProgram(vsh, fsh, true);
-
-    // Blockmodels["fieldstone"] = loadTexture("textures/aeq62-oqx7h.dds");
-    Blockmodels["default_dirt"] = loadTexture("textures/default_dirt.png");
     return 0;
 }
 
