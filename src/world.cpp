@@ -20,9 +20,11 @@ Chunk::Chunk(int minx, int miny, int minz)
                     blocks[x][i][z].id = 1;
                 }
                 blocks[x][h - 1][z].id = 2;
+                blocks[x][y][z].show = false;
             }
         }
     }
+    update();
 }
 
 Block& World::get_node(int x, int y, int z)
@@ -90,19 +92,41 @@ void World::generate_map()
 {
     worldmap.push_back(Chunk(0, 0, 0));
 }
-/*
-void World::generate_map()
+
+void Chunk::update()
 {
-    Chunk chunk(0, 0, 0);
     for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
-            float f = simplex2(x * 0.05, z * 0.05, 3, 0.5, 2);
-            int h = (f + 1) / 2 * (16 - 1) + 1;
-            for (int y = 0; y < h; y++) {
-                chunk.blocks[x][y][z].type = "default_dirt";
+        for (int y = 0; y < 16; y++) {
+            for (int z = 0; z < 16; z++) {
+                if (blocks[x][y][z].id == 0) {
+                    blocks[x][y][z].show = false;
+                    continue;
+                }
+                if (x - 1 >= 0 && blocks[x - 1][y][z].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
+                if (x + 1 < 16 && blocks[x + 1][y][z].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
+                if (y - 1 >= 0 && blocks[x][y - 1][z].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
+                if (y + 1 < 16 && blocks[x][y + 1][z].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
+                if (z - 1 >= 0 && blocks[x][y][z - 1].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
+                if (z + 1 < 16 && blocks[x][y][z + 1].id == 0) {
+                    blocks[x][y][z].show = true;
+                    continue;
+                }
             }
         }
     }
-    worldmap.push_back(chunk);
 }
-*/

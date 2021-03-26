@@ -4,10 +4,9 @@ project(CreationEngine LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/deps/cmake/" ${CMAKE_MODULE_PATH})
 
-find_package(SDL2 REQUIRED)
+find_package(SDL2 REQUIRED CONFIG)
 find_package(bgfx REQUIRED CONFIG)
 find_package(LuaJIT REQUIRED)
-#find_package(imgui REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME})
 target_sources(
@@ -37,6 +36,7 @@ target_link_libraries(
     ${LUA_LIBRARY}
     bgfx::bgfx
     ${SDL2_LIBRARIES}
+    ${}
 )
 
 set_target_properties(

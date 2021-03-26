@@ -15,6 +15,7 @@ public:
     int16_t y;
     int16_t z;
     uint16_t id=0;
+    bool show;
 };
 
 class Blockmodel

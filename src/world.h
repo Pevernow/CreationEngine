@@ -11,6 +11,7 @@ class Chunk
 public:
     Chunk(int minx, int miny, int minz);
     Block blocks[16][16][16];
+    void update();
 };
 class World
 {

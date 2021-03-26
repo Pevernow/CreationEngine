@@ -126,7 +126,8 @@ void Draw_blocks()
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    if (world.worldmap[i].blocks[x][y][z].id != 0) {
+                    if (world.worldmap[i].blocks[x][y][z].id != 0 &&
+                        world.worldmap[i].blocks[x][y][z].show == true) {
                         float mtx[16];
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
