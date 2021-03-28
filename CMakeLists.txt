@@ -15,11 +15,13 @@ target_sources(
     src/config.cpp
     src/utils.cpp
     src/block.cpp
-    src/window.cpp
+    src/client/client.cpp
+    src/client/renderer.cpp
     src/world.cpp
-    src/camera.cpp
-    src/gui.cpp
-    src/lua/mod.cpp
+    src/client/camera.cpp
+    src/client/gui.cpp
+    src/server/lua/mod.cpp
+    src/server/server.cpp
     deps/noise.cpp
     deps/ray.cpp
     deps/imgui/imgui.cpp

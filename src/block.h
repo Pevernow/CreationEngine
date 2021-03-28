@@ -14,7 +14,7 @@ public:
     int16_t x;
     int16_t y;
     int16_t z;
-    uint16_t id=0;
+    uint16_t id = 0;
     bool show;
 };
 
@@ -46,11 +46,5 @@ struct PosColorVertex
     int16_t u;
     int16_t v;
 };
-
-bool GenBlockModel();
-
-void Block_destroy();
-
-void Draw_blocks();
 
 #endif

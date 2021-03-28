@@ -41,7 +41,7 @@ bgfx::TextureHandle loadTexture(
             const bgfx::Memory* mem = bgfx::makeRef(
                 imageContainer->m_data, imageContainer->m_size, imageReleaseCb,
                 imageContainer);
-            delete[] data;
+            delete (char*)data;
 
             if (imageContainer->m_cubeMap) {
                 handle = bgfx::createTextureCube(

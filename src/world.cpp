@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-extern TypeManager typemanager;
-
 Chunk::Chunk(int minx, int miny, int minz)
 {
     for (int x = 0; x < 16; x++) {
@@ -49,7 +47,7 @@ Block& World::get_node(int x, int y, int z)
 
 void World::set_node(int x, int y, int z, string type)
 {
-    int id = typemanager.nameToID(type);
+    int id = typemanager->nameToID(type);
     if (id == -1) {
         return;
     }

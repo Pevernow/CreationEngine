@@ -20,6 +20,7 @@ public:
     void set_node(int x, int y, int z, string type);
     Chunk& get_chunk(int x, int y, int z);
     void generate_map();
+    TypeManager* typemanager;
     vector<Chunk> worldmap;
 };
 #endif
