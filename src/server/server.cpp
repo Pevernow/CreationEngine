@@ -5,7 +5,7 @@ void Server::init()
     world.generate_map();
     world.typemanager = &typemanager;
     typemanager.registerNode("air", nullptr);
-    luaenv.init();
+    luaenv.init(&typemanager);
     luaenv.execmods();
 }
 

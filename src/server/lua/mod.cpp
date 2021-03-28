@@ -8,18 +8,16 @@ extern "C" {
 #include <luajit-2.1/lualib.h>
 }
 
-#include "../../block.h"
-
 #include <iostream>
 using namespace std;
 
-extern Server server;
+TypeManager* typemanager;
 
 static int api_register_node(lua_State* L)
 {
     const char* name = luaL_checkstring(L, 1);
     const char* texture_path = luaL_checkstring(L, 2);
-    server.typemanager.registerNode(name, texture_path);
+    typemanager->registerNode(name, texture_path);
     lua_pushnil(L);
     return 1;
 }
@@ -48,8 +46,9 @@ int LuaErrorCallBack(lua_State* L)
     return 1;
 }
 
-bool Luaenv::init()
+bool Luaenv::init(TypeManager* tm)
 {
+    typemanager = tm;
     L = luaL_newstate();
     if (L == NULL) {
         return false;

@@ -7,7 +7,6 @@ using namespace std;
 
 Client client;
 Server server;
-
 int main(int argc, char* argv[])
 {
     /*
@@ -15,7 +14,6 @@ int main(int argc, char* argv[])
     arger.add<bool>("server", '\0', "only start server", false, false);
     arger.parse_check(argc, argv);
     */
-
     client.init(server.getLocalWorldPtr(), server.getLocalTM());
     server.init();
     client.mainloop();

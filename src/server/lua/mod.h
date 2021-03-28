@@ -4,10 +4,12 @@ extern "C" {
 #include <luajit-2.1/lua.h>
 }
 
+#include "../../block.h"
+
 class Luaenv
 {
 public:
-    bool init();
+    bool init(TypeManager* tm);
     bool exec(char* path);
     void destory();
     void execmods();
