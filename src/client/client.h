@@ -3,6 +3,7 @@
 
 #include "../config.h"
 #include "../world.h"
+#include "block_c.h"
 #include "camera.h"
 #include "gui.h"
 #include "renderer.h"
@@ -14,7 +15,7 @@
 class Client
 {
 public:
-    void init(World* localserverworldptr, TypeManager* localTMptr);
+    void init(World* localserverworldptr, TypeManager_c* localTMptr);
     void mainloop();
     void shutdown();
     void on_left_click();
@@ -29,7 +30,7 @@ private:
     Renderer renderer;
     int width, height;
     World* localworld;
-    TypeManager* localTM;
+    TypeManager_c* localTM;
     bool quit = false;
     int _FPS_Timer;
     int max_frame_time;

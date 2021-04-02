@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/deps/cmake/" ${CMAKE_MODULE_PATH})
 find_package(SDL2 REQUIRED CONFIG)
 find_package(bgfx REQUIRED CONFIG)
 find_package(LuaJIT REQUIRED)
+find_package(Libevent REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME})
 target_sources(
@@ -22,6 +23,7 @@ target_sources(
     src/client/gui.cpp
     src/server/lua/mod.cpp
     src/server/server.cpp
+    src/server/world_s.cpp
     deps/noise.cpp
     deps/ray.cpp
     deps/imgui/imgui.cpp
@@ -31,11 +33,12 @@ target_sources(
     deps/bgfx-imgui/imgui_impl_bgfx.cpp
     deps/sdl-imgui/imgui_impl_sdl.cpp
 )
-target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} {LIBEVENT_INCLUDE_DIR})
 
 target_link_libraries(
     ${PROJECT_NAME} PRIVATE
     ${LUA_LIBRARY}
+    ${LIBEVENT_LIBRARY}
     bgfx::bgfx
     ${SDL2_LIBRARIES}
     ${}

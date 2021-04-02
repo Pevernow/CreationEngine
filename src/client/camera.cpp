@@ -1,6 +1,6 @@
 #include "camera.h"
-#include "../block.h"
 #include "../world.h"
+#include "block_c.h"
 #include "bx/math.h"
 #include "ray.h"
 #include <SDL2/SDL.h>
@@ -154,12 +154,12 @@ void Camera::process_mouse_movement(float xoffset, float yoffset)
 
 void Camera::on_left_click()
 {
-    world->set_node(choosepos.x, choosepos.y, choosepos.z, "air");
+    // world->set_node(choosepos.x, choosepos.y, choosepos.z, "air");
     return;
 }
 
 void Camera::on_right_click()
 {
-    world->set_node(choosepos.x, choosepos.y, choosepos.z, wielditem);
+    // world->set_node(choosepos.x, choosepos.y, choosepos.z, wielditem);
     return;
 }

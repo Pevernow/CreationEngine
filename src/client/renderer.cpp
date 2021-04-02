@@ -1,9 +1,9 @@
 #include "renderer.h"
 
-#include "../block.h"
 #include "../file-ops.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
+#include "block_c.h"
 #include <SDL2/SDL.h>
 #include <bx/math.h>
 
@@ -100,7 +100,7 @@ bool Renderer::GenBlockModel()
 }
 
 bool Renderer::init(
-    int width, int height, World* worldptr, TypeManager* typemanagerptr)
+    int width, int height, World* worldptr, TypeManager_c* typemanagerptr)
 {
     world = worldptr;
     typemanager = typemanagerptr;

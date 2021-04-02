@@ -1,10 +1,10 @@
 #include "client.h"
-#include "../block.h"
 #include "../config.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
+#include "block_c.h"
 
-void Client::init(World* localserverworldptr, TypeManager* localTMptr)
+void Client::init(World* localserverworldptr, TypeManager_c* localTMptr)
 {
     localTM = localTMptr;
     localworld = localserverworldptr;

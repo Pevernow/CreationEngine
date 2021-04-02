@@ -45,29 +45,6 @@ Block& World::get_node(int x, int y, int z)
     return worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16];
 }
 
-void World::set_node(int x, int y, int z, string type)
-{
-    int id = typemanager->nameToID(type);
-    if (id == -1) {
-        return;
-    }
-    for (int i = 0, l = worldmap.size(); i < l; i++) {
-        if (worldmap[i].blocks[0][0][0].x <= x &&
-            worldmap[i].blocks[0][0][0].y <= y &&
-            worldmap[i].blocks[0][0][0].z <= z &&
-            worldmap[i].blocks[15][15][15].x >= x &&
-            worldmap[i].blocks[15][15][15].y >= y &&
-            worldmap[i].blocks[15][15][15].z >= z) {
-            // in chunk
-            worldmap[i].blocks[x % 16][y % 16][z % 16].id = id;
-            return;
-        }
-    }
-    worldmap.push_back(Chunk((x % 16) * 16, (y % 16) * 16, (z % 16) * 16));
-    worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16].id = id;
-    return;
-}
-
 Chunk& World::get_chunk(int x, int y, int z)
 {
 
@@ -84,11 +61,6 @@ Chunk& World::get_chunk(int x, int y, int z)
     // not in chunk
     worldmap.push_back(Chunk(x - (x % 16), y - (y % 16), z - (z % 16)));
     return (Chunk&)worldmap[worldmap.size() - 1];
-}
-
-void World::generate_map()
-{
-    worldmap.push_back(Chunk(0, 0, 0));
 }
 
 void Chunk::update()
