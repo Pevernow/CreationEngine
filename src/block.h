@@ -21,7 +21,6 @@ public:
 class TypeManager
 {
 public:
-    virtual void registerNode(const char* name, const char* texture_path);
     int nameToID(string name); // use id to index map of blockmodels.
     map<string, int> nameIndex;
 };

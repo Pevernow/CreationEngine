@@ -21,9 +21,13 @@ target_sources(
     src/world.cpp
     src/client/camera.cpp
     src/client/gui.cpp
+    src/client/block_c.cpp
+    src/client/network_c.cpp
     src/server/lua/mod.cpp
     src/server/server.cpp
     src/server/world_s.cpp
+    src/server/block_s.cpp
+    src/server/network_s.cpp
     deps/noise.cpp
     deps/ray.cpp
     deps/imgui/imgui.cpp

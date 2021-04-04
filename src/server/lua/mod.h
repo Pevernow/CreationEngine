@@ -9,7 +9,7 @@ extern "C" {
 class Luaenv
 {
 public:
-    bool init(TypeManager* tm);
+    bool init(TypeManager_s* tm);
     bool exec(char* path);
     void destory();
     void execmods();

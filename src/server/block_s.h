@@ -15,6 +15,6 @@ class TypeManager_s : public TypeManager
 {
 public:
     vector<Blockmodel_s> blockmodel;
-    virtual void registerNode(const char* name, const char* texture_path);
+    void registerNode(const char* name, const char* texture_path);
 };
 #endif

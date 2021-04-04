@@ -1,11 +1,12 @@
 #include "block_c.h"
 #include "../utils.h"
+#include <cstring>
 
 Blockmodel_c::Blockmodel_c(string name, uint16_t id, const char* texture_path)
 {
     this->name = name;
     this->id = id;
-    if (id != 0)
+    if (strcmp(texture_path, "!empty") != 0)
         textureData = loadTexture(texture_path);
 }
 

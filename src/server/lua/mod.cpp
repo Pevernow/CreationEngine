@@ -11,7 +11,7 @@ extern "C" {
 #include <iostream>
 using namespace std;
 
-TypeManager* typemanager;
+TypeManager_s* typemanager;
 
 static int api_register_node(lua_State* L)
 {
@@ -46,7 +46,7 @@ int LuaErrorCallBack(lua_State* L)
     return 1;
 }
 
-bool Luaenv::init(TypeManager* tm)
+bool Luaenv::init(TypeManager_s* tm)
 {
     typemanager = tm;
     L = luaL_newstate();

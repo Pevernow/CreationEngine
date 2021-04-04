@@ -4,9 +4,8 @@
 #include "bgfx/platform.h"
 #include "block_c.h"
 
-void Client::init(World* localserverworldptr, TypeManager_c* localTMptr)
+void Client::init(World* localserverworldptr)
 {
-    localTM = localTMptr;
     localworld = localserverworldptr;
     // configure
     ReadConfig("CE.conf", config);
@@ -20,12 +19,16 @@ void Client::init(World* localserverworldptr, TypeManager_c* localTMptr)
     height = stoi(config["height"]);
 
     // init bgfx and sdl
-    renderer.init(width, height, localworld, localTM);
+    renderer.init(width, height, localworld, &localTM);
     camera.world = localworld;
 
     gui.init(renderer.sdl_window);
 
-    return;
+    net.init(&localTM);
+
+    net.eventloop();
+
+        return;
 }
 
 void Client::shutdown()
@@ -36,6 +39,7 @@ void Client::shutdown()
 
 void Client::mainloop()
 {
+    net.startUp();
     _FPS_Timer = SDL_GetTicks();
 
     while (!quit) {

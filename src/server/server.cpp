@@ -1,5 +1,7 @@
 #include "server.h"
 
+#include <thread>
+
 void Server::init()
 {
     world.generate_map();
@@ -7,6 +9,8 @@ void Server::init()
     typemanager.registerNode("air", nullptr);
     luaenv.init(&typemanager);
     luaenv.execmods();
+    net.init(&typemanager);
+    net.eventloop();
 }
 
 void Server::shutdown()
@@ -17,9 +21,4 @@ void Server::shutdown()
 World* Server::getLocalWorldPtr()
 {
     return &world;
-}
-
-TypeManager* Server::getLocalTM()
-{
-    return &typemanager;
 }

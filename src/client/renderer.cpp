@@ -161,6 +161,7 @@ bool Renderer::init(
 
 void Renderer::DrawBlock()
 {
+    int tmSize = typemanager->blockmodel.size();
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         Block mblock = chunk.blocks[0][0][0];
@@ -171,7 +172,8 @@ void Renderer::DrawBlock()
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
                     if (chunk.blocks[x][y][z].id != 0 &&
-                        chunk.blocks[x][y][z].show == true) {
+                        chunk.blocks[x][y][z].show == true &&
+                        tmSize > chunk.blocks[x][y][z].id) {
                         float mtx[16];
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
