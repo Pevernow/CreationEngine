@@ -20,3 +20,6 @@ Open source,High performance,Cross platform,Beautiful 3D voxel game.
 3.GUI
 
 4.Modding API (with lua)
+
+# Licence
+src/ directory of all the code in accordance with the gpl3 open source agreement
