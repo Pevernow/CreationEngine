@@ -69,12 +69,8 @@ void event_cb_s(struct bufferevent* bev, short events, void* arg)
     } else if (events & BEV_EVENT_ERROR) {
         cout << "服务器: 未知网络错误" << endl;
     }
-    if (events & BEV_EVENT_CONNECTED) {
-        cout << "服务器: 成功连接至客户端" << endl;
-    } else {
-        bufferevent_free(bev);
-        cout << "服务器: 连接已中断" << endl;
-    }
+    bufferevent_free(bev);
+    cout << "服务器: 关闭" << endl;
 }
 
 void cb_listener_s(

@@ -162,6 +162,12 @@ bool Renderer::init(
 void Renderer::DrawBlock()
 {
     int tmSize = typemanager->blockmodel.size();
+    float mtx[16];
+    bgfx::setIndexBuffer(block_ibh);
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+    int oid = 0;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         Block mblock = chunk.blocks[0][0][0];
@@ -174,19 +180,17 @@ void Renderer::DrawBlock()
                     if (chunk.blocks[x][y][z].id != 0 &&
                         chunk.blocks[x][y][z].show == true &&
                         tmSize > chunk.blocks[x][y][z].id) {
-                        float mtx[16];
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
                         bgfx::setVertexBuffer(0, block_vbh);
-                        bgfx::setIndexBuffer(block_ibh);
-                        bgfx::setTexture(
-                            0, block_tex,
-                            typemanager->blockmodel[chunk.blocks[x][y][z].id]
-                                .textureData);
-                        bgfx::setState(
-                            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                            BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                            BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+                        if (oid != chunk.blocks[x][y][z].id) {
+                            bgfx::setTexture(
+                                0, block_tex,
+                                typemanager
+                                    ->blockmodel[chunk.blocks[x][y][z].id]
+                                    .textureData);
+                        }
+
                         bgfx::submit(0, program);
                     }
                 }
