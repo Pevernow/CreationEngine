@@ -28,9 +28,13 @@ void read_cb_c(struct bufferevent* bev, void* arg)
         const Value& list = document["registerList"];
         for (SizeType i = 0, l = list.Size(); i < l; i++) {
             if (list[i].HasMember("name") && list[i].HasMember("texturePath")) {
-                tm_c->registerNode(
-                    list[i]["name"].GetString(),
-                    list[i]["texturePath"].GetString());
+                const Value& texturelist = list[i]["texturePath"];
+                const char* textures[6] = {nullptr, nullptr, nullptr,
+                                           nullptr, nullptr, nullptr};
+                for (SizeType j = 0, ll = texturelist.Size(); j < ll; j++) {
+                    textures[j] = texturelist[j].GetString();
+                }
+                tm_c->registerNode(list[i]["name"].GetString(), textures);
             }
         }
     }

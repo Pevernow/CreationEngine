@@ -1,17 +1,22 @@
 #include "block_s.h"
 
-Blockmodel_s::Blockmodel_s(string name, uint16_t id, const char* texture_path)
+Blockmodel_s::Blockmodel_s(
+    string name, uint16_t id, const char* texture_path[6])
 {
     this->name = name;
     this->id = id;
     if (id != 0) {
-        this->texture_path = texture_path;
+        for (int i = 0; i < 6; i++) {
+            this->texture_path[i] = texture_path[i];
+        }
     } else {
-        this->texture_path = "!empty";
+        for (int i = 0; i < 6; i++) {
+            this->texture_path[i] = "!empty";
+        }
     }
 }
 
-void TypeManager_s::registerNode(const char* name, const char* texture_path)
+void TypeManager_s::registerNode(const char* name, const char* texture_path[6])
 {
     int id = blockmodel.size();
     nameIndex[name] = id;

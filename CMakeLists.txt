@@ -14,7 +14,7 @@ target_sources(
     ${PROJECT_NAME} PRIVATE
     src/main.cpp
     src/config.cpp
-    src/utils.cpp
+    src/client/utils.cpp
     src/block.cpp
     src/client/client.cpp
     src/client/renderer.cpp

@@ -35,9 +35,13 @@ void read_cb_s(struct bufferevent* bev, void* arg)
             for (int i = 0, l = tm_s->blockmodel.size(); i < l; i++) {
                 Value name;
                 name = StringRef(tm_s->blockmodel[i].name.c_str());
-                Value texturePath;
-                texturePath =
-                    StringRef(tm_s->blockmodel[i].texture_path.c_str());
+                Value texturePath(kArrayType);
+                for (int j = 0; j < 6; j++) {
+                    texturePath.PushBack(
+                        Value(StringRef(
+                            tm_s->blockmodel[i].texture_path[j].c_str())),
+                        output.GetAllocator());
+                }
                 Value pair;
                 pair.SetObject();
                 pair.AddMember("name", name, output.GetAllocator());

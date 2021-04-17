@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <bx/allocator.h>
 #include <bx/bx.h>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
@@ -13,6 +14,57 @@ static void imageReleaseCb(void* _ptr, void* _userData)
     bimg::imageFree(imageContainer);
 }
 
+bgfx::TextureHandle loadBlockTexture(
+    const char* top, const char* bottom, const char* front, const char* back,
+    const char* left, const char* right)
+{
+    // calc args
+    if (strcmp("!empty", bottom) == 0) {
+        bottom = top;
+    }
+    if (strcmp("!empty", front) == 0) {
+        front = bottom;
+    }
+    if (strcmp("!empty", back) == 0) {
+        back = front;
+    }
+    if (strcmp("!empty", left) == 0) {
+        left = back;
+    }
+    if (strcmp("!empty", right) == 0) {
+        right = left;
+    }
+    const char* textures[] = {top, bottom, front, back, left, right};
+    // loadTexture
+    bgfx::TextureHandle handle =
+        bgfx::createTexture2D(16, 16, false, 6, bgfx::TextureFormat::RGBA8);
+    for (int i = 0; i < 6; i++) {
+        ifstream inFile(textures[i], ios::in | ios::binary);
+        inFile.seekg(0, ios_base::end);
+        uint32_t size = inFile.tellg();
+        inFile.seekg(0, ios_base::beg);
+        void* data = new char[size];
+        // Remember to free it
+        inFile.read((char*)data, size);
+        inFile.close();
+        if (NULL != data) {
+            static bx::DefaultAllocator s_allocator;
+            static bx::AllocatorI* g_allocator = &s_allocator;
+            bimg::ImageContainer* imageContainer = bimg::imageParse(
+                g_allocator, data, size, bimg::TextureFormat::RGBA8);
+            delete (char*)data;
+            if (NULL != imageContainer) {
+                const bgfx::Memory* mem = bgfx::makeRef(
+                    imageContainer->m_data, imageContainer->m_size,
+                    imageReleaseCb, imageContainer);
+                bgfx::updateTexture2D(
+                    handle, i, 0, 0, 0, imageContainer->m_width,
+                    imageContainer->m_height, mem);
+            }
+        }
+    }
+    return handle;
+}
 bgfx::TextureHandle loadTexture(
     const char* _filePath, uint64_t _flags, uint8_t _skip,
     bgfx::TextureInfo* _info, bimg::Orientation::Enum* _orientation)

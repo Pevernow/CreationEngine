@@ -3,6 +3,10 @@
 #include <bgfx/bgfx.h>
 #include <bimg/decode.h>
 
+bgfx::TextureHandle loadBlockTexture(
+    const char* top, const char* bottom = "!empty",
+    const char* front = "!empty", const char* back = "!empty",
+    const char* left = "!empty", const char* right = "!empty");
 bgfx::TextureHandle loadTexture(
     const char* _name, uint64_t _flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
     uint8_t _skip = 0, bgfx::TextureInfo* _info = NULL,

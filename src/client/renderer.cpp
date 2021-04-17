@@ -9,47 +9,47 @@
 
 float vertices[] = {
     // Back face
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Bottom-left
-    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
-    1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom-right
-    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
-    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, // Bottom-left
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 3.0f, // top-right
+    1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 3.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 3.0f, // top-right
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 3.0f, // bottom-left
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 3.0f, // top-left
     // Front face
-    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
-    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-right
-    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top-right
-    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top-right
-    0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // top-left
-    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f, // bottom-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 2.0f, // bottom-right
+    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, // top-right
+    1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, // top-right
+    0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 2.0f, // top-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f, // bottom-left
     // Left face
-    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-right
-    0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-left
-    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
-    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
-    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-right
-    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-right
-                                  // Right face
-    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-left
-    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
-    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
-    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
-    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // top-left
-    1.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 4.0f, // top-right
+    0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 4.0f, // top-left
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, // bottom-left
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 4.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 4.0f, // bottom-right
+    0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 4.0f, // top-right
+    // Right face
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 5.0f, // top-left
+    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 5.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 5.0f, // top-right
+    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 5.0f, // bottom-right
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 5.0f, // top-left
+    1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 5.0f, // bottom-left
     // Bottom face
-    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // top-right
-    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
-    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-left
-    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-left
-    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-right
-    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, // top-right
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom-left
+    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // bottom-left
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right
     // Top face
-    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
-    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom-right
-    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
-    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom-right
-    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
-    0.0f, 1.0f, 1.0f, 0.0f, 0.0f  // bottom-left
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom-right
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, // top-right
+    1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom-right
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+    0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f  // bottom-left
 };
 
 static const uint16_t s_cubeIndices[36] = {
@@ -74,7 +74,7 @@ bool Renderer::GenBlockModel()
     bgfx::VertexLayout pos_col_vert_layout;
     pos_col_vert_layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
+        .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float, true, true)
         .end();
     // 创建顶点缓冲对象
     block_vbh = bgfx::createVertexBuffer(
@@ -163,10 +163,7 @@ void Renderer::DrawBlock()
 {
     int tmSize = typemanager->blockmodel.size();
     float mtx[16];
-    bgfx::setIndexBuffer(block_ibh);
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+
     int oid = 0;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
@@ -182,6 +179,11 @@ void Renderer::DrawBlock()
                         tmSize > chunk.blocks[x][y][z].id) {
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
+                        bgfx::setIndexBuffer(block_ibh);
+                        bgfx::setState(
+                            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                            BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+                            BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
                         bgfx::setVertexBuffer(0, block_vbh);
                         if (oid != chunk.blocks[x][y][z].id) {
                             bgfx::setTexture(

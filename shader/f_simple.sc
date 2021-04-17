@@ -2,7 +2,7 @@ $input v_texcoord0
 
 #include <bgfx_shader.sh>
 
-SAMPLER2D(s_texColor,  0);
+SAMPLER2DARRAY(s_texColor, 0);
 
 vec3 toLinear(vec3 _rgb)
 {
@@ -10,5 +10,6 @@ vec3 toLinear(vec3 _rgb)
 }
 
 void main() {
-    gl_FragColor = texture2D(s_texColor, v_texcoord0);
+    //gl_FragColor = texture2DArray(s_texColor, vec3(v_texcoord0.x,v_texcoord0.y,2.5));
+    gl_FragColor = texture2DArray(s_texColor, v_texcoord0.xyz);
 }

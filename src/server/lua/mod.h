@@ -10,7 +10,7 @@ class Luaenv
 {
 public:
     bool init(TypeManager_s* tm);
-    bool exec(char* path);
+    bool exec(const char* path);
     void destory();
     void execmods();
 

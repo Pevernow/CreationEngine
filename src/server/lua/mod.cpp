@@ -9,6 +9,7 @@ extern "C" {
 }
 
 #include <iostream>
+
 using namespace std;
 
 TypeManager_s* typemanager;
@@ -16,7 +17,26 @@ TypeManager_s* typemanager;
 static int api_register_node(lua_State* L)
 {
     const char* name = luaL_checkstring(L, 1);
-    const char* texture_path = luaL_checkstring(L, 2);
+    const char* texture_path[6] = {"!empty", "!empty", "!empty",
+                                   "!empty", "!empty", "!empty"};
+    if (!lua_istable(L, 2)) {
+        lua_pushinteger(L, -1);
+        return 1;
+    }
+    // lua_gettable(L, 2);
+    int it = lua_gettop(L);
+    lua_pushnil(L);
+    int i = 0;
+    while (lua_next(L, it)) {
+        if (i > 5) {
+            break;
+        }
+        texture_path[i] = lua_tostring(L, -1);
+        lua_pop(L, 1);
+        i++;
+    }
+    lua_pop(L, 1);
+
     typemanager->registerNode(name, texture_path);
     lua_pushnil(L);
     return 1;
@@ -61,7 +81,7 @@ bool Luaenv::init(TypeManager_s* tm)
     return true;
 }
 
-bool Luaenv::exec(char* path)
+bool Luaenv::exec(const char* path)
 {
     int bRet = luaL_loadfile(L, path);
     if (bRet) {
