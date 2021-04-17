@@ -36,8 +36,9 @@ bgfx::TextureHandle loadBlockTexture(
     }
     const char* textures[] = {top, bottom, front, back, left, right};
     // loadTexture
-    bgfx::TextureHandle handle =
-        bgfx::createTexture2D(16, 16, false, 6, bgfx::TextureFormat::RGBA8);
+    bgfx::TextureHandle handle = bgfx::createTexture2D(
+        16, 16, false, 6, bgfx::TextureFormat::RGBA8,
+        BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT);
     for (int i = 0; i < 6; i++) {
         ifstream inFile(textures[i], ios::in | ios::binary);
         inFile.seekg(0, ios_base::end);
