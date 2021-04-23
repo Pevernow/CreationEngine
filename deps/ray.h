@@ -6,7 +6,7 @@
 class Ray
 {
 public:
-    Ray(const glm::vec3& position, const glm::vec3& front);
+    Ray(const glm::vec3& position, glm::vec3 front);
 
     void step(float scale);
 

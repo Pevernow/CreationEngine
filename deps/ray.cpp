@@ -1,8 +1,9 @@
 #include "ray.h"
 
-Ray::Ray(const glm::vec3& position, const glm::vec3& front)
+Ray::Ray(const glm::vec3& position, glm::vec3 front)
     : m_rayStart(position), m_rayEnd(position), front(front)
 {
+    front.x *= 0.8;
 }
 
 /*

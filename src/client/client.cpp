@@ -28,7 +28,7 @@ void Client::init(World* localserverworldptr)
 
     net.eventloop();
 
-        return;
+    return;
 }
 
 void Client::shutdown()
@@ -72,45 +72,44 @@ void Client::mainloop()
 void Client::processEvent(SDL_Window* window)
 {
     // Event polling
+    int delay = SDL_GetTicks() - _FPS_Timer;
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT)
             quit = true;
         if (e.type == SDL_MOUSEMOTION) {
             camera.process_mouse_movement(
-                e.motion.x - renderer.width / 2,
+                renderer.width / 2 - e.motion.x,
                 renderer.height / 2 - e.motion.y);
             SDL_WarpMouseInWindow(
                 window, renderer.width / 2, renderer.height / 2);
         }
-        if (e.type == SDL_MOUSEBUTTONUP) {
-            if (e.button.button == SDL_BUTTON_LEFT) {
-                camera.on_left_click();
-            }
-            if (e.button.button == SDL_BUTTON_RIGHT) {
-                camera.on_right_click();
-            }
+    }
+    if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+        camera.on_left_click(delay);
+    } else {
+        if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+            camera.on_right_click();
         }
     }
-
     // process move event
     const Uint8* state;
     state = SDL_GetKeyboardState(NULL);
     if (state[SDL_SCANCODE_W]) {
-        camera.processKeyboard(FORWARD, SDL_GetTicks() - _FPS_Timer);
+        camera.processKeyboard(FORWARD, delay);
     }
     if (state[SDL_SCANCODE_S]) {
-        camera.processKeyboard(BACKWARD, SDL_GetTicks() - _FPS_Timer);
+        camera.processKeyboard(BACKWARD, delay);
     }
     if (state[SDL_SCANCODE_A]) {
-        camera.processKeyboard(LEFT, SDL_GetTicks() - _FPS_Timer);
+        camera.processKeyboard(LEFT, delay);
     }
     if (state[SDL_SCANCODE_D]) {
-        camera.processKeyboard(RIGHT, SDL_GetTicks() - _FPS_Timer);
+        camera.processKeyboard(RIGHT, delay);
     }
 
     if (state[SDL_SCANCODE_SPACE]) {
-        camera.processKeyboard(JUMP, SDL_GetTicks() - _FPS_Timer);
+        camera.processKeyboard(JUMP, delay);
     }
 
     if (state[SDL_SCANCODE_ESCAPE]) {

@@ -28,12 +28,14 @@ public:
     void update_camera_vectors();
     void process_mouse_movement(float xoffset, float yoffset);
     void update_camera_position(float deltaTime);
-    void on_left_click();
+    void on_left_click(int delayMS);
     void on_right_click();
     World* world;
 
 private:
+    void updateRayPoint();
     glm::vec3 position;
+    glm::vec3 eyePosition;
     float ys;
     float yaw, pitch, scale;
     float width, height;
@@ -44,6 +46,8 @@ private:
     float movement_speed;
     float mouse_sensitivity;
     glm::vec3 choosepos;
+    glm::vec3 placePos;
     std::string wielditem;
+    float breakTime;
 };
 #endif

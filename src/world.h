@@ -2,20 +2,21 @@
 #define WORLD_H
 
 #include "block.h"
-#include <string>
 #include <vector>
 using namespace std;
 
 class Chunk
 {
 public:
-    Chunk(int minx, int miny, int minz);
+    Chunk(int ix, int iy, int iz);
     Block blocks[16][16][16];
     void update();
+    void updateBlock(int x, int y, int z);
 };
 class World
 {
 public:
+    void set_node(int x, int y, int z, const char* name);
     Block& get_node(int x, int y, int z);
     Chunk& get_chunk(int x, int y, int z);
     TypeManager* typemanager;
