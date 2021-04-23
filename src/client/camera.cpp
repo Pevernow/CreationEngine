@@ -167,9 +167,16 @@ void Camera::on_left_click(int delayMS)
     return;
 }
 
-void Camera::on_right_click()
+void Camera::on_right_click(int delayMS)
 {
-    if (world->get_node(placePos.x, placePos.y, placePos.z).id == 0)
-        world->set_node(placePos.x, placePos.y, placePos.z, wielditem.c_str());
+    if (breakTime >= 300) {
+        if (world->get_node(placePos.x, placePos.y, placePos.z).id == 0)
+            world->set_node(
+                placePos.x, placePos.y, placePos.z, wielditem.c_str());
+        breakTime = 0;
+    } else {
+        breakTime += delayMS;
+    }
+
     return;
 }

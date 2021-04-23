@@ -4,6 +4,8 @@
 #include "bgfx/platform.h"
 #include "block_c.h"
 
+#include <iostream>
+
 void Client::init(World* localserverworldptr)
 {
     localworld = localserverworldptr;
@@ -11,7 +13,7 @@ void Client::init(World* localserverworldptr)
     ReadConfig("CE.conf", config);
     PrintConfig(config);
     if (config.count("maxfps") == 1) {
-        int max_frame_time = 1000 / stoi(config["maxfps"]);
+        max_frame_time = 1000 / stoi(config["maxfps"]);
     }
     _FPS_Timer = max_frame_time;
 
@@ -22,7 +24,7 @@ void Client::init(World* localserverworldptr)
     renderer.init(width, height, localworld, &localTM);
     camera.world = localworld;
 
-    gui.init(renderer.sdl_window);
+    gui.init(renderer.sdl_window, &FPS);
 
     net.init(&localTM);
 
@@ -42,6 +44,8 @@ void Client::mainloop()
     net.startUp();
     _FPS_Timer = SDL_GetTicks();
 
+    static int lastFrame;
+
     while (!quit) {
         processEvent(renderer.sdl_window);
 
@@ -50,15 +54,16 @@ void Client::mainloop()
         gui.view();
 
         // FPS_limit
-        if (SDL_GetTicks() - _FPS_Timer < max_frame_time) {
-            SDL_Delay(max_frame_time - SDL_GetTicks() + _FPS_Timer);
+        if (SDL_GetTicks() - lastFrame < max_frame_time) {
+            SDL_Delay(max_frame_time - SDL_GetTicks() + lastFrame);
         }
-        if (SDL_GetTicks() - _FPS_Timer == 0) {
-            FPS = 999;
-        } else {
-            FPS = 1000 / (SDL_GetTicks() - _FPS_Timer);
+        if (SDL_GetTicks() - _FPS_Timer >= 1000) {
+            FPS = FPS_count;
+            FPS_count = 0;
+            _FPS_Timer = SDL_GetTicks();
         }
-        _FPS_Timer = SDL_GetTicks();
+        lastFrame = SDL_GetTicks();
+        FPS_count++;
 
         camera.view();
 
@@ -89,7 +94,7 @@ void Client::processEvent(SDL_Window* window)
         camera.on_left_click(delay);
     } else {
         if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-            camera.on_right_click();
+            camera.on_right_click(delay);
         }
     }
     // process move event

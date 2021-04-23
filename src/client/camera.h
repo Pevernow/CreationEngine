@@ -29,7 +29,7 @@ public:
     void process_mouse_movement(float xoffset, float yoffset);
     void update_camera_position(float deltaTime);
     void on_left_click(int delayMS);
-    void on_right_click();
+    void on_right_click(int delayMS);
     World* world;
 
 private:

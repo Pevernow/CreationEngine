@@ -6,10 +6,10 @@
 #include "imgui/imgui.h"
 #include <string>
 
-void GUImanager::init(SDL_Window* sdl_window_ptr)
+void GUImanager::init(SDL_Window* sdl_window_ptr, int* FPS_ptr)
 {
     sdl_window = sdl_window_ptr;
-
+    FPS = FPS_ptr;
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
@@ -29,7 +29,7 @@ void GUImanager::view()
     ImGui_ImplSDL2_NewFrame(sdl_window);
     ImGui::NewFrame();
 
-    // showdebuginfo();
+    showdebuginfo();
 
     ImGui::Render();
 
@@ -38,11 +38,18 @@ void GUImanager::view()
     return;
 }
 
-/*
 void GUImanager::showdebuginfo()
 {
-    ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-    std::string fps = "FPS:" + std::to_string(FPS);
+    ImGui::Begin(
+        "Debug", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoInputs |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoBackground);
+    ImGui::SetWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+    std::string fps = "FPS:" + std::to_string(*FPS);
+    /*
     std::string position = "Pos(" + std::to_string(camera.position.x) + ',' +
                            std::to_string(camera.position.y) + ',' +
                            std::to_string(camera.position.z) + ')';
@@ -51,11 +58,11 @@ void GUImanager::showdebuginfo()
     std::string choose = "Choose(" + std::to_string(camera.choosepos.x) + ',' +
                          std::to_string(camera.choosepos.y) + ',' +
                          std::to_string(camera.choosepos.z) + ')';
-    ImGui::Text(choose.c_str());
+                         */
+    // ImGui::Text(choose.c_str());
     ImGui::Text(fps.c_str());
-    ImGui::Text(position.c_str());
-    ImGui::Text(dir.c_str());
+    // ImGui::Text(position.c_str());
+    // ImGui::Text(dir.c_str());
     ImGui::End();
     return;
 }
-*/

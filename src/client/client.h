@@ -36,6 +36,7 @@ private:
     bool quit = false;
     int _FPS_Timer;
     int max_frame_time;
+    int FPS_count;
 };
 
 #endif

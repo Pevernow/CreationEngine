@@ -3,10 +3,11 @@
 class GUImanager
 {
 public:
-    void init(SDL_Window* sdl_window_ptr);
+    void init(SDL_Window* sdl_window_ptr, int* FPS_ptr);
     void view();
     void showdebuginfo();
 
 private:
     SDL_Window* sdl_window;
+    int* FPS;
 };
