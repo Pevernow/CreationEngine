@@ -2,14 +2,21 @@
 
 #include "../world.h"
 #include "bgfx-imgui/imgui_impl_bgfx.h"
-#include "camera.h"
 #include "imgui/imgui.h"
+#include "utils.h"
 #include <string>
 
-void GUImanager::init(SDL_Window* sdl_window_ptr, int* FPS_ptr)
+void GUImanager::init(
+    SDL_Window* sdl_window_ptr, int* FPS_ptr, glm::vec3* playerPos_ptr,
+    string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr)
 {
     sdl_window = sdl_window_ptr;
     FPS = FPS_ptr;
+    yaw = yaw_ptr;
+    pitch = pitch_ptr;
+    playerPos = playerPos_ptr;
+    pointThing = pointThing_ptr;
+
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
@@ -21,6 +28,7 @@ void GUImanager::init(SDL_Window* sdl_window_ptr, int* FPS_ptr)
 #elif BX_PLATFORM_LINUX
     ImGui_ImplSDL2_InitForOpenGL(sdl_window, nullptr);
 #endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX ? BX_PLATFORM_LINUX
+    cross = loadTexture("textures/plus.png");
 }
 
 void GUImanager::view()
@@ -49,20 +57,27 @@ void GUImanager::showdebuginfo()
             ImGuiWindowFlags_NoBackground);
     ImGui::SetWindowPos(ImVec2(10, 10), ImGuiCond_Always);
     std::string fps = "FPS:" + std::to_string(*FPS);
-    /*
-    std::string position = "Pos(" + std::to_string(camera.position.x) + ',' +
-                           std::to_string(camera.position.y) + ',' +
-                           std::to_string(camera.position.z) + ')';
-    std::string dir = "Yaw:" + std::to_string(camera.yaw) +
-                      " Pitch : " + std::to_string(camera.pitch);
-    std::string choose = "Choose(" + std::to_string(camera.choosepos.x) + ',' +
-                         std::to_string(camera.choosepos.y) + ',' +
-                         std::to_string(camera.choosepos.z) + ')';
-                         */
-    // ImGui::Text(choose.c_str());
+    std::string position = "Pos(" + std::to_string(playerPos->x) + ',' +
+                           std::to_string(playerPos->y) + ',' +
+                           std::to_string(playerPos->z) + ')';
+    std::string dir =
+        "Yaw:" + std::to_string(*yaw) + " Pitch : " + std::to_string(*pitch);
+    std::string choose = "PointThing:" + *pointThing;
+    ImGui::Text(choose.c_str());
     ImGui::Text(fps.c_str());
-    // ImGui::Text(position.c_str());
-    // ImGui::Text(dir.c_str());
+
+    ImGui::Text(position.c_str());
+    ImGui::Text(dir.c_str());
+    ImGui::End();
+    ImGui::Begin(
+        "Crosshair", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoInputs |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoBackground);
+    ImGui::SetWindowPos(ImVec2(256, 176), ImGuiCond_Always);
+    ImGui::Image((void*)cross.idx, ImVec2(128, 128));
     ImGui::End();
     return;
 }

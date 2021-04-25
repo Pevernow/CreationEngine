@@ -60,6 +60,11 @@ void Camera::updateRayPoint()
         }
         lastPosition = ray.getEnd();
     }
+    pointThing = tm->idToName(
+        world
+            ->get_node(
+                floor(choosepos.x), floor(choosepos.y), floor(choosepos.z))
+            .id);
 }
 
 void Camera::view()

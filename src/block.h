@@ -22,6 +22,7 @@ class TypeManager
 {
 public:
     int nameToID(string name); // use id to index map of blockmodels.
+    string idToName(int id);
     map<string, int> nameIndex;
 };
 

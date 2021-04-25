@@ -31,13 +31,15 @@ public:
     void on_left_click(int delayMS);
     void on_right_click(int delayMS);
     World* world;
+    TypeManager* tm;
+    string pointThing;
+    float yaw, pitch, scale;
+    glm::vec3 position;
 
 private:
     void updateRayPoint();
-    glm::vec3 position;
     glm::vec3 eyePosition;
     float ys;
-    float yaw, pitch, scale;
     float width, height;
     glm::vec3 front;
     glm::vec3 up;
