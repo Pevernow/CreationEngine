@@ -12,10 +12,12 @@ public:
     Block blocks[16][16][16];
     void update();
     void updateBlock(int x, int y, int z);
+    bool show;
 };
 class World
 {
 public:
+    World();
     void set_node(int x, int y, int z, const char* name);
     Block& get_node(int x, int y, int z);
     Chunk& get_chunk(int x, int y, int z);

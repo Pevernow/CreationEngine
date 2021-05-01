@@ -69,7 +69,25 @@ void Camera::updateRayPoint()
 
 void Camera::view()
 {
-
+    {
+        // clean
+        for (int i = 0, l = world->worldmap.size(); i < l; i++) {
+            world->worldmap[i].show = false;
+        }
+        glm::u16vec3 pos = floor(position);
+        int x = (pos.x >= 0) ? pos.x - (pos.x % 16)
+                             : (pos.x + 1) - ((pos.x + 1) % 16) - 16;
+        int y = (pos.y >= 0) ? pos.y - (pos.y % 16)
+                             : (pos.y + 1) - ((pos.y + 1) % 16) - 16;
+        int z = (pos.z >= 0) ? pos.z - (pos.z % 16)
+                             : (pos.z + 1) - ((pos.z + 1) % 16) - 16;
+        for (int i = x - 16 * 2, maxx = x + 16 * 2; i <= maxx; i += 16) {
+            for (int j = z - 16 * 2, maxz = z + 16 * 2; j <= maxz; j += 16) {
+                // forceLoadChunk
+                world->get_chunk(i, y, j).show = true;
+            }
+        }
+    }
     float view[16];
     bx::Vec3 Pos = {eyePosition.x, eyePosition.y, eyePosition.z};
     glm::vec3 tmp = eyePosition + front;
@@ -89,7 +107,6 @@ void Camera::view()
 
 void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
 {
-    Chunk& chunk = world->get_chunk(position.x, position.y, position.z);
     glm::vec3 lastpos = position;
     float velocity = movement_speed * deltaTime;
     if (direction == FORWARD)
@@ -102,15 +119,13 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
         position -= right * velocity;
     // position.y = lastpos.y;
     if (direction == JUMP && ys <= 0)
-        if (chunk
-                .blocks[int(position.x) % 16][int(position.y) % 16 - 1]
-                       [int(position.z) % 16]
+        if (world
+                ->get_node(
+                    floor(position.x), floor(position.y) - 1, floor(position.z))
                 .id != 0)
             ys += 1;
     if ( // position.x < 0 || position.y < 0 || position.z < 0 ||
-        chunk
-            .blocks[int(position.x) % 16][int(position.y) % 16]
-                   [int(position.z) % 16]
+        world->get_node(floor(position.x), floor(position.y), floor(position.z))
             .id != 0) {
         position = lastpos;
     }
@@ -130,9 +145,9 @@ void Camera::update_camera_vectors()
     this->front = glm::normalize(front);
     // also re-calculate the Right and Up vector
     right = glm::normalize(glm::cross(
-        this->front, worldup)); // normalize the vectors, because their length
-                                // gets closer to 0 the more you look up or down
-                                // which results in slower movement.
+        this->front, worldup)); // normalposition.ze the vectors, because their
+                                // length gets closer to 0 the more you look up
+                                // or down which results in slower movement.
     up = glm::normalize(glm::cross(right, front));
     return;
 }

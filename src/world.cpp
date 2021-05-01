@@ -5,9 +5,11 @@
 
 Chunk::Chunk(int ix, int iy, int iz)
 {
-    int minx = (ix >= 0) ? ix - (ix % 16) : ix - (ix % 16) - 16;
-    int miny = (iy >= 0) ? iy - (iy % 16) : iy - (iy % 16) - 16;
-    int minz = (iz >= 0) ? iz - (iz % 16) : iz - (iz % 16) - 16;
+    show = false;
+
+    int minx = (ix >= 0) ? ix - (ix % 16) : (ix + 1) - ((ix + 1) % 16) - 16;
+    int miny = (iy >= 0) ? iy - (iy % 16) : (iy + 1) - ((iy + 1) % 16) - 16;
+    int minz = (iz >= 0) ? iz - (iz % 16) : (iz + 1) - ((iz + 1) % 16) - 16;
     for (int x = 0; x < 16; x++) {
         for (int y = 0; y < 16; y++) {
             for (int z = 0; z < 16; z++) {
@@ -30,7 +32,7 @@ Chunk::Chunk(int ix, int iy, int iz)
 
 Block& World::get_node(int x, int y, int z)
 {
-    if (x < 0 || y < 0 || z < 0 || y > 15)
+    if (y > 15)
         return worldmap[0].blocks[0][0][0];
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         if (worldmap[i].blocks[0][0][0].x <= x &&
@@ -168,3 +170,7 @@ void Chunk::updateBlock(int x, int y, int z)
     }
 }
 */
+World::World()
+{
+    seed(888);
+}

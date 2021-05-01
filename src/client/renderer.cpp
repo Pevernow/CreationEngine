@@ -161,12 +161,16 @@ bool Renderer::init(
 
 void Renderer::DrawBlock()
 {
+    // viewrange
     int tmSize = typemanager->blockmodel.size();
     float mtx[16];
 
     int oid = 0;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
+        if (chunk.show == false) {
+            continue;
+        }
         Block mblock = chunk.blocks[0][0][0];
         int mx = mblock.x;
         int my = mblock.y;
