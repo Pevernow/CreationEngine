@@ -166,38 +166,36 @@ void Renderer::DrawBlock()
     float mtx[16];
 
     int oid = 0;
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+    bgfx::setIndexBuffer(block_ibh);
+    bgfx::setVertexBuffer(0, block_vbh);
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         if (chunk.show == false) {
             continue;
         }
-        Block mblock = chunk.blocks[0][0][0];
+        Block& mblock = chunk.blocks[0][0][0];
         int mx = mblock.x;
         int my = mblock.y;
         int mz = mblock.z;
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    if (chunk.blocks[x][y][z].id != 0 &&
-                        chunk.blocks[x][y][z].show == true &&
+                    if (chunk.blocks[x][y][z].show == true &&
                         tmSize > chunk.blocks[x][y][z].id) {
                         bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
                         bgfx::setTransform(mtx);
-                        bgfx::setIndexBuffer(block_ibh);
-                        bgfx::setState(
-                            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                            BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                            BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
-                        bgfx::setVertexBuffer(0, block_vbh);
                         if (oid != chunk.blocks[x][y][z].id) {
+                            oid = chunk.blocks[x][y][z].id;
                             bgfx::setTexture(
                                 0, block_tex,
                                 typemanager
                                     ->blockmodel[chunk.blocks[x][y][z].id]
                                     .textureData);
                         }
-
-                        bgfx::submit(0, program);
+                        bgfx::submit(0, program, 0U, BGFX_DISCARD_NONE);
                     }
                 }
             }

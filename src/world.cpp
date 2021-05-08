@@ -3,26 +3,44 @@
 
 #include <iostream>
 
+void getChunkMinPosition(int& x, int& y, int& z)
+{
+    x = (x >= 0) ? x - (x % 16) : (x + 1) - ((x + 1) % 16) - 16;
+    y = (y >= 0) ? y - (y % 16) : (y + 1) - ((y + 1) % 16) - 16;
+    z = (z >= 0) ? z - (z % 16) : (z + 1) - ((z + 1) % 16) - 16;
+    return;
+}
+
 Chunk::Chunk(int ix, int iy, int iz)
 {
     show = false;
-
-    int minx = (ix >= 0) ? ix - (ix % 16) : (ix + 1) - ((ix + 1) % 16) - 16;
-    int miny = (iy >= 0) ? iy - (iy % 16) : (iy + 1) - ((iy + 1) % 16) - 16;
-    int minz = (iz >= 0) ? iz - (iz % 16) : (iz + 1) - ((iz + 1) % 16) - 16;
+    getChunkMinPosition(ix, iy, iz);
+    int minx = ix;
+    int miny = iy;
+    int minz = iz;
     for (int x = 0; x < 16; x++) {
-        for (int y = 0; y < 16; y++) {
-            for (int z = 0; z < 16; z++) {
+        for (int z = 0; z < 16; z++) {
+            /*
+            float f = simplex3(
+                (minx + x) * 0.05, (miny + y) * 0.05, (minz + z) * 0.05, 4,
+                0.6, 2);
+            if (f > 0.5)
+                blocks[x][y][z].id = 2;
+            else if (f > 0)
+                blocks[x][y][z].id = 1;
+            else if (f <= 0)
+                blocks[x][y][z].id = 0;
+            */
+            float f = simplex2((minx + x) * 0.03, (minz + z) * 0.03, 4, 0.5, 2);
+            int h = (f + 1) / 2 * (16 - 1) - 5;
+            for (int i = 0; i < h - 1; i++) {
+                blocks[x][i][z].id = 1;
+            }
+            blocks[x][h - 1][z].id = 2;
+            for (int y = 0; y < 16; y++) {
                 blocks[x][y][z].x = minx + x;
                 blocks[x][y][z].y = miny + y;
                 blocks[x][y][z].z = minz + z;
-                float f =
-                    simplex2((minx + x) * 0.05, (minz + z) * 0.05, 3, 0.5, 2);
-                int h = (f + 1) / 2 * (16 - 1) - 5;
-                for (int i = 0; i < h - 1; i++) {
-                    blocks[x][i][z].id = 1;
-                }
-                blocks[x][h - 1][z].id = 2;
                 blocks[x][y][z].show = false;
             }
         }
@@ -32,7 +50,7 @@ Chunk::Chunk(int ix, int iy, int iz)
 
 Block& World::get_node(int x, int y, int z)
 {
-    if (y > 15)
+    if (y > 15 || y < 0)
         return worldmap[0].blocks[0][0][0];
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         if (worldmap[i].blocks[0][0][0].x <= x &&
@@ -72,13 +90,11 @@ void World::set_node(int x, int y, int z, const char* name)
 
 Chunk& World::get_chunk(int x, int y, int z)
 {
-
+    getChunkMinPosition(x, y, z);
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         Chunk& chunk = worldmap[i];
-        if (chunk.blocks[0][0][0].x <= x && chunk.blocks[0][0][0].y <= y &&
-            chunk.blocks[0][0][0].z <= z && chunk.blocks[15][15][15].x >= x &&
-            chunk.blocks[15][15][15].y >= y &&
-            chunk.blocks[15][15][15].z >= z) {
+        if (chunk.blocks[0][0][0].x == x && chunk.blocks[0][0][0].y == y &&
+            chunk.blocks[0][0][0].z == z) {
             // in chunk
             return chunk;
         }
@@ -174,3 +190,9 @@ World::World()
 {
     seed(888);
 }
+/*
+Mapgen::Mapgen(unsigned int worldSeed)
+{
+    seed(worldSeed);
+}
+*/

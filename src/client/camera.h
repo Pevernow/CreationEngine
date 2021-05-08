@@ -25,7 +25,7 @@ public:
     void processKeyboard(
         Camera_Movement direction,
         float deltaTime); // dir:0-GO,1-BACK,2-LEFT,3-RIGHT，4-UP
-    void update_camera_vectors();
+
     void process_mouse_movement(float xoffset, float yoffset);
     void update_camera_position(float deltaTime);
     void on_left_click(int delayMS);
@@ -35,6 +35,10 @@ public:
     string pointThing;
     float yaw, pitch, scale;
     glm::vec3 position;
+
+private:
+    void update_camera_vectors();
+    void hideChunkByViewRange(int viewRange);
 
 private:
     void updateRayPoint();

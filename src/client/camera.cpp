@@ -18,30 +18,43 @@ Camera::Camera()
     height = 480;
     worldup = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
-    this->movement_speed = 0.01f;
+    this->movement_speed = 0.001f;
     this->mouse_sensitivity = 0.1f;
     wielditem = "default_dirt";
 }
 
 void Camera::update_camera_position(float deltaTime)
 {
-    Chunk& chunk = world->get_chunk(position.x, position.y, position.z);
-    if (chunk
-            .blocks[int(position.x) % 16][int(position.y) % 16 - 1]
-                   [int(position.z) % 16]
+
+    if (world
+            ->get_node(
+                floor(position.x), floor(position.y) - 1, floor(position.z))
             .id == 0) {
-        ys -= 0.01;
+        ys -= 9.8 * deltaTime / 1000;
     }
-    if (chunk.blocks[int(position.x) % 16][int(position.y) % 16 - 1]
-                    [int(position.z) % 16]
-                        .id != 0 &&
+    position.y += ys * deltaTime / 1000;
+    if (world->get_node(floor(position.x), floor(position.y), floor(position.z))
+                .id != 0 &&
         ys <= 0) {
         ys = 0;
+        int i = floor(position.y);
+        while (world->get_node(position.x, i, position.z).id != 0)
+            i++;
+        position.y = i;
     }
-    position.y += ys * deltaTime * movement_speed;
+    if (world->get_node(
+                 floor(position.x), floor(position.y - 1), floor(position.z))
+                .id != 0 &&
+        ys <= 0 && position.y - floor(position.y) < 0.01) {
+        ys = 0;
+        position.y = ceil(position.y);
+    }
+
     if (position.y > 15) {
         position.y = 15;
     }
+    eyePosition = position;
+    eyePosition.y += 1.5;
     updateRayPoint();
     return;
 }
@@ -67,27 +80,31 @@ void Camera::updateRayPoint()
             .id);
 }
 
-void Camera::view()
-{
-    {
-        // clean
-        for (int i = 0, l = world->worldmap.size(); i < l; i++) {
-            world->worldmap[i].show = false;
-        }
-        glm::u16vec3 pos = floor(position);
-        int x = (pos.x >= 0) ? pos.x - (pos.x % 16)
-                             : (pos.x + 1) - ((pos.x + 1) % 16) - 16;
-        int y = (pos.y >= 0) ? pos.y - (pos.y % 16)
-                             : (pos.y + 1) - ((pos.y + 1) % 16) - 16;
-        int z = (pos.z >= 0) ? pos.z - (pos.z % 16)
-                             : (pos.z + 1) - ((pos.z + 1) % 16) - 16;
-        for (int i = x - 16 * 2, maxx = x + 16 * 2; i <= maxx; i += 16) {
-            for (int j = z - 16 * 2, maxz = z + 16 * 2; j <= maxz; j += 16) {
-                // forceLoadChunk
-                world->get_chunk(i, y, j).show = true;
-            }
+void Camera::hideChunkByViewRange(int viewRange)
+{ // clean
+    for (int i = 0, l = world->worldmap.size(); i < l; i++) {
+        world->worldmap[i].show = false;
+    }
+    glm::vec3 pos = floor(position);
+    int x = pos.x;
+    int y = pos.y;
+    int z = pos.z;
+    getChunkMinPosition(x, y, z);
+    for (int i = x - 16 * (viewRange - 1), maxx = x + 16 * (viewRange - 1);
+         i <= maxx; i += 16) {
+        for (int j = z - 16 * (viewRange - 1), maxz = z + 16 * (viewRange - 1);
+             j <= maxz; j += 16) {
+            // forceLoadChunk
+            world->get_chunk(i, y, j).show = true;
         }
     }
+    return;
+}
+
+void Camera::view()
+{
+    hideChunkByViewRange(4);
+
     float view[16];
     bx::Vec3 Pos = {eyePosition.x, eyePosition.y, eyePosition.z};
     glm::vec3 tmp = eyePosition + front;
@@ -117,20 +134,17 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
         position += right * velocity;
     if (direction == RIGHT)
         position -= right * velocity;
-    // position.y = lastpos.y;
-    if (direction == JUMP && ys <= 0)
-        if (world
-                ->get_node(
-                    floor(position.x), floor(position.y) - 1, floor(position.z))
+    position.y = lastpos.y;
+    if (direction == JUMP && ys <= 0 &&
+        world->get_node(
+                 floor(position.x), floor(position.y) - 1, floor(position.z))
                 .id != 0)
-            ys += 1;
+        ys += 10.5;
     if ( // position.x < 0 || position.y < 0 || position.z < 0 ||
         world->get_node(floor(position.x), floor(position.y), floor(position.z))
             .id != 0) {
         position = lastpos;
     }
-    eyePosition = position;
-    eyePosition.y += 1.5;
     return;
 }
 

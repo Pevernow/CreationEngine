@@ -21,7 +21,21 @@ public:
     void set_node(int x, int y, int z, const char* name);
     Block& get_node(int x, int y, int z);
     Chunk& get_chunk(int x, int y, int z);
+
     TypeManager* typemanager;
     vector<Chunk> worldmap;
 };
+void getChunkMinPosition(int& x, int& y, int& z);
+/*
+class Mapgen
+{
+public:
+    Mapgen(unsigned int worldSeed);
+    void generateChunk(Chunk& chunk);
+
+private:
+    int getBiomefromXY(short x, short y);
+    void getHeightfromXY(short x, short y);
+};
+*/
 #endif

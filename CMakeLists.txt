@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(CreationEngine LANGUAGES CXX)
 
+
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/deps/cmake/" ${CMAKE_MODULE_PATH})
 
 find_package(SDL2 REQUIRED CONFIG)
