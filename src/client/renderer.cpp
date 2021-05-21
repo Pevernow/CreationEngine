@@ -163,14 +163,12 @@ void Renderer::DrawBlock()
 {
     // viewrange
     int tmSize = typemanager->blockmodel.size();
-    float mtx[16];
 
     int oid = 0;
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
         BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
-    bgfx::setIndexBuffer(block_ibh);
-    bgfx::setVertexBuffer(0, block_vbh);
+    vector<Block*> renderList;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         if (chunk.show == false) {
@@ -185,22 +183,42 @@ void Renderer::DrawBlock()
                 for (int z = 0; z < 16; z++) {
                     if (chunk.blocks[x][y][z].show == true &&
                         tmSize > chunk.blocks[x][y][z].id) {
-                        bx::mtxTranslate(mtx, mx + x, my + y, mz + z);
-                        bgfx::setTransform(mtx);
-                        if (oid != chunk.blocks[x][y][z].id) {
-                            oid = chunk.blocks[x][y][z].id;
-                            bgfx::setTexture(
-                                0, block_tex,
-                                typemanager
-                                    ->blockmodel[chunk.blocks[x][y][z].id]
-                                    .textureData);
-                        }
-                        bgfx::submit(0, program, 0U, BGFX_DISCARD_NONE);
+                        renderList.emplace_back(&chunk.blocks[x][y][z]);
                     }
                 }
             }
         }
     }
+
+    // Start Instancing
+    const uint16_t instanceStride = 64 + 16;
+    bgfx::InstanceDataBuffer idb;
+    bgfx::allocInstanceDataBuffer(&idb, renderList.size(), instanceStride);
+
+    uint8_t* data = idb.data;
+    for (int i = 0, l = renderList.size(); i < l; i++) {
+        float* mtx = (float*)data;
+        bx::mtxTranslate(
+            mtx, renderList[i]->x, renderList[i]->y, renderList[i]->z);
+        float* id = (float*)&data[64];
+        id[0] = renderList[i]->id - 1;
+        id[1] = 0;
+        id[2] = 0;
+        id[3] = 0;
+        data += instanceStride;
+    }
+    // Set vertex and index buffer.
+    bgfx::setTexture(0, block_tex, typemanager->textureArray);
+    bgfx::setVertexBuffer(0, block_vbh);
+    bgfx::setIndexBuffer(block_ibh);
+
+    // Set instance data buffer.
+    bgfx::setInstanceDataBuffer(&idb);
+
+    // Set render states.
+
+    // Submit primitive for rendering to view 0.
+    bgfx::submit(0, program);
 }
 
 void Renderer::BlockDestroy()

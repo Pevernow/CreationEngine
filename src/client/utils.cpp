@@ -14,9 +14,10 @@ static void imageReleaseCb(void* _ptr, void* _userData)
     bimg::imageFree(imageContainer);
 }
 
-bgfx::TextureHandle loadBlockTexture(
-    const char* top, const char* bottom, const char* front, const char* back,
-    const char* left, const char* right)
+void loadBlockTexture(
+    bgfx::TextureHandle& handle, int startLayer, const char* top,
+    const char* bottom, const char* front, const char* back, const char* left,
+    const char* right)
 {
     // calc args
     if (strcmp("!empty", bottom) == 0) {
@@ -36,11 +37,8 @@ bgfx::TextureHandle loadBlockTexture(
     }
     const char* textures[] = {top, bottom, front, back, left, right};
     // loadTexture
-    bgfx::TextureHandle handle = bgfx::createTexture2D(
-        16, 16, false, 6, bgfx::TextureFormat::RGBA8,
-        BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT);
-    for (int i = 0; i < 6; i++) {
-        ifstream inFile(textures[i], ios::in | ios::binary);
+    for (int i = startLayer; i < startLayer + 6; i++) {
+        ifstream inFile(textures[i - startLayer], ios::in | ios::binary);
         inFile.seekg(0, ios_base::end);
         uint32_t size = inFile.tellg();
         inFile.seekg(0, ios_base::beg);
@@ -64,7 +62,7 @@ bgfx::TextureHandle loadBlockTexture(
             }
         }
     }
-    return handle;
+    return;
 }
 bgfx::TextureHandle loadTexture(
     const char* _filePath, uint64_t _flags, uint8_t _skip,
