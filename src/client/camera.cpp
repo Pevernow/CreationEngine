@@ -49,10 +49,6 @@ void Camera::update_camera_position(float deltaTime)
         ys = 0;
         position.y = ceil(position.y);
     }
-
-    if (position.y > 15) {
-        position.y = 15;
-    }
     eyePosition = position;
     eyePosition.y += 1.5;
     updateRayPoint();

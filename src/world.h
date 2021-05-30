@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include "block.h"
-#include <vector>
+#include <deque>
 using namespace std;
 
 class Chunk
@@ -23,7 +23,7 @@ public:
     Chunk& get_chunk(int x, int y, int z);
 
     TypeManager* typemanager;
-    vector<Chunk> worldmap;
+    deque<Chunk> worldmap;
 };
 void getChunkMinPosition(int& x, int& y, int& z);
 /*
