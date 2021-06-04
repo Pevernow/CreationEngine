@@ -13,6 +13,7 @@ public:
     void update();
     void updateBlock(int x, int y, int z);
     bool show;
+    bool isInit;
 };
 class World
 {
@@ -24,6 +25,9 @@ public:
 
     TypeManager* typemanager;
     deque<Chunk> worldmap;
+
+private:
+    void mapGenForChunk(Chunk&);
 };
 void getChunkMinPosition(int& x, int& y, int& z);
 /*

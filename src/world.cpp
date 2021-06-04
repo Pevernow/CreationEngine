@@ -13,48 +13,56 @@ void getChunkMinPosition(int& x, int& y, int& z)
 
 Chunk::Chunk(int ix, int iy, int iz)
 {
+    isInit = false;
     show = false;
     getChunkMinPosition(ix, iy, iz);
-    int minx = ix;
-    int miny = iy;
-    int minz = iz;
+    blocks[0][0][0].x = ix;
+    blocks[0][0][0].y = iy;
+    blocks[0][0][0].z = iz;
+}
+
+void World::mapGenForChunk(Chunk& chunk)
+{
+    int minx = chunk.blocks[0][0][0].x;
+    int miny = chunk.blocks[0][0][0].y;
+    int minz = chunk.blocks[0][0][0].z;
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
-            /*
-            float f = simplex3(
-                (minx + x) * 0.05, (miny + y) * 0.05, (minz + z) * 0.05, 4,
-                0.6, 2);
-            if (f > 0.5)
-                blocks[x][y][z].id = 2;
-            else if (f > 0)
-                blocks[x][y][z].id = 1;
-            else if (f <= 0)
-                blocks[x][y][z].id = 0;
-            */
-            float f = simplex2((minx + x) * 0.03, (minz + z) * 0.03, 4, 0.5, 2);
+
+            float f = simplex2((minx + x) * 0.05, (minz + z) * 0.05, 2, 0.2, 2);
             int h = (f + 1.0) / 2.0 * (32 - 1);
+
+            f = simplex2((minx + x) * 0.01, (minz + z) * 0.01, 1, 0.5, 2);
+            int heat = f * 50 - h;
+            float wet = (f + 1) / 2;
+            int groundID = 0;
+            if (heat < 50 && wet > 0) {
+                groundID = 2;
+            }
             for (int y = 0; y < 16; y++) {
-                blocks[x][y][z].x = minx + x;
-                blocks[x][y][z].y = miny + y;
-                blocks[x][y][z].z = minz + z;
-                blocks[x][y][z].show = false;
+                chunk.blocks[x][y][z].x = minx + x;
+                chunk.blocks[x][y][z].y = miny + y;
+                chunk.blocks[x][y][z].z = minz + z;
+                chunk.blocks[x][y][z].show = false;
             }
             if (h < miny) {
                 continue;
             } else if (h >= miny + 15) {
                 for (int i = 0; i <= 15; i++) {
-                    blocks[x][i][z].id = 1;
+                    chunk.blocks[x][i][z].id = 1;
                 }
             } else {
                 h = h % 16;
                 for (int i = 0; i < h - 1; i++) {
-                    blocks[x][i][z].id = 1;
+                    chunk.blocks[x][i][z].id = 1;
                 }
-                blocks[x][h - 1][z].id = 2;
+                chunk.blocks[x][h - 1][z].id = groundID;
             }
         }
     }
-    update();
+
+    chunk.update();
+    chunk.isInit = true;
 }
 
 Block& World::get_node(int x, int y, int z)
@@ -73,8 +81,10 @@ Block& World::get_node(int x, int y, int z)
         }
     }
     // new chunk
-    worldmap.push_back(Chunk(x, y, z));
-    return worldmap[worldmap.size() - 1].blocks[x % 16][y % 16][z % 16];
+    worldmap.emplace_back(Chunk(x, y, z));
+    Chunk& new_chunk = worldmap.back();
+    mapGenForChunk(new_chunk);
+    return new_chunk.blocks[x % 16][y % 16][z % 16];
 }
 
 void World::set_node(int x, int y, int z, const char* name)
@@ -110,7 +120,9 @@ Chunk& World::get_chunk(int x, int y, int z)
     }
     // not in chunk
     worldmap.emplace_back(Chunk(x, y, z));
-    return (Chunk&)worldmap.back();
+    Chunk& new_chunk = worldmap.back();
+    mapGenForChunk(new_chunk);
+    return new_chunk;
 }
 
 void Chunk::update()

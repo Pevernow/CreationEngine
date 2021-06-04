@@ -62,18 +62,19 @@ void Camera::updateRayPoint()
         Block& block = world->get_node(
             floor(ray.getEnd().x), floor(ray.getEnd().y),
             floor(ray.getEnd().z));
+        lastPosition = ray.getEnd();
         if (block.id != 0) {
             placePos = floor(lastPosition);
             choosepos = floor(ray.getEnd());
             break;
         }
-        lastPosition = ray.getEnd();
     }
-    pointThing = tm->idToName(
-        world
-            ->get_node(
-                floor(choosepos.x), floor(choosepos.y), floor(choosepos.z))
-            .id);
+    pointThing =
+        tm->idToName(world
+                         ->get_node(
+                             floor(lastPosition.x), floor(lastPosition.y),
+                             floor(lastPosition.z))
+                         .id);
 }
 
 void Camera::hideChunkByViewRange(int viewRange)
