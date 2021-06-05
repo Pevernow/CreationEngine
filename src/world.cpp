@@ -28,17 +28,25 @@ void World::mapGenForChunk(Chunk& chunk)
     int minz = chunk.blocks[0][0][0].z;
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
-
+            // Generate height map
             float f = simplex2((minx + x) * 0.05, (minz + z) * 0.05, 2, 0.2, 2);
             int h = (f + 1.0) / 2.0 * (32 - 1);
 
+            // Generate heat
             f = simplex2((minx + x) * 0.01, (minz + z) * 0.01, 1, 0.5, 2);
             int heat = f * 50 - h;
-            float wet = (f + 1) / 2;
+
+            f = simplex2((minx + x) * 0.001, (minz + z) * 0.001, 1, 0.5, 2);
+            float humidity = (f + 1) / 2;
+
+            // Decide biome by heat and humidity
             int groundID = 0;
-            if (heat < 50 && wet > 0) {
+
+            // Grass
+            if (heat < 50 && humidity > 0) {
                 groundID = 2;
             }
+
             for (int y = 0; y < 16; y++) {
                 chunk.blocks[x][y][z].x = minx + x;
                 chunk.blocks[x][y][z].y = miny + y;

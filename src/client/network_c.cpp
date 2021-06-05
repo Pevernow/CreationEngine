@@ -50,15 +50,15 @@ void write_cb_c(struct bufferevent* bev, void* arg)
 void event_cb_c(struct bufferevent* bev, short events, void* arg)
 {
     if (events & BEV_EVENT_EOF) {
-        cout << "客户端: 连接已关闭" << endl;
+        cout << "Client: connection closed" << endl;
     } else if (events & BEV_EVENT_ERROR) {
-        cout << "客户端: 未知网络错误" << endl;
+        cout << "Client: unknown network error" << endl;
     }
     if (events & BEV_EVENT_CONNECTED) {
-        cout << "客户端: 成功连接至服务器" << endl;
+        cout << "Client: successfully connected to server" << endl;
     } else {
         bufferevent_free(bev);
-        cout << "客户端: 连接已中断" << endl;
+        cout << "Client: connection interrupted" << endl;
     }
 }
 

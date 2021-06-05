@@ -22,7 +22,7 @@ void read_cb_s(struct bufferevent* bev, void* arg)
     output.SetObject();
     document.Parse(buf);
     if (document.HasParseError()) {
-        cout << "服务器: 客户端信息已损坏" << endl;
+        cout << "Server: data corrupted" << endl;
         return;
     }
     Value type;
