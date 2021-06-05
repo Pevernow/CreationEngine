@@ -7,7 +7,7 @@ Copyright (c) 2020-2021 Pevernow <3450354617@qq.com>
 This game is not finished
 --------------------------
 - Don't expect it to work as well as a finished game will.
-- Please report any bugs. When doing that, debug.txt is useful.
+- Please join in the project if you want it will become better.
 
 ## Compiling
 
