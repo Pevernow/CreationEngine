@@ -19,7 +19,7 @@ This game is not finished
 |------------|---------|------------|
 | GCC        | 4.9+    | Can be replaced with Clang 3.4+ |
 | CMake      | latest  |            |
-| bgfx-cmake | 1.7.3+  | Also can manual build bgfx for cmake|
+| bgfx-cmake | latest  | Also can manual build bgfx for cmake|
 | LuaJIT     | 2.0+    |            |
 
 #### Download
