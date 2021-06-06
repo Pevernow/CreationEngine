@@ -31,6 +31,7 @@ This game is not finished
 #### Build
 
 Build a version that runs directly from the source directory:
+
     $ mkdir build
     $ cd build
     $ cmake ..
