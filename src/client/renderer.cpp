@@ -162,13 +162,13 @@ bool Renderer::init(
 
 void Renderer::DrawBlock()
 {
-    // viewrange
     int tmSize = typemanager->blockmodel.size();
 
     int oid = 0;
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW);
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
+        BGFX_STATE_BLEND_ALPHA);
     deque<Block*> renderList;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];

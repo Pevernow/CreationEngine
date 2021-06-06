@@ -23,13 +23,15 @@ Chunk::Chunk(int ix, int iy, int iz)
 
 void World::mapGenForChunk(Chunk& chunk)
 {
+    int treeCount = 0;
+
     int minx = chunk.blocks[0][0][0].x;
     int miny = chunk.blocks[0][0][0].y;
     int minz = chunk.blocks[0][0][0].z;
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
             // Generate height map
-            float f = simplex2((minx + x) * 0.05, (minz + z) * 0.05, 2, 0.2, 2);
+            float f = simplex2((minx + x) * 0.01, (minz + z) * 0.01, 2, 0.2, 2);
             int h = (f + 1.0) / 2.0 * (32 - 1);
 
             // Generate heat
@@ -41,6 +43,8 @@ void World::mapGenForChunk(Chunk& chunk)
 
             // Decide biome by heat and humidity
             int groundID = 0;
+            int leaveID = 4;
+            int treeID = 3;
 
             // Grass
             if (heat < 50 && humidity > 0) {
@@ -61,16 +65,54 @@ void World::mapGenForChunk(Chunk& chunk)
                 }
             } else {
                 h = h % 16;
-                for (int i = 0; i < h - 1; i++) {
+                for (int i = 0; i <= h - 1; i++) {
                     chunk.blocks[x][i][z].id = 1;
                 }
-                chunk.blocks[x][h - 1][z].id = groundID;
+                chunk.blocks[x][h][z].id = groundID;
+
+                // Generate tree
+                if (h + 5 < 32 && x - 1 >= 0 && x + 1 < 16 && z - 1 >= 0 &&
+                    z + 1 < 16 && treeCount < 3 &&
+                    isAroundTree(chunk, x, h + 1, z) == false) {
+                    // leaves
+                    treeCount++;
+                    for (int i = 3; i <= 5; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            for (int k = -1; k <= 1; k++) {
+                                chunk.blocks[x + j][h + i][z + k].id = leaveID;
+                            }
+                        }
+                    }
+                    // truck
+                    for (int i = 1; i <= 5; i++) {
+                        chunk.blocks[x][h + i][z].id = treeID;
+                    }
+                }
             }
         }
     }
 
     chunk.update();
     chunk.isInit = true;
+}
+
+bool World::isAroundTree(Chunk& chunk, int x, int y, int z)
+{
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            for (int k = -1; k <= 1; k++) {
+                // checked edges before
+                // do not check again
+                if (y + j < 16 && y - j > 0) {
+                    int id = chunk.blocks[x + i][y + j][x + k].id;
+                    if (id == 4 || id == 3) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 
 Block& World::get_node(int x, int y, int z)

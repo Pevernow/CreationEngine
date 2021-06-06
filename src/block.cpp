@@ -22,5 +22,6 @@ string TypeManager::idToName(int id)
         }
         iter++;
     }
+    cout << id << endl;
     return "undefined";
 }

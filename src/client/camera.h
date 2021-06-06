@@ -39,6 +39,7 @@ public:
 private:
     void update_camera_vectors();
     void hideChunkByViewRange(int viewRange);
+    bool jump;
 
 private:
     void updateRayPoint();

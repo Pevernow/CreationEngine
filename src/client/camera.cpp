@@ -18,36 +18,30 @@ Camera::Camera()
     height = 480;
     worldup = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
-    this->movement_speed = 0.001f;
+    this->movement_speed = 0.0001f;
     this->mouse_sensitivity = 0.1f;
     wielditem = "default_dirt";
+    jump = false;
 }
 
 void Camera::update_camera_position(float deltaTime)
 {
-
-    if (world
-            ->get_node(
-                floor(position.x), floor(position.y) - 1, floor(position.z))
-            .id == 0) {
-        ys -= 9.8 * deltaTime / 1000;
+    // Physics
+    if (jump == true) {
+        ys = 1.0;
+        jump = false;
     }
     position.y += ys * deltaTime / 1000;
+    ys -= 0.5 * deltaTime / 1000;
     if (world->get_node(floor(position.x), floor(position.y), floor(position.z))
-                .id != 0 &&
-        ys <= 0) {
+            .id != 0) {
         ys = 0;
+
+        // Come back to ground
         int i = floor(position.y);
         while (world->get_node(position.x, i, position.z).id != 0)
             i++;
         position.y = i;
-    }
-    if (world->get_node(
-                 floor(position.x), floor(position.y - 1), floor(position.z))
-                .id != 0 &&
-        ys <= 0 && position.y - floor(position.y) < 0.01) {
-        ys = 0;
-        position.y = ceil(position.y);
     }
     eyePosition = position;
     eyePosition.y += 1.5;
@@ -62,12 +56,13 @@ void Camera::updateRayPoint()
         Block& block = world->get_node(
             floor(ray.getEnd().x), floor(ray.getEnd().y),
             floor(ray.getEnd().z));
-        lastPosition = ray.getEnd();
         if (block.id != 0) {
             placePos = floor(lastPosition);
             choosepos = floor(ray.getEnd());
+            lastPosition = ray.getEnd();
             break;
         }
+        lastPosition = ray.getEnd();
     }
     pointThing =
         tm->idToName(world
@@ -132,11 +127,12 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
     if (direction == RIGHT)
         position -= right * velocity;
     position.y = lastpos.y;
-    if (direction == JUMP && ys <= 0 &&
+    if (direction == JUMP && position.y == floor(position.y) &&
         world->get_node(
                  floor(position.x), floor(position.y) - 1, floor(position.z))
-                .id != 0)
-        ys += 10.5;
+                .id != 0) {
+        jump = true;
+    }
     if ( // position.x < 0 || position.y < 0 || position.z < 0 ||
         world->get_node(floor(position.x), floor(position.y), floor(position.z))
             .id != 0) {

@@ -52,22 +52,23 @@ void Client::mainloop()
     static int lastFrame;
 
     while (!quit) {
+        Uint32 nowTime = SDL_GetTicks();
         processEvent(renderer.sdl_window);
 
-        camera.update_camera_position(SDL_GetTicks() - _FPS_Timer);
+        camera.update_camera_position(nowTime - _FPS_Timer);
 
         gui.view();
 
         // FPS_limit
         if (SDL_GetTicks() - lastFrame < max_frame_time) {
-            SDL_Delay(max_frame_time - SDL_GetTicks() + lastFrame);
+            SDL_Delay(max_frame_time - nowTime + lastFrame);
         }
         if (SDL_GetTicks() - _FPS_Timer >= 1000) {
             FPS = FPS_count;
             FPS_count = 0;
-            _FPS_Timer = SDL_GetTicks();
+            _FPS_Timer = nowTime;
         }
-        lastFrame = SDL_GetTicks();
+        lastFrame = nowTime;
         FPS_count++;
 
         camera.view();
