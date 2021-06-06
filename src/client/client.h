@@ -24,7 +24,7 @@ public:
     int FPS;
 
 private:
-    void processEvent(SDL_Window* window);
+    void processEvent(SDL_Window* window, int delay);
     map<string, string> config;
     GUImanager gui;
     Camera camera;

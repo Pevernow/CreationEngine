@@ -49,26 +49,26 @@ void Client::mainloop()
     net.startUp();
     _FPS_Timer = SDL_GetTicks();
 
-    static int lastFrame;
+    static Uint32 lastFrame;
 
     while (!quit) {
-        Uint32 nowTime = SDL_GetTicks();
-        processEvent(renderer.sdl_window);
+        Uint32 nowFrame = SDL_GetTicks();
+        processEvent(renderer.sdl_window, nowFrame - lastFrame);
 
-        camera.update_camera_position(nowTime - _FPS_Timer);
+        camera.update_camera_position(nowFrame - lastFrame);
 
         gui.view();
 
         // FPS_limit
-        if (SDL_GetTicks() - lastFrame < max_frame_time) {
-            SDL_Delay(max_frame_time - nowTime + lastFrame);
+        if (nowFrame - lastFrame < max_frame_time) {
+            SDL_Delay(max_frame_time - nowFrame + lastFrame);
         }
-        if (SDL_GetTicks() - _FPS_Timer >= 1000) {
+        if (nowFrame - _FPS_Timer >= 1000) {
             FPS = FPS_count;
             FPS_count = 0;
-            _FPS_Timer = nowTime;
+            _FPS_Timer = nowFrame;
         }
-        lastFrame = nowTime;
+        lastFrame = nowFrame;
         FPS_count++;
 
         camera.view();
@@ -80,10 +80,9 @@ void Client::mainloop()
     shutdown();
 }
 
-void Client::processEvent(SDL_Window* window)
+void Client::processEvent(SDL_Window* window, int delay)
 {
     // Event polling
-    int delay = SDL_GetTicks() - _FPS_Timer;
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT)

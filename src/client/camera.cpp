@@ -18,7 +18,7 @@ Camera::Camera()
     height = 480;
     worldup = glm::vec3(0.0f, 1.0f, 0.0f);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
-    this->movement_speed = 0.0001f;
+    this->movement_speed = 0.005f;
     this->mouse_sensitivity = 0.1f;
     wielditem = "default_dirt";
     jump = false;
@@ -28,11 +28,11 @@ void Camera::update_camera_position(float deltaTime)
 {
     // Physics
     if (jump == true) {
-        ys = 1.0;
+        ys = 6.0;
         jump = false;
     }
     position.y += ys * deltaTime / 1000;
-    ys -= 0.5 * deltaTime / 1000;
+    ys -= 18.0 * deltaTime / 1000;
     if (world->get_node(floor(position.x), floor(position.y), floor(position.z))
             .id != 0) {
         ys = 0;

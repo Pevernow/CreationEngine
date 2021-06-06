@@ -4,6 +4,7 @@ project(CreationEngine LANGUAGES CXX)
 
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/deps/cmake/" ${CMAKE_MODULE_PATH})
+set(CMAKE_CXX_FLAGS -pg)
 
 find_package(SDL2 REQUIRED CONFIG)
 find_package(bgfx REQUIRED CONFIG)

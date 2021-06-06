@@ -6,7 +6,6 @@
 #include "block_c.h"
 #include <SDL2/SDL.h>
 #include <bx/math.h>
-#include <deque>
 
 float vertices[] = {
     // Back face
@@ -169,7 +168,7 @@ void Renderer::DrawBlock()
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
         BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
         BGFX_STATE_BLEND_ALPHA);
-    deque<Block*> renderList;
+    vector<Block*> renderList;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         if (chunk.show == false) {
