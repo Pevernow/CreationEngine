@@ -21,6 +21,7 @@ This game is not finished
 | CMake      | latest  |            |
 | bgfx-cmake | latest  | Also can manual build bgfx for cmake|
 | LuaJIT     | 2.0+    |            |
+| Libevent   | 2.0+    |            |
 
 #### Download
 
