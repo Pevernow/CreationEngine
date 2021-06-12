@@ -68,6 +68,13 @@ void GUImanager::showdebuginfo()
 
     ImGui::Text(position.c_str());
     ImGui::Text(dir.c_str());
+
+    ImGui::Text("HP:");
+    ImGui::SameLine();
+    ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(1.0, 0.0, 0.0, 1.0));
+    ImGui::ProgressBar(0.9, ImVec2(0.0f, 0.0f));
+    ImGui::PopStyleColor(1);
+
     ImGui::End();
     ImGui::Begin(
         "Crosshair", nullptr,
@@ -79,5 +86,4 @@ void GUImanager::showdebuginfo()
     ImGui::SetWindowPos(ImVec2(256, 176), ImGuiCond_Always);
     ImGui::Image((void*)cross.idx, ImVec2(128, 128));
     ImGui::End();
-    return;
 }

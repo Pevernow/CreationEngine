@@ -61,7 +61,7 @@ void Client::mainloop()
 
         // FPS_limit
         if (nowFrame - lastFrame < max_frame_time) {
-            SDL_Delay(max_frame_time - nowFrame + lastFrame);
+            SDL_Delay(max_frame_time - (nowFrame - lastFrame));
         }
         if (nowFrame - _FPS_Timer >= 1000) {
             FPS = FPS_count;
