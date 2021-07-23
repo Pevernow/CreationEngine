@@ -61,5 +61,11 @@ Run it:
 
 3.Modding API (with lua)
 
+4.Biome mapgen v2
+
+5.Entity
+
+6.Shaders
+
 # Licence
 src/ directory of all the code in accordance with the gpl3 open source agreement
