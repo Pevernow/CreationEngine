@@ -6,7 +6,7 @@ void TypeManager_c::init()
 {
     textureCount = 0;
     textureArray = bgfx::createTexture2D(
-        16, 16, false, 24, bgfx::TextureFormat::RGBA8,
+        16, 16, false, 30, bgfx::TextureFormat::RGBA8,
         BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT);
 }
 

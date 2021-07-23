@@ -1,6 +1,7 @@
 #include "world.h"
 #include "noise.h"
 
+#include <cstdlib>
 #include <iostream>
 
 void getChunkMinPosition(int& x, int& y, int& z)
@@ -64,6 +65,11 @@ void World::mapGenForChunk(Chunk& chunk)
                     chunk.blocks[x][i][z].id = 1;
                 }
             } else {
+                if (h < 20) {
+                    for (int i = h % 16; i <= 4; i++) {
+                        chunk.blocks[x][i][z].id = 5;
+                    }
+                }
                 h = h % 16;
                 for (int i = 0; i <= h - 1; i++) {
                     chunk.blocks[x][i][z].id = 1;
@@ -73,7 +79,8 @@ void World::mapGenForChunk(Chunk& chunk)
                 // Generate tree
                 if (h + 5 < 32 && x - 1 >= 0 && x + 1 < 16 && z - 1 >= 0 &&
                     z + 1 < 16 && treeCount < 3 &&
-                    isAroundTree(chunk, x, h + 1, z) == false) {
+                    isAroundTree(chunk, x, h + 1, z) == false &&
+                    rand() % 50 == 37) {
                     // leaves
                     treeCount++;
                     for (int i = 3; i <= 5; i++) {
@@ -259,6 +266,7 @@ void Chunk::updateBlock(int x, int y, int z)
 World::World()
 {
     seed(888);
+    srand(888);
 }
 /*
 Mapgen::Mapgen(unsigned int worldSeed)
