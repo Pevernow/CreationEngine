@@ -78,9 +78,7 @@ void World::mapGenForChunk(Chunk& chunk)
 
                 // Generate tree
                 if (h + 5 < 32 && x - 1 >= 0 && x + 1 < 16 && z - 1 >= 0 &&
-                    z + 1 < 16 && treeCount < 3 &&
-                    isAroundTree(chunk, x, h + 1, z) == false &&
-                    rand() % 50 == 37) {
+                    z + 1 < 16 && treeCount < 3 && rand() % 50 == 37) {
                     // leaves
                     treeCount++;
                     for (int i = 3; i <= 5; i++) {
