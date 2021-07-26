@@ -106,6 +106,7 @@ bool Renderer::init(
     typemanager = typemanagerptr;
     this->width = width;
     this->height = height;
+    cache = false;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize. SDL_Error: %s\n", SDL_GetError());
@@ -159,15 +160,10 @@ bool Renderer::init(
     return 0;
 }
 
-void Renderer::DrawBlock()
+void Renderer::makeDrawCache()
 {
     int tmSize = typemanager->blockmodel.size();
 
-    int oid = 0;
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
-        BGFX_STATE_BLEND_ALPHA);
     vector<Block*> renderList;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
@@ -192,7 +188,7 @@ void Renderer::DrawBlock()
 
     // Start Instancing
     const uint16_t instanceStride = 64 + 16;
-    bgfx::InstanceDataBuffer idb;
+    // idb = bgfx::InstanceDataBuffer();
     bgfx::allocInstanceDataBuffer(&idb, renderList.size(), instanceStride);
 
     uint8_t* data = idb.data;
@@ -207,6 +203,18 @@ void Renderer::DrawBlock()
         id[3] = 0;
         data += instanceStride;
     }
+}
+
+void Renderer::DrawBlock()
+{
+    if (cache == true) {
+        makeDrawCache();
+        cache = false;
+    }
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
+        BGFX_STATE_BLEND_ALPHA);
     // Set vertex and index buffer.
     bgfx::setTexture(0, block_tex, typemanager->textureArray);
     bgfx::setVertexBuffer(0, block_vbh);

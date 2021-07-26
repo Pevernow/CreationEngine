@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../world.h"
+#include "renderer.h"
 
 #include <string>
 
@@ -32,6 +33,7 @@ public:
     void on_right_click(int delayMS);
     World* world;
     TypeManager* tm;
+    Renderer* drawer;
     string pointThing;
     float yaw, pitch, scale;
     glm::vec3 position;
@@ -40,6 +42,7 @@ private:
     void update_camera_vectors();
     void hideChunkByViewRange(int viewRange);
     bool jump;
+    glm::vec3 lastChunkPos;
 
 private:
     void updateRayPoint();

@@ -73,15 +73,22 @@ void Camera::updateRayPoint()
 }
 
 void Camera::hideChunkByViewRange(int viewRange)
-{ // clean
-    for (int i = 0, l = world->worldmap.size(); i < l; i++) {
-        world->worldmap[i].show = false;
-    }
+{
     glm::vec3 pos = floor(position);
     int x = pos.x;
     int y = pos.y;
     int z = pos.z;
     getChunkMinPosition(x, y, z);
+
+    if (glm::vec3(x, y, z) == lastChunkPos) {
+        // Need not reflush
+        return;
+    }
+
+    // clean
+    for (int i = 0, l = world->worldmap.size(); i < l; i++) {
+        world->worldmap[i].show = false;
+    }
     for (int i = x - 16 * (viewRange - 1), maxx = x + 16 * (viewRange - 1);
          i <= maxx; i += 16) {
         for (int j = z - 16 * (viewRange - 1), maxz = z + 16 * (viewRange - 1);
@@ -90,12 +97,14 @@ void Camera::hideChunkByViewRange(int viewRange)
             world->get_chunk(i, y, j).show = true;
         }
     }
+
+    lastChunkPos = glm::vec3(x, y, z);
     return;
 }
 
 void Camera::view()
 {
-    hideChunkByViewRange(4);
+    hideChunkByViewRange(8);
 
     float view[16];
     bx::Vec3 Pos = {eyePosition.x, eyePosition.y, eyePosition.z};
@@ -138,6 +147,7 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
             .id != 0) {
         position = lastpos;
     }
+    drawer->cache = true;
     return;
 }
 

@@ -126,14 +126,28 @@ Block& World::get_node(int x, int y, int z)
 {
     if (y < 0)
         return worldmap[0].blocks[0][0][0];
+
+    // Test lastIndex first
+    if (lastChunkIndex != nullptr && lastChunkIndex->blocks[0][0][0].x <= x &&
+        lastChunkIndex->blocks[0][0][0].y <= y &&
+        lastChunkIndex->blocks[0][0][0].z <= z &&
+        lastChunkIndex->blocks[15][15][15].x >= x &&
+        lastChunkIndex->blocks[15][15][15].y >= y &&
+        lastChunkIndex->blocks[15][15][15].z >= z) {
+        // in chunk
+        return lastChunkIndex->blocks[x % 16][y % 16][z % 16];
+    }
+
     for (int i = 0, l = worldmap.size(); i < l; i++) {
-        if (worldmap[i].blocks[0][0][0].x <= x &&
-            worldmap[i].blocks[0][0][0].y <= y &&
-            worldmap[i].blocks[0][0][0].z <= z &&
-            worldmap[i].blocks[15][15][15].x >= x &&
-            worldmap[i].blocks[15][15][15].y >= y &&
-            worldmap[i].blocks[15][15][15].z >= z) {
+        Chunk& testChunk = worldmap[i];
+        if (testChunk.blocks[0][0][0].x <= x &&
+            testChunk.blocks[0][0][0].y <= y &&
+            testChunk.blocks[0][0][0].z <= z &&
+            testChunk.blocks[15][15][15].x >= x &&
+            testChunk.blocks[15][15][15].y >= y &&
+            testChunk.blocks[15][15][15].z >= z) {
             // in chunk
+            lastChunkIndex = &testChunk;
             return worldmap[i].blocks[x % 16][y % 16][z % 16];
         }
     }
@@ -141,6 +155,7 @@ Block& World::get_node(int x, int y, int z)
     worldmap.emplace_back(Chunk(x, y, z));
     Chunk& new_chunk = worldmap.back();
     mapGenForChunk(new_chunk);
+    lastChunkIndex = &new_chunk;
     return new_chunk.blocks[x % 16][y % 16][z % 16];
 }
 
@@ -265,6 +280,7 @@ void Chunk::updateBlock(int x, int y, int z)
 */
 World::World()
 {
+    lastChunkIndex = nullptr;
     seed(888);
     srand(888);
 }

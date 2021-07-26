@@ -13,6 +13,8 @@ public:
     bool init(int width, int height, World* world, TypeManager_c* typemanager);
     void DrawBlock();
     void shutdown();
+    void makeDrawCache();
+    bool cache;
     int width, height;
     SDL_Window* sdl_window;
 
@@ -23,6 +25,7 @@ private:
     bgfx::IndexBufferHandle block_ibh;
     bgfx::UniformHandle block_tex;
     bgfx::ProgramHandle program;
+    bgfx::InstanceDataBuffer idb;
     bool GenBlockModel();
     void BlockDestroy();
 };

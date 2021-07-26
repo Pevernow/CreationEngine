@@ -24,6 +24,7 @@ void Client::init(World* localserverworldptr)
     renderer.init(width, height, localworld, &localTM);
     camera.world = localworld;
     camera.tm = &localTM;
+    camera.drawer = &renderer;
 
     localTM.init();
 

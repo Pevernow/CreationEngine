@@ -26,6 +26,8 @@ public:
     TypeManager* typemanager;
     deque<Chunk> worldmap;
 
+    Chunk* lastChunkIndex;
+
 private:
     void mapGenForChunk(Chunk&);
     bool isAroundTree(Chunk&, int x, int y, int z);
