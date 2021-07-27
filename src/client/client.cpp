@@ -22,6 +22,7 @@ void Client::init(World* localserverworldptr)
 
     // init bgfx and sdl
     renderer.init(width, height, localworld, &localTM);
+    renderer.cache = true;
     camera.world = localworld;
     camera.tm = &localTM;
     camera.drawer = &renderer;

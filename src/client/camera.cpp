@@ -147,7 +147,18 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
             .id != 0) {
         position = lastpos;
     }
-    drawer->cache = true;
+
+    glm::vec3 pos = floor(position);
+    int x = pos.x;
+    int y = pos.y;
+    int z = pos.z;
+    getChunkMinPosition(x, y, z);
+
+    if (glm::vec3(x, y, z) != lastChunkPos) {
+        // reflush
+        drawer->cache = true;
+    }
+
     return;
 }
 

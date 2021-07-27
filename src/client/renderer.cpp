@@ -154,9 +154,8 @@ bool Renderer::init(
         0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x6495EDFF, 1.0f, 0);
     bgfx::setViewRect(0, 0, 0, width, height);
 
-    SDL_ShowCursor(false);
-
     GenBlockModel();
+    SDL_ShowCursor(SDL_DISABLE);
     return 0;
 }
 
@@ -188,7 +187,7 @@ void Renderer::makeDrawCache()
 
     // Start Instancing
     const uint16_t instanceStride = 64 + 16;
-    // idb = bgfx::InstanceDataBuffer();
+    idb = bgfx::InstanceDataBuffer();
     bgfx::allocInstanceDataBuffer(&idb, renderList.size(), instanceStride);
 
     uint8_t* data = idb.data;
@@ -211,10 +210,7 @@ void Renderer::DrawBlock()
         makeDrawCache();
         cache = false;
     }
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
-        BGFX_STATE_BLEND_ALPHA);
+
     // Set vertex and index buffer.
     bgfx::setTexture(0, block_tex, typemanager->textureArray);
     bgfx::setVertexBuffer(0, block_vbh);
@@ -224,7 +220,10 @@ void Renderer::DrawBlock()
     bgfx::setInstanceDataBuffer(&idb);
 
     // Set render states.
-
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA | BGFX_STATE_CULL_CCW |
+        BGFX_STATE_BLEND_ALPHA);
     // Submit primitive for rendering to view 0.
     bgfx::submit(0, program);
 }
