@@ -12,6 +12,15 @@ void getChunkMinPosition(int& x, int& y, int& z)
     return;
 }
 
+int getPositionInChunk(int a)
+{
+    if (a >= 0) {
+        return a % 16;
+    } else {
+        return 15 + ((a + 1) % 16);
+    }
+}
+
 Chunk::Chunk(int ix, int iy, int iz)
 {
     isInit = false;
@@ -122,6 +131,7 @@ bool World::isAroundTree(Chunk& chunk, int x, int y, int z)
 
 Block& World::get_node(int x, int y, int z)
 {
+
     if (y < 0)
         return worldmap[0].blocks[0][0][0];
 
@@ -133,7 +143,8 @@ Block& World::get_node(int x, int y, int z)
         lastChunkIndex->blocks[15][15][15].y >= y &&
         lastChunkIndex->blocks[15][15][15].z >= z) {
         // in chunk
-        return lastChunkIndex->blocks[x % 16][y % 16][z % 16];
+        return lastChunkIndex->blocks[getPositionInChunk(x)][getPositionInChunk(
+            y)][getPositionInChunk(z)];
     }
 
     for (int i = 0, l = worldmap.size(); i < l; i++) {
@@ -146,7 +157,8 @@ Block& World::get_node(int x, int y, int z)
             testChunk.blocks[15][15][15].z >= z) {
             // in chunk
             lastChunkIndex = &testChunk;
-            return worldmap[i].blocks[x % 16][y % 16][z % 16];
+            return testChunk.blocks[getPositionInChunk(x)][getPositionInChunk(
+                y)][getPositionInChunk(z)];
         }
     }
     // new chunk

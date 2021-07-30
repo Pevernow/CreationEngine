@@ -186,8 +186,7 @@ void Renderer::makeDrawCache()
     }
 
     // Start Instancing
-    const uint16_t instanceStride = 64 + 16;
-    idb = bgfx::InstanceDataBuffer();
+    uint16_t instanceStride = 64 + 16;
     bgfx::allocInstanceDataBuffer(&idb, renderList.size(), instanceStride);
 
     uint8_t* data = idb.data;

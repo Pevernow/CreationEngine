@@ -39,7 +39,7 @@ void Camera::update_camera_position(float deltaTime)
 
         // Come back to ground
         int i = floor(position.y);
-        while (world->get_node(position.x, i, position.z).id != 0)
+        while (world->get_node(floor(position.x), i, floor(position.z)).id != 0)
             i++;
         position.y = i;
     }
