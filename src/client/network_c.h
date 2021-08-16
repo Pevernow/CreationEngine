@@ -1,6 +1,6 @@
 #ifndef _NETWORK_C_H_
 #define _NETWORK_C_H_
-#include "block_c.h"
+#include "typemanager_c.h"
 #include <event2/bufferevent.h>
 #include <event2/event.h>
 #include <event2/listener.h>

@@ -18,10 +18,10 @@ enum Camera_Movement
     JUMP
 };
 
-class Camera
+class Player_c
 {
 public:
-    Camera();
+    Player_c();
     void view();
     void processKeyboard(
         Camera_Movement direction,

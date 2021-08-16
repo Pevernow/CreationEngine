@@ -2,7 +2,7 @@
 #include "../config.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
-#include "block_c.h"
+#include "typemanager_c.h"
 
 #include <iostream>
 
@@ -23,15 +23,15 @@ void Client::init(World* localserverworldptr)
     // init bgfx and sdl
     renderer.init(width, height, localworld, &localTM);
     renderer.cache = true;
-    camera.world = localworld;
-    camera.tm = &localTM;
-    camera.drawer = &renderer;
+    localPlayer.world = localworld;
+    localPlayer.tm = &localTM;
+    localPlayer.drawer = &renderer;
 
     localTM.init();
 
     gui.init(
-        renderer.sdl_window, &FPS, &camera.position, &camera.pointThing,
-        &camera.yaw, &camera.pitch);
+        renderer.sdl_window, &FPS, &localPlayer.position,
+        &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch);
 
     net.init(&localTM);
 
@@ -57,7 +57,7 @@ void Client::mainloop()
         Uint32 nowFrame = SDL_GetTicks();
         processEvent(renderer.sdl_window, nowFrame - lastFrame);
 
-        camera.update_camera_position(nowFrame - lastFrame);
+        localPlayer.update_camera_position(nowFrame - lastFrame);
 
         gui.view();
 
@@ -74,7 +74,7 @@ void Client::mainloop()
         lastFrame = nowFrame;
         FPS_count++;
 
-        camera.view();
+        localPlayer.view();
 
         renderer.DrawBlock();
 
@@ -91,7 +91,7 @@ void Client::processEvent(SDL_Window* window, int delay)
         if (e.type == SDL_QUIT)
             quit = true;
         if (e.type == SDL_MOUSEMOTION) {
-            camera.process_mouse_movement(
+            localPlayer.process_mouse_movement(
                 renderer.width / 2 - e.motion.x,
                 renderer.height / 2 - e.motion.y);
             SDL_WarpMouseInWindow(
@@ -99,30 +99,30 @@ void Client::processEvent(SDL_Window* window, int delay)
         }
     }
     if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-        camera.on_left_click(delay);
+        localPlayer.on_left_click(delay);
     } else {
         if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-            camera.on_right_click(delay);
+            localPlayer.on_right_click(delay);
         }
     }
     // process move event
     const Uint8* state;
     state = SDL_GetKeyboardState(NULL);
     if (state[SDL_SCANCODE_W]) {
-        camera.processKeyboard(FORWARD, delay);
+        localPlayer.processKeyboard(FORWARD, delay);
     }
     if (state[SDL_SCANCODE_S]) {
-        camera.processKeyboard(BACKWARD, delay);
+        localPlayer.processKeyboard(BACKWARD, delay);
     }
     if (state[SDL_SCANCODE_A]) {
-        camera.processKeyboard(LEFT, delay);
+        localPlayer.processKeyboard(LEFT, delay);
     }
     if (state[SDL_SCANCODE_D]) {
-        camera.processKeyboard(RIGHT, delay);
+        localPlayer.processKeyboard(RIGHT, delay);
     }
 
     if (state[SDL_SCANCODE_SPACE]) {
-        camera.processKeyboard(JUMP, delay);
+        localPlayer.processKeyboard(JUMP, delay);
     }
 
     if (state[SDL_SCANCODE_ESCAPE]) {

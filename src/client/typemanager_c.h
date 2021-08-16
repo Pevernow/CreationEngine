@@ -1,6 +1,6 @@
 #ifndef _BLOCK_C_H_
 #define _BLOCK_C_H_
-#include "../block.h"
+#include "../typemanager.h"
 
 class Blockmodel_c
 {
@@ -12,13 +12,25 @@ public:
     uint16_t id;
 };
 
+class Itemmodel_c
+{
+public:
+    Itemmodel_c(){};
+    Itemmodel_c(const char* name, const char* inventory_image);
+    string name;
+    bgfx::TextureHandle texture;
+};
+
 class TypeManager_c : public TypeManager
 {
 public:
     void init();
     vector<Blockmodel_c> blockmodel;
+
+    map<string, Itemmodel_c> itemmodel;
     bgfx::TextureHandle textureArray;
     void registerNode(const char* name, const char* texture_path[6]);
+    void registerItem(const char* name, const char* texture_path);
 
 private:
     int textureCount;

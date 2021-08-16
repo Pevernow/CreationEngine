@@ -3,11 +3,11 @@
 
 #include "../config.h"
 #include "../world.h"
-#include "block_c.h"
-#include "camera.h"
 #include "gui.h"
 #include "network_c.h"
+#include "player_c.h"
 #include "renderer.h"
+#include "typemanager_c.h"
 #include <map>
 
 #include <SDL2/SDL.h>
@@ -27,7 +27,7 @@ private:
     void processEvent(SDL_Window* window, int delay);
     map<string, string> config;
     GUImanager gui;
-    Camera camera;
+    Player_c localPlayer;
     Renderer renderer;
     int width, height;
     World* localworld;

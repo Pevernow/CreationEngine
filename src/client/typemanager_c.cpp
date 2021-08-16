@@ -1,4 +1,4 @@
-#include "block_c.h"
+#include "typemanager_c.h"
 #include "utils.h"
 #include <cstring>
 
@@ -17,6 +17,14 @@ Blockmodel_c::Blockmodel_c(
     this->id = id;
 }
 
+Itemmodel_c::Itemmodel_c(const char* name, const char* inventory_image)
+{
+    this->name = string(name);
+    if (strcmp(inventory_image, "!empty") != 0) {
+        this->texture = loadTexture(inventory_image);
+    }
+}
+
 void TypeManager_c::registerNode(const char* name, const char* texture_path[6])
 {
     int id = blockmodel.size();
@@ -28,4 +36,9 @@ void TypeManager_c::registerNode(const char* name, const char* texture_path[6])
         textureCount += 6;
     }
     blockmodel.push_back(Blockmodel_c(name, id, texture_path));
+}
+
+void TypeManager_c::registerItem(const char* name, const char* texture_path)
+{
+    itemmodel[string(name)] = Itemmodel_c(name, texture_path);
 }

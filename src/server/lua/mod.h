@@ -4,8 +4,7 @@ extern "C" {
 #include <luajit-2.1/lua.h>
 }
 
-#include "../block_s.h"
-
+#include "../typemanager_s.h"
 class Luaenv
 {
 public:

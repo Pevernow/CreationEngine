@@ -1,13 +1,13 @@
-#include "camera.h"
+#include "player_c.h"
 #include "../world.h"
-#include "block_c.h"
 #include "bx/math.h"
 #include "ray.h"
+#include "typemanager_c.h"
 #include <SDL2/SDL.h>
 
 #include <iostream>
 
-Camera::Camera()
+Player_c::Player_c()
 {
     position = glm::vec3(3.0f, 15.0f, 3.0f);
     yaw = -90.0f;
@@ -24,7 +24,7 @@ Camera::Camera()
     jump = false;
 }
 
-void Camera::update_camera_position(float deltaTime)
+void Player_c::update_camera_position(float deltaTime)
 {
     // Physics
     if (jump == true) {
@@ -49,7 +49,7 @@ void Camera::update_camera_position(float deltaTime)
     return;
 }
 
-void Camera::updateRayPoint()
+void Player_c::updateRayPoint()
 {
     glm::vec3 lastPosition = {0, 0, 0};
     for (Ray ray(eyePosition, front); ray.getLength() < 6; ray.step(0.05)) {
@@ -72,7 +72,7 @@ void Camera::updateRayPoint()
                          .id);
 }
 
-void Camera::hideChunkByViewRange(int viewRange)
+void Player_c::hideChunkByViewRange(int viewRange)
 {
     glm::vec3 pos = floor(position);
     int x = pos.x;
@@ -102,7 +102,7 @@ void Camera::hideChunkByViewRange(int viewRange)
     return;
 }
 
-void Camera::view()
+void Player_c::view()
 {
     hideChunkByViewRange(8);
 
@@ -123,7 +123,7 @@ void Camera::view()
     return;
 }
 
-void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
+void Player_c::processKeyboard(Camera_Movement direction, float deltaTime)
 {
     glm::vec3 lastpos = position;
     float velocity = movement_speed * deltaTime;
@@ -162,8 +162,8 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
     return;
 }
 
-// calculates the front vector from the Camera's (updated) Euler Angles
-void Camera::update_camera_vectors()
+// calculates the front vector from the Player_c's (updated) Euler Angles
+void Player_c::update_camera_vectors()
 {
     // calculate the new Front vector
     glm::vec3 front;
@@ -180,7 +180,7 @@ void Camera::update_camera_vectors()
     return;
 }
 
-void Camera::process_mouse_movement(float xoffset, float yoffset)
+void Player_c::process_mouse_movement(float xoffset, float yoffset)
 {
     xoffset *= mouse_sensitivity;
     yoffset *= mouse_sensitivity;
@@ -204,7 +204,7 @@ if (yaw < -180)
     return;
 }
 
-void Camera::on_left_click(int delayMS)
+void Player_c::on_left_click(int delayMS)
 {
     if (breakTime >= 1000) {
         world->set_node(choosepos.x, choosepos.y, choosepos.z, "air");
@@ -215,7 +215,7 @@ void Camera::on_left_click(int delayMS)
     return;
 }
 
-void Camera::on_right_click(int delayMS)
+void Player_c::on_right_click(int delayMS)
 {
     if (breakTime >= 300) {
         if (world->get_node(placePos.x, placePos.y, placePos.z).id == 0)

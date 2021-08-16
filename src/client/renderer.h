@@ -1,7 +1,7 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 #include "../world.h"
-#include "block_c.h"
+#include "typemanager_c.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/bgfx.h>

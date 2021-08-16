@@ -17,18 +17,18 @@ target_sources(
     src/main.cpp
     src/config.cpp
     src/client/utils.cpp
-    src/block.cpp
+    src/typemanager.cpp
     src/client/client.cpp
     src/client/renderer.cpp
     src/world.cpp
-    src/client/camera.cpp
+    src/client/player_c.cpp
     src/client/gui.cpp
-    src/client/block_c.cpp
+    src/client/typemanager_c.cpp
     src/client/network_c.cpp
     src/server/lua/mod.cpp
     src/server/server.cpp
     src/server/world_s.cpp
-    src/server/block_s.cpp
+    src/server/typemanager_s.cpp
     src/server/network_s.cpp
     deps/noise.cpp
     deps/ray.cpp

@@ -3,7 +3,7 @@
 #include "../file-ops.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
-#include "block_c.h"
+#include "typemanager_c.h"
 #include <SDL2/SDL.h>
 #include <bx/math.h>
 

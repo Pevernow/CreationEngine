@@ -1,8 +1,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "block.h"
-#include <deque>
+#include "typemanager.h"
+#include <vector>
 using namespace std;
 
 class Chunk
@@ -24,7 +24,7 @@ public:
     Chunk& get_chunk(int x, int y, int z);
 
     TypeManager* typemanager;
-    deque<Chunk> worldmap;
+    vector<Chunk> worldmap;
 
     Chunk* lastChunkIndex;
 

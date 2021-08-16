@@ -1,6 +1,6 @@
-#ifndef _BLOCK_S_H_
-#define _BLOCK_S_H_
-#include "../block.h"
+#ifndef _TYPEMANAGER_S_H_
+#define _TYPEMANAGER_S_H_
+#include "../typemanager.h"
 
 class Blockmodel_s
 {
