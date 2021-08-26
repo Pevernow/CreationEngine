@@ -8,7 +8,7 @@
 class Server
 {
 public:
-    void init();
+    Server();
     void shutdown();
     World* getLocalWorldPtr();
     TypeManager_s typemanager;

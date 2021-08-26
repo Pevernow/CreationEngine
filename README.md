@@ -68,4 +68,6 @@ Run it:
 6.Shaders
 
 # Licence
-src/ directory of all the code in accordance with the gpl3 open source agreement
+src/ directory of all the code in accordance with LICENCE.md
+
+other parts of the project use with their own licences

@@ -1,130 +1,97 @@
 #include "network_s.h"
 
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+#include "../IDL/network_generated.h"
 #include <cstring>
 #include <iostream>
-#include <thread>
 
 using namespace std;
-using namespace rapidjson;
+using namespace Network;
 
-TypeManager_s* tm_s;
-
-void read_cb_s(struct bufferevent* bev, void* arg)
+void Network_s::event_callback(
+    kcp_conv_t conv, kcp_svr::eEventType event_type,
+    std::shared_ptr<std::string> msg)
 {
-    char buf[1024] = {0};
+    mConv = conv;
+    if (event_type == kcp_svr::eRcvMsg) {
+        on_recv(msg->c_str(), msg->length());
+    }
+}
 
-    bufferevent_read(bev, buf, sizeof(buf));
+void Network_s::on_recv(const char* buf, size_t size)
+{
+    flatbuffers::FlatBufferBuilder builder(0);
 
-    Document document, output;
-    output.SetObject();
-    document.Parse(buf);
-    if (document.HasParseError()) {
-        cout << "Server: data corrupted" << endl;
+    auto message = flatbuffers::GetRoot<Message>(buf + 4);
+    auto verifier = flatbuffers::Verifier((const uint8_t*)buf, size);
+    if (message->Verify(verifier) == false) {
+        cerr << "Error message" << endl;
         return;
     }
-    Value type;
-    if (document.HasMember("type")) {
-        if ((string)document["type"].GetString() == "register") {
-            type.SetString("registerBlock");
-            output.AddMember("type", type, output.GetAllocator());
-            Value list;
-            list.SetArray();
-            for (int i = 0, l = tm_s->blockmodel.size(); i < l; i++) {
-                Value name;
-                name = StringRef(tm_s->blockmodel[i].name.c_str());
-                Value texturePath(kArrayType);
-                for (int j = 0; j < 6; j++) {
-                    texturePath.PushBack(
-                        Value(StringRef(
-                            tm_s->blockmodel[i].texture_path[j].c_str())),
-                        output.GetAllocator());
-                }
-                Value pair;
-                pair.SetObject();
-                pair.AddMember("name", name, output.GetAllocator());
-                pair.AddMember(
-                    "texturePath", texturePath, output.GetAllocator());
-                list.PushBack(pair, output.GetAllocator());
+    auto request_type = message->type();
+    switch (request_type) {
+        case Type_RegisterNodeList: {
+            std::vector<flatbuffers::Offset<NodeDefinition>> nodes_vector;
+            for (int i = 0, l = tm->blockmodel.size(); i < l; i++) {
+                auto& current_node = tm->blockmodel[i];
+                flatbuffers::Offset<flatbuffers::String> strings_tmp[7];
+                strings_tmp[0] = builder.CreateString(current_node.name);
+                strings_tmp[1] =
+                    builder.CreateString(current_node.texture_path[0]);
+                strings_tmp[2] =
+                    builder.CreateString(current_node.texture_path[1]);
+                strings_tmp[3] =
+                    builder.CreateString(current_node.texture_path[2]);
+                strings_tmp[4] =
+                    builder.CreateString(current_node.texture_path[3]);
+                strings_tmp[5] =
+                    builder.CreateString(current_node.texture_path[4]);
+                strings_tmp[6] =
+                    builder.CreateString(current_node.texture_path[5]);
+                NodeDefinitionBuilder node_builder(builder);
+                node_builder.add_name(strings_tmp[0]);
+                node_builder.add_top(strings_tmp[1]);
+                node_builder.add_bottom(strings_tmp[2]);
+                node_builder.add_front(strings_tmp[3]);
+                node_builder.add_back(strings_tmp[4]);
+                node_builder.add_left(strings_tmp[5]);
+                node_builder.add_right(strings_tmp[6]);
+                auto node = node_builder.Finish();
+                nodes_vector.push_back(node);
             }
-            output.AddMember("registerList", list, output.GetAllocator());
-            StringBuffer sb;
-            Writer<rapidjson::StringBuffer> write(sb);
-            output.Accept(write);
 
-            bufferevent_write(bev, sb.GetString(), sb.GetSize());
+            auto response_nodelist = builder.CreateVector(nodes_vector);
+            auto response = CreateMessage(
+                builder, Type_RegisterNodeList, response_nodelist);
+            builder.FinishSizePrefixed(response);
+            break;
         }
-    } else {
-        // bufferevent_write(bev, p, strlen(p) + 1);
+
+        default: {
+            cerr << "Unsupport request from client." << endl;
+            return;
+            break;
+        }
     }
+
+    // send the response
+
+    uint8_t* data = builder.GetBufferPointer();
+    int len = builder.GetSize();
+    send((const char*)data, len);
 }
 
-void write_cb_s(struct bufferevent* bev, void* arg)
+void Network_s::send(const char* buf, size_t len)
 {
-    ; // send to client properly
+    shared_ptr<string> data = make_shared<string>(buf, buf + len);
+    kcp_server_.send_msg(mConv, data);
 }
 
-void event_cb_s(struct bufferevent* bev, short events, void* arg)
+Network_s::Network_s(TypeManager_s* tmPtr, string ip, int port)
+    : tm(tmPtr), kcp_server_(io_service_, ip, to_string(port))
 {
-    if (events & BEV_EVENT_EOF) {
-        cout << "服务器: 连接已关闭" << endl;
-    } else if (events & BEV_EVENT_ERROR) {
-        cout << "服务器: 未知网络错误" << endl;
-    }
-    bufferevent_free(bev);
-    cout << "服务器: 关闭" << endl;
-}
-
-void cb_listener_s(
-    struct evconnlistener* listener, evutil_socket_t fd, struct sockaddr* addr,
-    int len, void* ptr)
-{
-    struct sockaddr_in* client = (sockaddr_in*)addr;
-    // cout << "connect new client: " << inet_ntoa(client->sin_addr)
-    //     << "::" << ntohs(client->sin_port) << endl;
-
-    struct event_base* base = (struct event_base*)ptr;
-
-    //添加新事件
-    struct bufferevent* bev;
-    bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-
-    //给bufferevent缓冲区设置回调
-    bufferevent_setcb(bev, read_cb_s, write_cb_s, event_cb_s, NULL);
-
-    //启动 bufferevent的 读缓冲区。默认是disable 的
-    bufferevent_enable(bev, EV_READ);
-}
-
-void Network_s::init(TypeManager_s* tmPtr, int port)
-{
-    tm_s = tmPtr;
-    // init server
-    memset(&serv, 0, sizeof(serv));
-    serv.sin_family = AF_INET;
-    serv.sin_port = htons(port);
-    serv.sin_addr.s_addr = htonl(INADDR_ANY);
-
-    //创建 event_base
-    base = event_base_new();
-
-    //创建套接字
-    //绑定
-    //接收连接请求
-    listener = evconnlistener_new_bind(
-        base, cb_listener_s, base, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE,
-        36, (struct sockaddr*)&serv, sizeof(serv));
-}
-
-void Network_s::eventloop()
-{
-    //启动循环监听
-    thread netThread([=]() {
-        event_base_dispatch(base);
-        evconnlistener_free(listener);
-        event_base_free(base);
-    });
-    netThread.detach();
+    kcp_server_.set_callback(std::bind(
+        &Network_s::event_callback, this, std::placeholders::_1,
+        std::placeholders::_2, std::placeholders::_3));
+    thread net_server_thread([this]() { this->io_service_.run(); });
+    net_server_thread.detach();
 }

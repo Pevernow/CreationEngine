@@ -1,19 +1,23 @@
 #ifndef _NETWORK_S_H_
 #define _NETWORK_S_H_
+#include "asio.hpp"
+#include "server.hpp"
 #include "typemanager_s.h"
-#include <event2/bufferevent.h>
-#include <event2/event.h>
-#include <event2/listener.h>
 
 class Network_s
 {
 public:
-    void init(TypeManager_s* tmPtr, int port = 6180);
-    void eventloop();
+    Network_s(TypeManager_s* tmPtr, string ip = "127.0.0.1", int port = 6180);
+    void send(const char* buf, size_t len);
+    void on_recv(const char* buf, size_t size);
 
 private:
-    struct event_base* base;
-    struct sockaddr_in serv;
-    struct evconnlistener* listener;
+    void event_callback(
+        kcp_conv_t conv, kcp_svr::eEventType event_type,
+        std::shared_ptr<std::string> msg);
+    kcp_conv_t mConv;
+    asio::io_service io_service_;
+    kcp_svr::server kcp_server_;
+    TypeManager_s* tm;
 };
 #endif

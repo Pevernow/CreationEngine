@@ -1,103 +1,109 @@
 #include "network_c.h"
-
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+#include "../IDL/network_generated.h"
 #include <cstring>
 #include <iostream>
 #include <thread>
 
 using namespace std;
-using namespace rapidjson;
+using namespace Network;
 
-TypeManager_c* tm_c;
-
-void read_cb_c(struct bufferevent* bev, void* arg)
+void Network_c::on_recv(const char* buf, size_t size)
 {
-    char buf[1024] = {0};
+    int message_size = flatbuffers::GetPrefixedSize((const uint8_t*)buf);
 
-    bufferevent_read(bev, buf, sizeof(buf));
+    auto message = flatbuffers::GetRoot<Message>(buf + 4);
 
-    Document document;
-    document.Parse(buf);
-    if (document.HasParseError()) {
-        return;
-    }
-    string type = document["type"].GetString();
-    if (type == "registerBlock" && document.HasMember("registerList")) {
-        const Value& list = document["registerList"];
-        for (SizeType i = 0, l = list.Size(); i < l; i++) {
-            if (list[i].HasMember("name") && list[i].HasMember("texturePath")) {
-                const Value& texturelist = list[i]["texturePath"];
-                const char* textures[6] = {nullptr, nullptr, nullptr,
-                                           nullptr, nullptr, nullptr};
-                for (SizeType j = 0, ll = texturelist.Size(); j < ll; j++) {
-                    textures[j] = texturelist[j].GetString();
+    auto request_type = message->type();
+    switch (request_type) {
+        case Type_RegisterNodeList: {
+            auto nodes = message->registerNodes();
+            auto nodes_len = nodes->size();
+            for (int i = 0; i < nodes_len; i++) {
+                auto node = nodes->Get(i);
+                if (node->name() != NULL) {
+                    const char* textures[6] = {nullptr, nullptr, nullptr,
+                                               nullptr, nullptr, nullptr};
+                    textures[0] = node->top()->c_str();
+                    textures[1] = node->bottom()->c_str();
+                    textures[2] = node->front()->c_str();
+                    textures[3] = node->back()->c_str();
+                    textures[4] = node->left()->c_str();
+                    textures[5] = node->right()->c_str();
+                    tm->registerNode(node->name()->c_str(), textures);
                 }
-                tm_c->registerNode(list[i]["name"].GetString(), textures);
             }
+            break;
+        }
+        default: {
+            cerr << "Unsupport request from server." << endl;
+            break;
         }
     }
-
-    // bufferevent_write(bev, p, strlen(p) + 1);
 }
 
-void write_cb_c(struct bufferevent* bev, void* arg)
+// Warning: callback has no currently this!
+// Use var instead of it.
+void Network_c::event_callback(
+    kcp_conv_t conv, asio_kcp::eEventType event_type, const std::string& msg,
+    void* var)
 {
-    ; // send to client properly
-}
-
-void event_cb_c(struct bufferevent* bev, short events, void* arg)
-{
-    if (events & BEV_EVENT_EOF) {
-        cout << "Client: connection closed" << endl;
-    } else if (events & BEV_EVENT_ERROR) {
-        cout << "Client: unknown network error" << endl;
+    switch (event_type) {
+        case asio_kcp::eConnect:
+            std::cout << "connect success with conv:" << conv << std::endl;
+            break;
+        case asio_kcp::eConnectFailed:
+            std::cout << "connect failed with conv:" << conv << std::endl;
+            // stopped_ = true;
+            break;
+        case asio_kcp::eRcvMsg:
+            ((Network_c*)var)->on_recv(msg.c_str(), msg.length());
+            break;
+        case asio_kcp::eDisconnect:
+            std::cout << "disconnect with conv:" << conv << " msg: " << msg
+                      << std::endl;
+            // stopped_ = true;
+            // you can add asio::io_service::work to prevent
+            // program quit
+            break;
+        default:; // do nothing
     }
-    if (events & BEV_EVENT_CONNECTED) {
-        cout << "Client: successfully connected to server" << endl;
-    } else {
-        bufferevent_free(bev);
-        cout << "Client: connection interrupted" << endl;
-    }
 }
 
-void Network_c::init(TypeManager_c* tmPtr, int port)
+void Network_c::on_tick(const std::error_code& err, Network_c* _this)
 {
-    // configure
-    tm_c = tmPtr;
-    // 连接服务器
-    base = event_base_new();
-    bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
-    memset(&serv, 0, sizeof(serv));
-    serv.sin_family = AF_INET;
-    serv.sin_port = htons(port);
-    evutil_inet_pton(AF_INET, "127.0.0.1", &serv.sin_addr.s_addr);
-    bufferevent_socket_connect(bev, (struct sockaddr*)&serv, sizeof(serv));
-
-    // 设置回调
-    bufferevent_setcb(bev, read_cb_c, write_cb_c, event_cb_c, NULL);
-    bufferevent_enable(bev, EV_READ | EV_PERSIST);
+    _this->kcp_client_.update();
+    _this->timer.expires_from_now(chrono::milliseconds(5));
+    _this->timer.async_wait(std::bind(on_tick, std::placeholders::_1, _this));
 }
 
-void Network_c::eventloop()
+Network_c::Network_c(TypeManager_c* tmPtr, string ip, int port)
+    : tm(tmPtr), timer(io_service_, chrono::milliseconds(5))
 {
-    //启动循环监听
-    thread netThread([=]() {
-        event_base_dispatch(base);
-        event_base_free(base);
-    });
-    netThread.detach();
+    kcp_client_.set_event_callback(event_callback, (void*)this);
+    kcp_client_.connect_async(24431, ip, port);
+
+    timer.async_wait(std::bind(on_tick, std::placeholders::_1, this));
+
+    thread net_client_thread([this]() { this->io_service_.run(); });
+    net_client_thread.detach();
+}
+
+void Network_c::send(const char* buf, size_t len)
+{
+    // for (int i = 0; i + 1024 < len; i += 1024) {
+    // mKcpServer.sendData(buf + i, 1024, mRetainThis.get());
+    //}
+    string data(buf, buf + len);
+    kcp_client_.send_msg(data);
 }
 void Network_c::startUp()
 {
-    Document output;
-    Value type;
-    output.SetObject();
-    type = StringRef("register");
-    output.AddMember("type", type, output.GetAllocator());
-    StringBuffer sb;
-    Writer<rapidjson::StringBuffer> write(sb);
-    output.Accept(write);
-    bufferevent_write(bev, sb.GetString(), sb.GetSize());
+    // require nodes
+    flatbuffers::FlatBufferBuilder builder(0);
+    auto message = CreateMessage(builder, Type_RegisterNodeList);
+    builder.FinishSizePrefixed(message);
+
+    uint8_t* buf = builder.GetBufferPointer();
+    int size = builder.GetSize();
+    send((const char*)buf, size);
 }

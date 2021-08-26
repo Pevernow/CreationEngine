@@ -1,0 +1,24 @@
+namespace Network;
+
+enum Type: byte{RegisterNodeList,RegisterItemList}
+
+table NodeDefinition{
+    name:string;
+    front:string;
+    back:string;
+    left:string;
+    right:string;
+    top:string;
+    bottom:string;
+}
+
+table ItemDefinition{
+    name:string;
+    texture:string;
+}
+
+table Message {
+    type:Type;
+    registerNodes:[NodeDefinition];
+    registerItems:[ItemDefinition];
+}

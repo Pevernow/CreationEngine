@@ -2,15 +2,13 @@
 
 #include <thread>
 
-void Server::init()
+Server::Server() : net(&typemanager)
 {
     world.generate_map();
     world.typemanager = &typemanager;
     typemanager.registerNode("air", nullptr);
     luaenv.init(&typemanager);
     luaenv.execmods();
-    net.init(&typemanager);
-    net.eventloop();
 }
 
 void Server::shutdown()

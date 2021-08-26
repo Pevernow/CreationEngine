@@ -26,7 +26,6 @@ class TypeManager_c : public TypeManager
 public:
     void init();
     vector<Blockmodel_c> blockmodel;
-
     map<string, Itemmodel_c> itemmodel;
     bgfx::TextureHandle textureArray;
     void registerNode(const char* name, const char* texture_path[6]);

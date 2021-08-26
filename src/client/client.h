@@ -16,7 +16,7 @@
 class Client
 {
 public:
-    void init(World* localserverworldptr);
+    Client(World* localserverworldptr);
     void mainloop();
     void shutdown();
     void on_left_click();

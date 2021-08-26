@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-void Client::init(World* localserverworldptr)
+Client::Client(World* localserverworldptr) : net(&localTM)
 {
     localworld = localserverworldptr;
     // configure
@@ -32,12 +32,6 @@ void Client::init(World* localserverworldptr)
     gui.init(
         renderer.sdl_window, &FPS, &localPlayer.position,
         &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch);
-
-    net.init(&localTM);
-
-    net.eventloop();
-
-    return;
 }
 
 void Client::shutdown()
