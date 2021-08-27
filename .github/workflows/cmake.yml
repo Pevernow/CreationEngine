@@ -33,7 +33,7 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target install --config ${{env.BUILD_TYPE}}
+          sudo cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target install --config ${{env.BUILD_TYPE}}
 
 
     - name: Configure CMake
