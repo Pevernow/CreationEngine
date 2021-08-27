@@ -101,3 +101,9 @@ Network_s::Network_s(TypeManager_s* tmPtr, string ip, int port)
     thread net_server_thread([this]() { this->io_service_.run(); });
     net_server_thread.detach();
 }
+
+void Network_s::shutdown()
+{
+    kcp_server_.stop();
+    io_service_.stop();
+}

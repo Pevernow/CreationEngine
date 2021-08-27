@@ -14,6 +14,7 @@ Server::Server() : net(&typemanager)
 void Server::shutdown()
 {
     luaenv.destory();
+    net.shutdown();
 }
 
 World* Server::getLocalWorldPtr()

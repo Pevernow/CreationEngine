@@ -10,7 +10,7 @@ public:
     Network_s(TypeManager_s* tmPtr, string ip = "127.0.0.1", int port = 6180);
     void send(const char* buf, size_t len);
     void on_recv(const char* buf, size_t size);
-
+    void shutdown();
 private:
     void event_callback(
         kcp_conv_t conv, kcp_svr::eEventType event_type,

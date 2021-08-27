@@ -124,3 +124,9 @@ void Network_c::keepAlive()
     int size = builder.GetSize();
     send((const char*)buf, size);
 }
+
+void Network_c::shutdown()
+{
+    kcp_client_.stop();
+    io_service_.stop();
+}

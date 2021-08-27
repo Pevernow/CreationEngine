@@ -11,7 +11,7 @@ public:
     void send(const char* buf, size_t len);
     void startUp();
     void keepAlive();
-
+    void shutdown();
 private:
     TypeManager_c* tm;
     asio::io_service io_service_;

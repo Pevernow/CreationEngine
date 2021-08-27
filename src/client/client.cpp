@@ -39,6 +39,7 @@ Client::Client(World* localserverworldptr) : net(&localTM)
 void Client::shutdown()
 {
     renderer.shutdown();
+    net.shutdown();
     return;
 }
 
