@@ -1,6 +1,6 @@
 # CreationEngine
 
-Open source,High performance,Cross platform,Beautiful 3D voxel game.
+Open source,High performance,Cross platform,Beautiful 3D voxel sandbox metaverse
 
 Copyright (c) 2020-2021 Pevernow <3450354617@qq.com>
 
@@ -21,7 +21,7 @@ This game is not finished
 | CMake      | latest  |            |
 | bgfx-cmake | latest  | Also can manual build bgfx for cmake|
 | LuaJIT     | 2.0+    |            |
-| Libevent   | 2.0+    |            |
+| SDL2       | 2.0+    |            |
 
 #### Download
 
@@ -52,6 +52,8 @@ Run it:
 
 4.biome mapgen
 
+5.Network manager
+
 
 ## TODO
 
@@ -68,6 +70,6 @@ Run it:
 6.Shaders
 
 # Licence
-src/ directory of all the code in accordance with LICENCE.md
+src/ directory of all the code in accordance use LICENCE.md
 
 other parts of the project use with their own licences
