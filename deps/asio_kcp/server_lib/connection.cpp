@@ -10,6 +10,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#include "spdlog.h"
+
 namespace kcp_svr
 {
 
@@ -28,7 +30,7 @@ connection::~connection(void)
 
 void connection::clean(void)
 {
-    std::cout << "clean connection conv:" << conv_ << std::endl;
+    spdlog::debug("Clean connection conv: {}", conv_);
     std::string disconnect_msg = asio_kcp::making_disconnect_packet(conv_);
     send_udp_package(disconnect_msg.c_str(), disconnect_msg.size());
     ikcp_release(p_kcp_);
@@ -97,7 +99,7 @@ void connection::send_kcp_msg(const std::string& msg)
 {
     int send_ret = ikcp_send(p_kcp_, msg.c_str(), msg.size());
     if (send_ret < 0) {
-        std::cout << "send_ret<0: " << send_ret << std::endl;
+        spdlog::warn("Send_ret<0: {}", send_ret);
     }
 }
 
@@ -132,8 +134,7 @@ void connection::input(
         char kcp_buf[1024 * 1000] = "";
         int kcp_recvd_bytes = ikcp_recv(p_kcp_, kcp_buf, sizeof(kcp_buf));
         if (kcp_recvd_bytes <= 0) {
-            std::cout << "\nkcp_recvd_bytes<=0: " << kcp_recvd_bytes
-                      << std::endl;
+            spdlog::warn("Kcp_recvd_bytes<=0: {}", kcp_recvd_bytes);
         } else {
             const std::string package(kcp_buf, kcp_recvd_bytes);
             /*

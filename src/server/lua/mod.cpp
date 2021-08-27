@@ -10,6 +10,8 @@ extern "C" {
 
 #include <iostream>
 
+#include "spdlog.h"
+
 using namespace std;
 
 TypeManager_s* typemanager;
@@ -89,7 +91,7 @@ bool Luaenv::exec(const char* path)
     }
     bRet = lua_pcall(L, 0, 0, lua_gettop(L));
     if (bRet != 0) {
-        cout << lua_tostring(L, -1) << endl;
+        spdlog::error("{}", lua_tostring(L, -1));
         return false;
     }
     return true;

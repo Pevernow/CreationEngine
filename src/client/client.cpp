@@ -6,12 +6,14 @@
 
 #include <iostream>
 
+extern bool gQuit;
+
 Client::Client(World* localserverworldptr) : net(&localTM)
 {
     localworld = localserverworldptr;
     // configure
     ReadConfig("CE.conf", config);
-    PrintConfig(config);
+    // PrintConfig(config);
     if (config.count("maxfps") == 1) {
         max_frame_time = 1000 / stoi(config["maxfps"]);
     }
@@ -47,7 +49,7 @@ void Client::mainloop()
 
     static Uint32 lastFrame;
 
-    while (!quit) {
+    while (!gQuit) {
         Uint32 nowFrame = SDL_GetTicks();
         processEvent(renderer.sdl_window, nowFrame - lastFrame);
 
@@ -83,7 +85,7 @@ void Client::processEvent(SDL_Window* window, int delay)
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT)
-            quit = true;
+            gQuit = true;
         if (e.type == SDL_MOUSEMOTION) {
             localPlayer.process_mouse_movement(
                 renderer.width / 2 - e.motion.x,
@@ -120,7 +122,7 @@ void Client::processEvent(SDL_Window* window, int delay)
     }
 
     if (state[SDL_SCANCODE_ESCAPE]) {
-        quit = true;
+        gQuit = true;
     }
 
     return;

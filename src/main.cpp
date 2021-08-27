@@ -6,6 +6,8 @@
 
 using namespace std;
 
+bool gQuit = false;
+
 int main(int argc, char* argv[])
 {
     /*

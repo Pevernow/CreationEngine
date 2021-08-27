@@ -10,6 +10,8 @@
 #include "../essential/utility/strutil.h"
 #include "../util/connect_packet.hpp"
 #include "../util/ikcp.h"
+
+#include "spdlog.h"
 //#include "asio_kcp_log.hpp"
 
 /* get system time */
@@ -74,7 +76,7 @@ void connection_manager::stop_all()
 
 void connection_manager::force_disconnect(const kcp_conv_t& conv)
 {
-    std::cout << "force_disconnect: " << conv << std::endl;
+    spdlog::warn("Force_disconnect: {}", conv);
     if (!connections_.find_by_conv(conv))
         return;
 
@@ -116,14 +118,14 @@ void connection_manager::handle_kcp_packet(size_t bytes_recvd)
 
     connection::shared_ptr conn_ptr = connections_.find_by_conv(conv);
     if (!conn_ptr) {
-        std::cout << "connection not exist with conv: " << conv << std::endl;
+        spdlog::warn("Connection not exist with conv: {}", conv);
         return;
     }
 
     if (conn_ptr)
         conn_ptr->input(udp_data_, bytes_recvd, udp_remote_endpoint_);
     else
-        std::cout << "add_new_connection failed! can not connect!" << std::endl;
+        spdlog::warn("Add_new_connection failed! can not connect!");
 }
 
 void connection_manager::handle_udp_receive_from(
@@ -156,9 +158,8 @@ void connection_manager::handle_udp_receive_from(
 
         handle_kcp_packet(bytes_recvd);
     } else {
-        printf(
-            "\nhandle_udp_receive_from error end! error: %s, bytes_recvd: "
-            "%ld\n",
+        spdlog::warn(
+            "Handle_udp_receive_from error end! error: {}, bytes_recvd: {}",
             error.message().c_str(), bytes_recvd);
     }
 

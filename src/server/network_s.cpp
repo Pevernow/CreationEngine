@@ -4,6 +4,8 @@
 #include <cstring>
 #include <iostream>
 
+#include "spdlog.h"
+
 using namespace std;
 using namespace Network;
 
@@ -24,7 +26,7 @@ void Network_s::on_recv(const char* buf, size_t size)
     auto message = flatbuffers::GetRoot<Message>(buf + 4);
     auto verifier = flatbuffers::Verifier((const uint8_t*)buf, size);
     if (message->Verify(verifier) == false) {
-        cerr << "Error message" << endl;
+        spdlog::warn("The received message cannot be parsed");
         return;
     }
     auto request_type = message->type();
@@ -67,7 +69,7 @@ void Network_s::on_recv(const char* buf, size_t size)
         }
 
         default: {
-            cerr << "Unsupport request from client." << endl;
+            spdlog::warn("Unsupport request from client");
             return;
             break;
         }

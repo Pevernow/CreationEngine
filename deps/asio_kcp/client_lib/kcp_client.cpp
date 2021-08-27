@@ -13,6 +13,8 @@
 #include "../util/ikcp.h"
 #include "kcp_client_util.h"
 
+#include "spdlog.h"
+
 namespace asio_kcp
 {
 
@@ -150,12 +152,13 @@ void kcp_client::do_send_connect_packet(uint64_t cur_clock)
 
     // send a connect cmd.
     std::string connect_msg = asio_kcp::making_connect_packet();
-    // std::cerr << "send connect packet" << std::endl;
+    spdlog::debug("Send connect packet");
     const ssize_t send_ret =
         send(udp_socket_, connect_msg.c_str(), connect_msg.size(), 0);
     if (send_ret < 0) {
-        std::cerr << "do_asio_kcp_connect send error return with errno: "
-                  << errno << " " << strerror(errno) << std::endl;
+        spdlog::warn(
+            "Do_asio_kcp_connect send error return with errno: {} {}", errno,
+            strerror(errno));
     }
 }
 
@@ -169,9 +172,9 @@ void kcp_client::try_recv_connect_back_packet(void)
         int err = errno;
         if (err == EAGAIN)
             return;
-        std::cerr
-            << "try_recv_connect_back_packet recv error return with errno: "
-            << err << " " << strerror(err) << std::endl;
+        spdlog::warn(
+            "Try_recv_connect_back_packet recv error return with errno: {} {}",
+            err, strerror(err));
     }
     if (ret_recv > 0 &&
         asio_kcp::is_send_back_conv_packet(recv_buf, ret_recv)) {
@@ -256,10 +259,11 @@ int kcp_client::init_udp_connect(void)
         int ret = inet_pton(AF_INET, server_ip_.c_str(), &servaddr_.sin_addr);
         if (ret <= 0) {
             if (ret < 0) // errno set
-                std::cerr << "inet_pton error return < 0, with errno: " << errno
-                          << " " << strerror(errno) << std::endl;
+                spdlog::error(
+                    "Inet_pton error return < 0, with errno: {} {}", errno,
+                    strerror(errno));
             else
-                std::cerr << "inet_pton error return 0" << std::endl;
+                spdlog::error("Inet_pton error return 0");
             return KCP_ERR_ADDRESS_INVALID;
         }
     }
@@ -268,8 +272,9 @@ int kcp_client::init_udp_connect(void)
     {
         udp_socket_ = socket(AF_INET, SOCK_DGRAM, 0);
         if (udp_socket_ < 0) {
-            std::cerr << "socket error return with errno: " << errno << " "
-                      << strerror(errno) << std::endl;
+            spdlog::error(
+                "socket error return with errno: {} {}", errno,
+                strerror(errno));
             return KCP_ERR_CREATE_SOCKET_FAIL;
         }
     }
@@ -291,16 +296,16 @@ int kcp_client::init_udp_connect(void)
     {
         int flags = fcntl(udp_socket_, F_GETFL, 0);
         if (flags == -1) {
-            std::cerr
-                << "get socket non-blocking: fcntl error return with errno: "
-                << errno << " " << strerror(errno) << std::endl;
+            spdlog::error(
+                "Get socket non-blocking: fcntl error return with errno: {} {}",
+                errno, strerror(errno));
             return KCP_ERR_SET_NON_BLOCK_FAIL;
         }
         int ret = fcntl(udp_socket_, F_SETFL, flags | O_NONBLOCK);
         if (ret == -1) {
-            std::cerr
-                << "set socket non-blocking: fcntl error return with errno: "
-                << errno << " " << strerror(errno) << std::endl;
+            spdlog::error(
+                "Set socket non-blocking: fcntl error return with errno: {} {}",
+                errno, strerror(errno));
             return KCP_ERR_SET_NON_BLOCK_FAIL;
         }
     }
@@ -317,8 +322,9 @@ int kcp_client::init_udp_connect(void)
             udp_socket_, (const struct sockaddr*)(&bind_addr),
             sizeof(bind_addr));
         if (ret_bind < 0)
-            std::cerr << "setsockopt error return with errno: " << errno << " "
-                      << strerror(errno) << std::endl;
+            spdlog::error(
+                "Setsockopt error return with errno: {} {}", errno,
+                strerror(errno));
     }
 
     // udp connect
@@ -327,8 +333,9 @@ int kcp_client::init_udp_connect(void)
             udp_socket_, (const struct sockaddr*)(&servaddr_),
             sizeof(servaddr_));
         if (ret < 0) {
-            std::cerr << "connect error return with errno: " << errno << " "
-                      << strerror(errno) << std::endl;
+            spdlog::error(
+                "Connect error return with errno: {} {}", errno,
+                strerror(errno));
             return KCP_ERR_CONNECT_FUNC_FAIL;
         }
     }
@@ -349,7 +356,7 @@ void kcp_client::do_recv_udp_packet_in_loop(void)
         std::string err_detail = ostrm.str();
         ostrm << "do_asio_kcp_connect recv error return with errno: " << err
               << " " << strerror(err);
-        std::cerr << err_detail << std::endl;
+        spdlog::warn("{}", err_detail);
         (*pevent_func_)(
             p_kcp_->conv, eDisconnect, err_detail, event_callback_var_);
         return;
@@ -371,14 +378,15 @@ int kcp_client::udp_output(const char* buf, int len, ikcpcb* kcp, void* user)
 
 void kcp_client::send_udp_package(const char* buf, int len)
 {
-    // std::cerr << "send_udp_package" << std::endl;
+    spdlog::debug("Send_udp_package");
     const ssize_t send_ret = send(udp_socket_, buf, len, 0);
     if (send_ret < 0) {
-        std::cerr << "send_udp_package error with errno: " << errno << " "
-                  << strerror(errno) << std::endl;
+        spdlog::warn(
+            "Send_udp_package error with errno: {} {}", errno, strerror(errno));
     } else if (send_ret != len) {
-        std::cerr << "send_udp_package error: not all packet send. " << send_ret
-                  << " in " << len << std::endl;
+        spdlog::warn(
+            "Send_udp_package error: not all packet send. {} in {}", send_ret,
+            len);
     }
 }
 
@@ -397,7 +405,7 @@ void kcp_client::do_send_msg_in_queue(void)
         std::string msg = msgs.front();
         int send_ret = ikcp_send(p_kcp_, msg.c_str(), msg.size());
         if (send_ret < 0) {
-            // std::cerr << "send_ret<0: " << send_ret << std::endl;
+            spdlog::warn("Send_ret<0: {}", send_ret);
         }
         msgs.pop();
     }
@@ -420,7 +428,7 @@ void kcp_client::handle_udp_packet(const std::string& udp_packet)
         const std::string& msg = recv_udp_package_from_kcp();
         if (msg.size() > 0) {
             // recved good msg.
-            // std::cerr << "recv good kcp msg: " << msg << std::endl;
+            spdlog::debug("Recv good kcp msg");
             if (pevent_func_ != NULL) {
                 (*pevent_func_)(
                     p_kcp_->conv, eRcvMsg, msg, event_callback_var_);
@@ -436,7 +444,7 @@ std::string kcp_client::recv_udp_package_from_kcp(void)
     char kcp_buf[MAX_MSG_SIZE] = "";
     int kcp_recvd_bytes = ikcp_recv(p_kcp_, kcp_buf, sizeof(kcp_buf));
     if (kcp_recvd_bytes < 0) {
-        // std::cerr << "kcp_recvd_bytes<0: " << kcp_recvd_bytes << std::endl;
+        spdlog::warn("Kcp_recvd_bytes<0: {}", kcp_recvd_bytes);
         return "";
     }
 

@@ -38,10 +38,11 @@ ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio_kcp/util/ikcp.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio_kcp/essential/_src/utility/strutil.cpp
 )
 
+target_include_directories(CreationEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/)
 
 target_sources(
     ${PROJECT_NAME} PRIVATE
-    ${asio_kcp_src}
+    
     src/main.cpp
     src/config.cpp
     src/client/utils.cpp
@@ -66,8 +67,7 @@ target_sources(
     deps/imgui/imgui_tables.cpp
     deps/bgfx-imgui/imgui_impl_bgfx.cpp
     deps/sdl-imgui/imgui_impl_sdl.cpp
-    
-#    deps/asio/src/asio.cpp
+    ${asio_kcp_src}
 )
 target_include_directories(${PROJECT_NAME} PRIVATE deps/ ${SDL2_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} {LIBEVENT_INCLUDE_DIR})
 

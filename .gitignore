@@ -5,3 +5,8 @@ imgui.ini
 *.bin
 .vscode/
 .history/
+docs/node_modules
+docs/.temp
+docs/.cache
+docs/.vuepress/.cache
+docs/.vuepress/.temp

@@ -33,7 +33,6 @@ private:
     World* localworld;
     TypeManager_c localTM;
     Network_c net;
-    bool quit = false;
     int _FPS_Timer;
     int max_frame_time;
     int FPS_count;

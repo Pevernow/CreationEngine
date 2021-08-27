@@ -4,8 +4,12 @@
 #include <iostream>
 #include <thread>
 
+#include "spdlog.h"
+
 using namespace std;
 using namespace Network;
+
+extern bool gQuit;
 
 void Network_c::on_recv(const char* buf, size_t size)
 {
@@ -35,7 +39,7 @@ void Network_c::on_recv(const char* buf, size_t size)
             break;
         }
         default: {
-            cerr << "Unsupport request from server." << endl;
+            spdlog::error("Unsupport request from server");
             break;
         }
     }
@@ -49,19 +53,18 @@ void Network_c::event_callback(
 {
     switch (event_type) {
         case asio_kcp::eConnect:
-            std::cout << "connect success with conv:" << conv << std::endl;
+            spdlog::info("Connect to server successd");
             break;
         case asio_kcp::eConnectFailed:
-            std::cout << "connect failed with conv:" << conv << std::endl;
-            // stopped_ = true;
+            spdlog::error("Connect to server failed");
+            gQuit = true;
             break;
         case asio_kcp::eRcvMsg:
             ((Network_c*)var)->on_recv(msg.c_str(), msg.length());
             break;
         case asio_kcp::eDisconnect:
-            std::cout << "disconnect with conv:" << conv << " msg: " << msg
-                      << std::endl;
-            // stopped_ = true;
+            spdlog::info("Disconnect to server");
+            gQuit = true;
             // you can add asio::io_service::work to prevent
             // program quit
             break;

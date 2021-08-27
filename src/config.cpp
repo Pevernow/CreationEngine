@@ -1,5 +1,7 @@
 #include "config.h"
 
+#include "spdlog.h"
+
 #include <fstream>
 #include <iostream>
 using namespace std;
@@ -82,7 +84,7 @@ bool ReadConfig(const string& filename, map<string, string>& m)
     m.clear();
     ifstream infile(filename.c_str());
     if (!infile) {
-        cout << "file open error" << endl;
+        spdlog::error("Configure file read error");
         return false;
     }
     string line, key, value;
@@ -100,7 +102,7 @@ bool WriteConfig(const string& filename, map<string, string>& m)
 {
     ofstream outfile(filename.c_str());
     if (!outfile) {
-        cout << "file open error" << endl;
+        spdlog::error("Configure file write error");
         return false;
     }
     map<string, string>::const_iterator mite = m.begin();
@@ -116,6 +118,6 @@ void PrintConfig(const map<string, string>& m)
 {
     map<string, string>::const_iterator mite = m.begin();
     for (; mite != m.end(); ++mite) {
-        cout << mite->first << "=" << mite->second << endl;
+        spdlog::info("{} = {}", mite->first, mite->second);
     }
 }
