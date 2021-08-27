@@ -38,6 +38,8 @@ void Network_c::on_recv(const char* buf, size_t size)
             }
             break;
         }
+        case Type_KeepAlive:
+            break; // ignore
         default: {
             spdlog::error("Unsupport request from server");
             break;
@@ -82,6 +84,7 @@ void Network_c::on_tick(const std::error_code& err, Network_c* _this)
 Network_c::Network_c(TypeManager_c* tmPtr, string ip, int port)
     : tm(tmPtr), timer(io_service_, chrono::milliseconds(5))
 {
+    // Config kcp client
     kcp_client_.set_event_callback(event_callback, (void*)this);
     kcp_client_.connect_async(24431, ip, port);
 
@@ -104,6 +107,17 @@ void Network_c::startUp()
     // require nodes
     flatbuffers::FlatBufferBuilder builder(0);
     auto message = CreateMessage(builder, Type_RegisterNodeList);
+    builder.FinishSizePrefixed(message);
+
+    uint8_t* buf = builder.GetBufferPointer();
+    int size = builder.GetSize();
+    send((const char*)buf, size);
+}
+
+void Network_c::keepAlive()
+{
+    flatbuffers::FlatBufferBuilder builder(0);
+    auto message = CreateMessage(builder, Type_KeepAlive);
     builder.FinishSizePrefixed(message);
 
     uint8_t* buf = builder.GetBufferPointer();

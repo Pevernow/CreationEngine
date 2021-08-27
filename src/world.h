@@ -26,9 +26,8 @@ public:
     TypeManager* typemanager;
     vector<Chunk> worldmap;
 
-    Chunk* lastChunkIndex;
-
 private:
+    int lastChunkIndex;
     void mapGenForChunk(Chunk&);
     bool isAroundTree(Chunk&, int x, int y, int z);
 };

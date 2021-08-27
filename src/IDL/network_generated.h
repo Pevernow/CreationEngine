@@ -17,14 +17,16 @@ struct Message;
 enum Type {
   Type_RegisterNodeList = 0,
   Type_RegisterItemList = 1,
+  Type_KeepAlive = 2,
   Type_MIN = Type_RegisterNodeList,
-  Type_MAX = Type_RegisterItemList
+  Type_MAX = Type_KeepAlive
 };
 
-inline const Type (&EnumValuesType())[2] {
+inline const Type (&EnumValuesType())[3] {
   static const Type values[] = {
     Type_RegisterNodeList,
-    Type_RegisterItemList
+    Type_RegisterItemList,
+    Type_KeepAlive
   };
   return values;
 }
@@ -33,13 +35,14 @@ inline const char * const *EnumNamesType() {
   static const char * const names[] = {
     "RegisterNodeList",
     "RegisterItemList",
+    "KeepAlive",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameType(Type e) {
-  if (e < Type_RegisterNodeList || e > Type_RegisterItemList) return "";
+  if (e < Type_RegisterNodeList || e > Type_KeepAlive) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesType()[index];
 }

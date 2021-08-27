@@ -67,7 +67,11 @@ void Network_s::on_recv(const char* buf, size_t size)
             builder.FinishSizePrefixed(response);
             break;
         }
-
+        case Type_KeepAlive: {
+            auto response = CreateMessage(builder, Type_KeepAlive);
+            builder.FinishSizePrefixed(response);
+            break;
+        }
         default: {
             spdlog::warn("Unsupport request from client");
             return;

@@ -136,15 +136,18 @@ Block& World::get_node(int x, int y, int z)
         return worldmap[0].blocks[0][0][0];
 
     // Test lastIndex first
-    if (lastChunkIndex != nullptr && lastChunkIndex->blocks[0][0][0].x <= x &&
-        lastChunkIndex->blocks[0][0][0].y <= y &&
-        lastChunkIndex->blocks[0][0][0].z <= z &&
-        lastChunkIndex->blocks[15][15][15].x >= x &&
-        lastChunkIndex->blocks[15][15][15].y >= y &&
-        lastChunkIndex->blocks[15][15][15].z >= z) {
-        // in chunk
-        return lastChunkIndex->blocks[getPositionInChunk(x)][getPositionInChunk(
-            y)][getPositionInChunk(z)];
+    if (lastChunkIndex != -1) {
+        Chunk& lastChunk = worldmap[lastChunkIndex];
+        if (lastChunk.blocks[0][0][0].x <= x &&
+            lastChunk.blocks[0][0][0].y <= y &&
+            lastChunk.blocks[0][0][0].z <= z &&
+            lastChunk.blocks[15][15][15].x >= x &&
+            lastChunk.blocks[15][15][15].y >= y &&
+            lastChunk.blocks[15][15][15].z >= z) {
+            // in chunk
+            return lastChunk.blocks[getPositionInChunk(x)][getPositionInChunk(
+                y)][getPositionInChunk(z)];
+        }
     }
 
     for (int i = 0, l = worldmap.size(); i < l; i++) {
@@ -156,7 +159,7 @@ Block& World::get_node(int x, int y, int z)
             testChunk.blocks[15][15][15].y >= y &&
             testChunk.blocks[15][15][15].z >= z) {
             // in chunk
-            lastChunkIndex = &testChunk;
+            lastChunkIndex = i;
             return testChunk.blocks[getPositionInChunk(x)][getPositionInChunk(
                 y)][getPositionInChunk(z)];
         }
@@ -165,7 +168,7 @@ Block& World::get_node(int x, int y, int z)
     worldmap.emplace_back(Chunk(x, y, z));
     Chunk& new_chunk = worldmap.back();
     mapGenForChunk(new_chunk);
-    lastChunkIndex = &new_chunk;
+    lastChunkIndex = worldmap.size() - 1;
     return new_chunk.blocks[x % 16][y % 16][z % 16];
 }
 
@@ -290,7 +293,7 @@ void Chunk::updateBlock(int x, int y, int z)
 */
 World::World()
 {
-    lastChunkIndex = nullptr;
+    lastChunkIndex = -1;
     seed(888);
     srand(888);
 }

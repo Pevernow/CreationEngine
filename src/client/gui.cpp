@@ -85,6 +85,6 @@ void GUImanager::showdebuginfo()
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
             ImGuiWindowFlags_NoBackground);
     ImGui::SetWindowPos(ImVec2(256, 176), ImGuiCond_Always);
-    ImGui::Image((ImTextureID)cross.idx, ImVec2(128, 128));
+    ImGui::Image((void*)(long)(cross.idx), ImVec2(128, 128));
     ImGui::End();
 }

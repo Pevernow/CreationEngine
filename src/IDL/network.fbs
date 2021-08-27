@@ -1,6 +1,6 @@
 namespace Network;
 
-enum Type: byte{RegisterNodeList,RegisterItemList}
+enum Type: byte{RegisterNodeList,RegisterItemList,KeepAlive}
 
 table NodeDefinition{
     name:string;

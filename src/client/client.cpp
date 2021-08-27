@@ -65,7 +65,8 @@ void Client::mainloop()
             FPS = FPS_count;
             FPS_count = 0;
             _FPS_Timer = nowFrame;
-            renderer.makeDrawCache();
+            renderer.makeDrawCache(); // Force reflush drawcache
+            net.keepAlive();
         }
         lastFrame = nowFrame;
         FPS_count++;

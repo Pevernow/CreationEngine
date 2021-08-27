@@ -10,6 +10,7 @@ public:
     Network_c(TypeManager_c* tmPtr, string ip = "127.0.0.1", int port = 6180);
     void send(const char* buf, size_t len);
     void startUp();
+    void keepAlive();
 
 private:
     TypeManager_c* tm;
