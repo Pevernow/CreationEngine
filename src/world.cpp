@@ -74,16 +74,21 @@ void World::mapGenForChunk(Chunk& chunk)
                     chunk.blocks[x][i][z].id = 1;
                 }
             } else {
+                int has_water = false;
                 if (h < 20) {
                     for (int i = h % 16; i <= 4; i++) {
                         chunk.blocks[x][i][z].id = 5;
                     }
+                    has_water = true;
                 }
                 h = h % 16;
                 for (int i = 0; i <= h - 1; i++) {
                     chunk.blocks[x][i][z].id = 1;
                 }
                 chunk.blocks[x][h][z].id = groundID;
+
+                if (has_water)
+                    continue;
 
                 // Generate tree
                 if (h + 5 < 32 && x - 1 >= 0 && x + 1 < 16 && z - 1 >= 0 &&
