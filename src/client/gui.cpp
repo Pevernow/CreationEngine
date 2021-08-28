@@ -8,7 +8,8 @@
 
 void GUImanager::init(
     SDL_Window* sdl_window_ptr, int* FPS_ptr, glm::vec3* playerPos_ptr,
-    string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr)
+    string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr,
+    TypeManager_c* tm_ptr, Inventory* bag_ptr)
 {
     sdl_window = sdl_window_ptr;
     FPS = FPS_ptr;
@@ -16,6 +17,8 @@ void GUImanager::init(
     pitch = pitch_ptr;
     playerPos = playerPos_ptr;
     pointThing = pointThing_ptr;
+    tm = tm_ptr;
+    bag = bag_ptr;
 
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -29,16 +32,19 @@ void GUImanager::init(
     ImGui_ImplSDL2_InitForOpenGL(sdl_window, nullptr);
 #endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX ? BX_PLATFORM_LINUX
     cross = loadTexture("textures/plus.png");
+    hotBarBg = loadTexture("textures/gui_hotbar.png");
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 }
 
 void GUImanager::view()
 {
     ImGui_Implbgfx_NewFrame();
+
     ImGui_ImplSDL2_NewFrame(sdl_window);
     ImGui::NewFrame();
 
     showdebuginfo();
+    showHotbar();
 
     ImGui::Render();
 
@@ -86,5 +92,28 @@ void GUImanager::showdebuginfo()
             ImGuiWindowFlags_NoBackground);
     ImGui::SetWindowPos(ImVec2(256, 176), ImGuiCond_Always);
     ImGui::Image((void*)(long)(cross.idx), ImVec2(128, 128));
+    ImGui::End();
+}
+
+void GUImanager::showHotbar()
+{
+    ImGui::Begin(
+        "Hotbar", nullptr,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoInputs |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoBackground);
+    ImGui::SetWindowPos(ImVec2(70, 400), ImGuiCond_Always);
+    ImGui::Image((void*)(long)(hotBarBg.idx), ImVec2(500, 65));
+    for (int i = 0; i < 8; i++) {
+        if (bag->items[i].id == "!empty") {
+            continue;
+        }
+        ImGui::Image(
+            (void*)(long)(tm->itemmodel[bag->items[i].id].texture.idx),
+            ImVec2(128, 128));
+        ImGui::Text(to_string(bag->items[i].num).c_str());
+    }
     ImGui::End();
 }

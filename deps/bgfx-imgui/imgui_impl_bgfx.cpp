@@ -13,7 +13,7 @@
 // https://github.com/ocornut/imgui
 
 #include "imgui_impl_bgfx.h"
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 // BGFX/BX
 #include "bgfx/bgfx.h"

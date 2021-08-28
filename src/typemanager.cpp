@@ -24,3 +24,9 @@ string TypeManager::idToName(int id)
     }
     return "undefined";
 }
+
+ItemStack::ItemStack()
+{
+    id = "!empty";
+    num = -1;
+}

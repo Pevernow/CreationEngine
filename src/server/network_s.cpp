@@ -67,6 +67,22 @@ void Network_s::on_recv(const char* buf, size_t size)
             builder.FinishSizePrefixed(response);
             break;
         }
+        case Type_RegisterItemList: {
+            std::vector<flatbuffers::Offset<ItemDefinition>> items_vector;
+            for (auto& current_item : tm->itemmodel) {
+                flatbuffers::Offset<flatbuffers::String> tmp[2];
+                tmp[0] = builder.CreateString(current_item.second.name);
+                tmp[1] = builder.CreateString(current_item.second.texture_path);
+                auto item_builder =
+                    CreateItemDefinition(builder, tmp[0], tmp[1]);
+                items_vector.push_back(item_builder);
+            }
+            auto response_itemlist = builder.CreateVector(items_vector);
+            auto response = CreateMessage(
+                builder, Type_RegisterItemList, 0, response_itemlist);
+            builder.FinishSizePrefixed(response);
+            break;
+        }
         case Type_KeepAlive: {
             auto response = CreateMessage(builder, Type_KeepAlive);
             builder.FinishSizePrefixed(response);

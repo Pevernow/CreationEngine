@@ -14,7 +14,7 @@ extern "C" {
 
 using namespace std;
 
-TypeManager_s* typemanager;
+TypeManager_s* gTypemanager;
 
 static int api_register_node(lua_State* L)
 {
@@ -39,8 +39,17 @@ static int api_register_node(lua_State* L)
     }
     lua_pop(L, 1);
 
-    typemanager->registerNode(name, texture_path);
+    gTypemanager->registerNode(name, texture_path);
     lua_pushnil(L);
+    return 1;
+}
+
+static int api_register_item(lua_State* L)
+{
+    const char* name = luaL_checkstring(L, 1);
+    const char* texture_path = luaL_checkstring(L, 2);
+    lua_pushnil(L);
+    gTypemanager->registerItem(name, texture_path);
     return 1;
 }
 
@@ -70,7 +79,7 @@ int LuaErrorCallBack(lua_State* L)
 
 bool Luaenv::init(TypeManager_s* tm)
 {
-    typemanager = tm;
+    gTypemanager = tm;
     L = luaL_newstate();
     if (L == NULL) {
         return false;
@@ -78,6 +87,8 @@ bool Luaenv::init(TypeManager_s* tm)
     luaL_openlibs(L);
 
     lua_register(L, "register_node", api_register_node);
+    lua_register(L, "register_item", api_register_item);
+
     lua_pushcfunction(L, LuaErrorCallBack);
 
     return true;

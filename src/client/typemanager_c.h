@@ -1,6 +1,8 @@
 #ifndef _BLOCK_C_H_
 #define _BLOCK_C_H_
 #include "../typemanager.h"
+#include <map>
+#include <vector>
 
 class Blockmodel_c
 {

@@ -22,6 +22,7 @@ Player_c::Player_c()
     this->mouse_sensitivity = 0.1f;
     wielditem = "default_dirt";
     jump = false;
+    bag.items.resize(9 * 4);
 }
 
 void Player_c::update_camera_position(float deltaTime)

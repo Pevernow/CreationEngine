@@ -37,6 +37,7 @@ public:
     string pointThing;
     float yaw, pitch, scale;
     glm::vec3 position;
+    Inventory bag;
 
 private:
     void update_camera_vectors();

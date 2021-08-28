@@ -21,3 +21,14 @@ void TypeManager_s::registerNode(const char* name, const char* texture_path[6])
     nameIndex[name] = id;
     blockmodel.push_back(Blockmodel_s(name, id, texture_path));
 }
+
+void TypeManager_s::registerItem(const char* name, const char* texture_path)
+{
+    itemmodel[string(name)] = Itemmodel_s(name, texture_path);
+}
+
+Itemmodel_s::Itemmodel_s(const char* name, const char* inventory_image)
+{
+    this->name = name;
+    this->texture_path = inventory_image;
+}

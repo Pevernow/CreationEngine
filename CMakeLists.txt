@@ -38,7 +38,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio_kcp/util/ikcp.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio_kcp/essential/_src/utility/strutil.cpp
 )
 
-target_include_directories(CreationEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/)
+target_include_directories(CreationEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/ ${CMAKE_CURRENT_SOURCE_DIR}/deps/imgui/)
 
 target_sources(
     ${PROJECT_NAME} PRIVATE

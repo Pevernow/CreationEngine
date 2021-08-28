@@ -18,6 +18,20 @@ public:
     bool show;
 };
 
+class ItemStack
+{
+public:
+    ItemStack();
+    string id;
+    uint16_t num;
+};
+
+class Inventory
+{
+public:
+    vector<ItemStack> items;
+};
+
 class TypeManager
 {
 public:

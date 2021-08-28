@@ -38,6 +38,18 @@ void Network_c::on_recv(const char* buf, size_t size)
             }
             break;
         }
+        case Type_RegisterItemList: {
+            auto items = message->registerItems();
+            auto items_len = items->size();
+            for (int i = 0; i < items_len; i++) {
+                auto item = items->Get(i);
+
+                if (item->name() != NULL) {
+                    tm->registerItem(
+                        item->name()->c_str(), item->texture()->c_str());
+                }
+            }
+        }
         case Type_KeepAlive:
             break; // ignore
         default: {
@@ -111,6 +123,15 @@ void Network_c::startUp()
 
     uint8_t* buf = builder.GetBufferPointer();
     int size = builder.GetSize();
+    send((const char*)buf, size);
+
+    // require items
+    builder.Reset();
+    message = CreateMessage(builder, Type_RegisterItemList);
+    builder.FinishSizePrefixed(message);
+
+    buf = builder.GetBufferPointer();
+    size = builder.GetSize();
     send((const char*)buf, size);
 }
 

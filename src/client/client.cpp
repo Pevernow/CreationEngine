@@ -33,7 +33,8 @@ Client::Client(World* localserverworldptr) : net(&localTM)
 
     gui.init(
         renderer.sdl_window, &FPS, &localPlayer.position,
-        &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch);
+        &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch, &localTM,
+        &localPlayer.bag);
 }
 
 void Client::shutdown()
