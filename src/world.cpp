@@ -115,24 +115,6 @@ void World::mapGenForChunk(Chunk& chunk)
     chunk.isInit = true;
 }
 
-bool World::isAroundTree(Chunk& chunk, int x, int y, int z)
-{
-    for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            for (int k = -1; k <= 1; k++) {
-                // checked edges before
-                // do not check again
-                if (y + j < 16 && y - j > 0) {
-                    int id = chunk.blocks[x + i][y + j][x + k].id;
-                    if (id == 4 || id == 3) {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
 
 Block& World::get_node(int x, int y, int z)
 {

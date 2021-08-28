@@ -29,7 +29,6 @@ public:
 private:
     int lastChunkIndex;
     void mapGenForChunk(Chunk&);
-    bool isAroundTree(Chunk&, int x, int y, int z);
 };
 void getChunkMinPosition(int& x, int& y, int& z);
 /*
