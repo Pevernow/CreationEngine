@@ -33,7 +33,7 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          sudo cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target install --config ${{env.BUILD_TYPE}}
+          sudo cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target install --config ${{env.BUILD_TYPE}} -j16
 
 
     - name: Configure CMake
@@ -43,4 +43,4 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j16
