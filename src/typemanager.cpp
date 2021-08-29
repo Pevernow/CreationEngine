@@ -30,3 +30,9 @@ ItemStack::ItemStack()
     id = "!empty";
     num = -1;
 }
+
+ItemStack::ItemStack(string id, int num)
+{
+    this->id = id;
+    this->num = num;
+}

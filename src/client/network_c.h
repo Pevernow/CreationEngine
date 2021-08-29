@@ -12,6 +12,7 @@ public:
     void startUp();
     void keepAlive();
     void shutdown();
+
 private:
     TypeManager_c* tm;
     asio::io_service io_service_;
@@ -22,5 +23,6 @@ private:
     static void event_callback(
         kcp_conv_t conv, asio_kcp::eEventType event_type,
         const std::string& msg, void* var);
+    int initStatus;
 };
 #endif

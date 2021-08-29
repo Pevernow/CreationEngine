@@ -1,4 +1,6 @@
 #include "typemanager_s.h"
+
+#include <cstring>
 Blockmodel_s::Blockmodel_s(
     string name, uint16_t id, const char* texture_path[6])
 {
@@ -20,6 +22,11 @@ void TypeManager_s::registerNode(const char* name, const char* texture_path[6])
     int id = blockmodel.size();
     nameIndex[name] = id;
     blockmodel.push_back(Blockmodel_s(name, id, texture_path));
+
+    if (strcmp(name, "air") == 0)
+        return;
+
+    registerItem(name, texture_path[0]); // test only, will be removed
 }
 
 void TypeManager_s::registerItem(const char* name, const char* texture_path)

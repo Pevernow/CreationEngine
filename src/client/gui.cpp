@@ -9,7 +9,7 @@
 void GUImanager::init(
     SDL_Window* sdl_window_ptr, int* FPS_ptr, glm::vec3* playerPos_ptr,
     string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr,
-    TypeManager_c* tm_ptr, Inventory* bag_ptr)
+    TypeManager_c* tm_ptr, Inventory* bag_ptr, int* wielditem_ptr)
 {
     sdl_window = sdl_window_ptr;
     FPS = FPS_ptr;
@@ -19,6 +19,7 @@ void GUImanager::init(
     pointThing = pointThing_ptr;
     tm = tm_ptr;
     bag = bag_ptr;
+    wielditem = wielditem_ptr;
 
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -33,6 +34,7 @@ void GUImanager::init(
 #endif // BX_PLATFORM_WINDOWS ? BX_PLATFORM_OSX ? BX_PLATFORM_LINUX
     cross = loadTexture("textures/plus.png");
     hotBarBg = loadTexture("textures/gui_hotbar.png");
+    hotBarSelected = loadTexture("textures/gui_hotbar_selected.png");
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 }
 
@@ -104,15 +106,24 @@ void GUImanager::showHotbar()
             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoInputs |
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
             ImGuiWindowFlags_NoBackground);
-    ImGui::SetWindowPos(ImVec2(70, 400), ImGuiCond_Always);
+    ImGui::SetWindowPos(ImVec2(60, 400), ImGuiCond_Always);
     ImGui::Image((void*)(long)(hotBarBg.idx), ImVec2(500, 65));
-    for (int i = 0; i < 8; i++) {
+    for (int i = 1; i <= 8; i++) { // item 0 not use
         if (bag->items[i].id == "!empty") {
             continue;
         }
+        if (i == *wielditem) { // draw selected item
+            ImGui::SetCursorPosY(10);
+            ImGui::SetCursorPosX(12 + 61.5 * (i - 1));
+            ImGui::Image((void*)(long)hotBarSelected.idx, ImVec2(62, 62));
+        }
+        ImGui::SetCursorPosY(16);
+        ImGui::SetCursorPosX(18 + 61.5 * (i - 1));
         ImGui::Image(
             (void*)(long)(tm->itemmodel[bag->items[i].id].texture.idx),
-            ImVec2(128, 128));
+            ImVec2(50, 50));
+        ImGui::SetCursorPosY(16);
+        ImGui::SetCursorPosX(18 + 61.5 * (i - 1));
         ImGui::Text(to_string(bag->items[i].num).c_str());
     }
     ImGui::End();

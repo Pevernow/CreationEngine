@@ -22,6 +22,7 @@ class ItemStack
 {
 public:
     ItemStack();
+    ItemStack(string id, int num);
     string id;
     uint16_t num;
 };

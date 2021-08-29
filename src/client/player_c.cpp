@@ -20,9 +20,9 @@ Player_c::Player_c()
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
     this->movement_speed = 0.005f;
     this->mouse_sensitivity = 0.1f;
-    wielditem = "default_dirt";
+    wieldItemIndex = 1; // item 0 not use
     jump = false;
-    bag.items.resize(9 * 4);
+    bag.items.resize(8 * 4 + 1); // item 0 not use
 }
 
 void Player_c::update_camera_position(float deltaTime)
@@ -221,11 +221,21 @@ void Player_c::on_right_click(int delayMS)
     if (breakTime >= 300) {
         if (world->get_node(placePos.x, placePos.y, placePos.z).id == 0)
             world->set_node(
-                placePos.x, placePos.y, placePos.z, wielditem.c_str());
+                placePos.x, placePos.y, placePos.z,
+                bag.items[wieldItemIndex].id.c_str());
         breakTime = 0;
     } else {
         breakTime += delayMS;
     }
 
     return;
+}
+
+void Player_c::fillBagInCreation()
+{
+    int i = 1; // item 0 not use
+    for (auto& item : tm->itemmodel) {
+        bag.items[i] = ItemStack(item.first, 64);
+        i++;
+    }
 }

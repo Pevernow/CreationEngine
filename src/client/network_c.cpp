@@ -10,6 +10,7 @@ using namespace std;
 using namespace Network;
 
 extern bool gQuit;
+extern bool gInitFinished;
 
 void Network_c::on_recv(const char* buf, size_t size)
 {
@@ -20,6 +21,7 @@ void Network_c::on_recv(const char* buf, size_t size)
     auto request_type = message->type();
     switch (request_type) {
         case Type_RegisterNodeList: {
+            initStatus++;
             auto nodes = message->registerNodes();
             auto nodes_len = nodes->size();
             for (int i = 0; i < nodes_len; i++) {
@@ -39,6 +41,7 @@ void Network_c::on_recv(const char* buf, size_t size)
             break;
         }
         case Type_RegisterItemList: {
+            initStatus++;
             auto items = message->registerItems();
             auto items_len = items->size();
             for (int i = 0; i < items_len; i++) {
@@ -56,6 +59,9 @@ void Network_c::on_recv(const char* buf, size_t size)
             spdlog::error("Unsupport request from server");
             break;
         }
+    }
+    if (initStatus == 2) {
+        gInitFinished = true;
     }
 }
 
@@ -96,6 +102,7 @@ void Network_c::on_tick(const std::error_code& err, Network_c* _this)
 Network_c::Network_c(TypeManager_c* tmPtr, string ip, int port)
     : tm(tmPtr), timer(io_service_, chrono::milliseconds(5))
 {
+    initStatus = 0;
     // Config kcp client
     kcp_client_.set_event_callback(event_callback, (void*)this);
     kcp_client_.connect_async(24431, ip, port);

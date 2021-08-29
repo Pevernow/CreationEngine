@@ -7,9 +7,11 @@
 #include <iostream>
 
 extern bool gQuit;
+bool gInitFinished;
 
 Client::Client(World* localserverworldptr) : net(&localTM)
 {
+    gInitFinished = false;
     localworld = localserverworldptr;
     // configure
     ReadConfig("CE.conf", config);
@@ -34,7 +36,7 @@ Client::Client(World* localserverworldptr) : net(&localTM)
     gui.init(
         renderer.sdl_window, &FPS, &localPlayer.position,
         &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch, &localTM,
-        &localPlayer.bag);
+        &localPlayer.bag, &localPlayer.wieldItemIndex);
 }
 
 void Client::shutdown()
@@ -47,8 +49,14 @@ void Client::shutdown()
 void Client::mainloop()
 {
     net.startUp();
-    _FPS_Timer = SDL_GetTicks();
 
+    while (!gInitFinished) { // Wait for register
+        SDL_Delay(500);
+    }
+
+    localPlayer.fillBagInCreation();
+
+    _FPS_Timer = SDL_GetTicks();
     static Uint32 lastFrame;
 
     while (!gQuit) {
@@ -126,6 +134,31 @@ void Client::processEvent(SDL_Window* window, int delay)
 
     if (state[SDL_SCANCODE_ESCAPE]) {
         gQuit = true;
+    }
+
+    if (state[SDL_SCANCODE_1]) {
+        localPlayer.wieldItemIndex = 1;
+    }
+    if (state[SDL_SCANCODE_2]) {
+        localPlayer.wieldItemIndex = 2;
+    }
+    if (state[SDL_SCANCODE_3]) {
+        localPlayer.wieldItemIndex = 3;
+    }
+    if (state[SDL_SCANCODE_4]) {
+        localPlayer.wieldItemIndex = 4;
+    }
+    if (state[SDL_SCANCODE_5]) {
+        localPlayer.wieldItemIndex = 5;
+    }
+    if (state[SDL_SCANCODE_6]) {
+        localPlayer.wieldItemIndex = 6;
+    }
+    if (state[SDL_SCANCODE_7]) {
+        localPlayer.wieldItemIndex = 7;
+    }
+    if (state[SDL_SCANCODE_8]) {
+        localPlayer.wieldItemIndex = 8;
     }
 
     return;

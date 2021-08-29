@@ -31,14 +31,15 @@ public:
     void update_camera_position(float deltaTime);
     void on_left_click(int delayMS);
     void on_right_click(int delayMS);
+    void fillBagInCreation();
     World* world;
-    TypeManager* tm;
+    TypeManager_c* tm;
     Renderer* drawer;
     string pointThing;
     float yaw, pitch, scale;
     glm::vec3 position;
     Inventory bag;
-
+    int wieldItemIndex; // from 1 to 8
 private:
     void update_camera_vectors();
     void hideChunkByViewRange(int viewRange);
@@ -58,7 +59,7 @@ private:
     float mouse_sensitivity;
     glm::vec3 choosepos;
     glm::vec3 placePos;
-    std::string wielditem;
+
     float breakTime;
 };
 #endif
