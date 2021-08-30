@@ -134,7 +134,8 @@ void connection::input(
         char kcp_buf[1024 * 1000] = "";
         int kcp_recvd_bytes = ikcp_recv(p_kcp_, kcp_buf, sizeof(kcp_buf));
         if (kcp_recvd_bytes <= 0) {
-            spdlog::warn("Kcp_recvd_bytes<=0: {}", kcp_recvd_bytes);
+            if (kcp_recvd_bytes != -1)
+                spdlog::warn("Kcp_recvd_bytes<=0: {}", kcp_recvd_bytes);
         } else {
             const std::string package(kcp_buf, kcp_recvd_bytes);
             /*

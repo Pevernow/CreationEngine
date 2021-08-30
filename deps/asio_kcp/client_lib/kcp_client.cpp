@@ -443,8 +443,9 @@ std::string kcp_client::recv_udp_package_from_kcp(void)
 {
     char kcp_buf[MAX_MSG_SIZE] = "";
     int kcp_recvd_bytes = ikcp_recv(p_kcp_, kcp_buf, sizeof(kcp_buf));
-    if (kcp_recvd_bytes < -1) {
-        spdlog::warn("Kcp_recvd_bytes<0: {}", kcp_recvd_bytes);
+    if (kcp_recvd_bytes < 0) {
+        if (kcp_recvd_bytes != -1)
+            spdlog::warn("Kcp_recvd_bytes<0: {}", kcp_recvd_bytes);
         return "";
     }
 
