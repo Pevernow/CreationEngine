@@ -13,4 +13,15 @@ bgfx::TextureHandle loadTexture(
     uint8_t _skip = 0, bgfx::TextureInfo* _info = NULL,
     bimg::Orientation::Enum* _orientation = NULL);
 
+bgfx::TextureHandle createInventoryCubeImage(
+    const char* top, const char* left, const char* right);
+
+bimg::ImageContainer* loadTextureRAW(
+    const char* _name, uint64_t _flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+    uint8_t _skip = 0, bgfx::TextureInfo* _info = NULL,
+    bimg::Orientation::Enum* _orientation = NULL);
+
+bgfx::TextureHandle createInventoryCubeImage(
+    const char* top, const char* left, const char* right);
+
 #endif

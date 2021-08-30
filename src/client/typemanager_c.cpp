@@ -34,6 +34,15 @@ void TypeManager_c::registerNode(const char* name, const char* texture_path[6])
             textureArray, textureCount, texture_path[0], texture_path[1],
             texture_path[2], texture_path[3], texture_path[4], texture_path[5]);
         textureCount += 6;
+
+        bgfx::TextureHandle ici = createInventoryCubeImage(
+            texture_path[0], texture_path[4], texture_path[5]);
+
+        // maunal registerItem
+        auto item = Itemmodel_c();
+        item.name = name;
+        item.texture = ici;
+        itemmodel[string(name)] = item;
     }
     blockmodel.push_back(Blockmodel_c(name, id, texture_path));
 }

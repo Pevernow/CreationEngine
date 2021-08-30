@@ -26,7 +26,7 @@ void TypeManager_s::registerNode(const char* name, const char* texture_path[6])
     if (strcmp(name, "air") == 0)
         return;
 
-    registerItem(name, texture_path[0]); // test only, will be removed
+    // registerItem(name, texture_path[0]); // test only, will be removed
 }
 
 void TypeManager_s::registerItem(const char* name, const char* texture_path)
