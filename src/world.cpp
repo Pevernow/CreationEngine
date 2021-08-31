@@ -1,6 +1,7 @@
 #include "world.h"
 #include "noise.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 
@@ -112,9 +113,9 @@ void World::mapGenForChunk(Chunk& chunk)
     }
 
     chunk.update();
+    updateLightForChunk(chunk);
     chunk.isInit = true;
 }
-
 
 Block& World::get_node(int x, int y, int z)
 {
@@ -164,16 +165,18 @@ void World::set_node(int x, int y, int z, const char* name)
     if (x < 0 || y < 0 || z < 0)
         return;
     for (int i = 0, l = worldmap.size(); i < l; i++) {
-        if (worldmap[i].blocks[0][0][0].x <= x &&
-            worldmap[i].blocks[0][0][0].y <= y &&
-            worldmap[i].blocks[0][0][0].z <= z &&
-            worldmap[i].blocks[15][15][15].x >= x &&
-            worldmap[i].blocks[15][15][15].y >= y &&
-            worldmap[i].blocks[15][15][15].z >= z) {
+        Chunk& testChunk = worldmap[i];
+        if (testChunk.blocks[0][0][0].x <= x &&
+            testChunk.blocks[0][0][0].y <= y &&
+            testChunk.blocks[0][0][0].z <= z &&
+            testChunk.blocks[15][15][15].x >= x &&
+            testChunk.blocks[15][15][15].y >= y &&
+            testChunk.blocks[15][15][15].z >= z) {
             // in chunk
-            worldmap[i].blocks[x % 16][y % 16][z % 16].id =
+            testChunk.blocks[x % 16][y % 16][z % 16].id =
                 typemanager->nameToID(name);
-            worldmap[i].update();
+            testChunk.update();
+            updateLightForChunk(testChunk);
             return;
         }
     }
@@ -235,6 +238,152 @@ void Chunk::update()
     }
 }
 
+void World::updateTime()
+{
+    if (time < 1440) {
+        time++;
+    } else if (time >= 1440) {
+        time = time - 1440;
+    }
+}
+
+void World::updateLightForChunk(Chunk& ck)
+{
+    for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
+            int sky_light = 15;
+            for (int y = 15; y >= 0; y--) {
+                if (ck.blocks[x][y][z].show == true) {
+                    // calc light
+                    ck.blocks[x][y][z].sun_light = sky_light;
+                    if (ck.blocks[x][y][z].id != 4)
+                        sky_light = 0;
+                    else
+                        sky_light = max(0, sky_light - 1);
+                }
+            }
+        }
+    }
+    for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
+            int sky_light = 15;
+            for (int y = 0; y < 16; y++) {
+                if (ck.blocks[x][y][z].show == true) {
+                    // calc light scatter
+
+                    // Get light_around or 0
+                    int light_around[6] = {0};
+                    Block* testBlock;
+                    testBlock = ck.getBlockOrNullptr(x + 1, y, z);
+                    if (testBlock == nullptr) {
+                        light_around[0] = 0;
+                    } else {
+                        light_around[0] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x - 1, y, z);
+                    if (testBlock == nullptr) {
+                        light_around[1] = 0;
+                    } else {
+                        light_around[1] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y + 1, z);
+                    if (testBlock == nullptr) {
+                        light_around[2] = 0;
+                    } else {
+                        light_around[2] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y - 1, z);
+                    if (testBlock == nullptr) {
+                        light_around[3] = 0;
+                    } else {
+                        light_around[3] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y, z + 1);
+                    if (testBlock == nullptr) {
+                        light_around[4] = 0;
+                    } else {
+                        light_around[4] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y, z - 1);
+                    if (testBlock == nullptr) {
+                        light_around[5] = 0;
+                    } else {
+                        light_around[5] = testBlock->sun_light;
+                    }
+
+                    ck.blocks[x][y][z].sun_light =
+                        max((int)ck.blocks[x][y][z].sun_light,
+                            *max_element(light_around, light_around + 5) - 1);
+                }
+            }
+        }
+    }
+    // Do it again in reverse order
+    for (int x = 15; x >= 0; x--) {
+        for (int z = 15; z >= 0; z--) {
+            int sky_light = 15;
+            for (int y = 15; y >= 0; y--) {
+                if (ck.blocks[x][y][z].show == true) {
+                    // calc light scatter
+
+                    // Get light_around or 0
+                    int light_around[6] = {0};
+                    Block* testBlock;
+                    testBlock = ck.getBlockOrNullptr(x + 1, y, z);
+                    if (testBlock == nullptr) {
+                        light_around[0] = 0;
+                    } else {
+                        light_around[0] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x - 1, y, z);
+                    if (testBlock == nullptr) {
+                        light_around[1] = 0;
+                    } else {
+                        light_around[1] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y + 1, z);
+                    if (testBlock == nullptr) {
+                        light_around[2] = 0;
+                    } else {
+                        light_around[2] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y - 1, z);
+                    if (testBlock == nullptr) {
+                        light_around[3] = 0;
+                    } else {
+                        light_around[3] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y, z + 1);
+                    if (testBlock == nullptr) {
+                        light_around[4] = 0;
+                    } else {
+                        light_around[4] = testBlock->sun_light;
+                    }
+                    testBlock = ck.getBlockOrNullptr(x, y, z - 1);
+                    if (testBlock == nullptr) {
+                        light_around[5] = 0;
+                    } else {
+                        light_around[5] = testBlock->sun_light;
+                    }
+
+                    ck.blocks[x][y][z].sun_light =
+                        max((int)ck.blocks[x][y][z].sun_light,
+                            *max_element(light_around, light_around + 5) - 1);
+                }
+            }
+        }
+    }
+}
+
+Block* Chunk::getBlockOrNullptr(int8_t local_x, int8_t local_y, int8_t local_z)
+{
+    if (local_x >= 0 && local_y >= 0 && local_z >= 0 && local_x <= 16 &&
+        local_y <= 16 && local_z <= 16) {
+        return &blocks[local_x][local_y][local_z];
+    }
+    return nullptr;
+}
+
 // bad code
 /*
 void Chunk::updateBlock(int x, int y, int z)
@@ -242,7 +391,8 @@ void Chunk::updateBlock(int x, int y, int z)
     for (int ix = -1; ix <= 1; ix++) {
         for (int iy = -1; iy <= 1; iy++) {
             for (int iz = -1; iz <= 1; iz++) {
-                if (x + ix < 0 || x + ix > 15 || y + iy < 0 || y + iy > 15
+                if (x + ix < 0 || x + ix > 15 || y + iy < 0 || y +
+iy > 15
 || z + iz < 0 || z + iz > 15) { continue;
                 }
                 if (blocks[x][y][z].id == 0) {

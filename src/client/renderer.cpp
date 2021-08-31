@@ -191,12 +191,12 @@ void Renderer::makeDrawCache()
 
     uint8_t* data = idb.data;
     for (int i = 0, l = renderList.size(); i < l; i++) {
+        Block* block = renderList[i];
         float* mtx = (float*)data;
-        bx::mtxTranslate(
-            mtx, renderList[i]->x, renderList[i]->y, renderList[i]->z);
+        bx::mtxTranslate(mtx, block->x, block->y, block->z);
         float* id = (float*)&data[64];
-        id[0] = renderList[i]->id - 1;
-        id[1] = 0;
+        id[0] = block->id - 1;
+        id[1] = block->sun_light;
         id[2] = 0;
         id[3] = 0;
         data += instanceStride;
