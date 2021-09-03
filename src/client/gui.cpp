@@ -72,6 +72,7 @@ void GUImanager::showdebuginfo()
     std::string dir =
         "Yaw:" + std::to_string(*yaw) + " Pitch : " + std::to_string(*pitch);
     std::string choose = "PointThing:" + *pointThing;
+    ImGui::Text("%d draw calls", bgfx::getStats()->numDraw);
     ImGui::Text(choose.c_str());
     ImGui::Text(fps.c_str());
 

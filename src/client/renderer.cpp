@@ -164,6 +164,7 @@ void Renderer::makeDrawCache()
     int tmSize = typemanager->blockmodel.size();
 
     vector<Block*> renderList;
+    vector<int8_t> light_around;
     for (int i = 0, l = world->worldmap.size(); i < l; i++) {
         Chunk& chunk = world->worldmap[i];
         if (chunk.show == false) {
@@ -179,6 +180,44 @@ void Renderer::makeDrawCache()
                     if (chunk.blocks[x][y][z].show == true &&
                         tmSize > chunk.blocks[x][y][z].id) {
                         renderList.emplace_back(&chunk.blocks[x][y][z]);
+                        // Get light_around or 0
+                        Block* testBlock;
+                        testBlock = ck.getBlockOrNullptr(x + 1, y, z);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
+                        testBlock = ck.getBlockOrNullptr(x - 1, y, z);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
+                        testBlock = ck.getBlockOrNullptr(x, y + 1, z);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
+                        testBlock = ck.getBlockOrNullptr(x, y - 1, z);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
+                        testBlock = ck.getBlockOrNullptr(x, y, z + 1);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
+                        testBlock = ck.getBlockOrNullptr(x, y, z - 1);
+                        if (testBlock == nullptr) {
+                            light_around.emplace_back(0);
+                        } else {
+                            light_around.emplace_back(testBlock->sun_light);
+                        }
                     }
                 }
             }
@@ -186,7 +225,7 @@ void Renderer::makeDrawCache()
     }
 
     // Start Instancing
-    uint16_t instanceStride = 64 + 16;
+    uint16_t instanceStride = 64 + 16 + 16;
     bgfx::allocInstanceDataBuffer(&idb, renderList.size(), instanceStride);
 
     uint8_t* data = idb.data;
@@ -197,8 +236,12 @@ void Renderer::makeDrawCache()
         float* id = (float*)&data[64];
         id[0] = block->id - 1;
         id[1] = block->sun_light;
-        id[2] = 0;
-        id[3] = 0;
+        id[2] = light_around[i * 6 + 0];
+        id[3] = light_around[i * 6 + 1];
+        id[4] = light_around[i * 6 + 2];
+        id[5] = light_around[i * 6 + 3];
+        id[6] = light_around[i * 6 + 4];
+        id[7] = light_around[i * 6 + 5];
         data += instanceStride;
     }
 }
