@@ -20,7 +20,7 @@ class World
 {
 public:
     World();
-    void set_node(int x, int y, int z, const char* name);
+    bool set_node(int x, int y, int z, const char* name);
     Block& get_node(int x, int y, int z);
     Chunk& get_chunk(int x, int y, int z);
     void updateLightForChunk(Chunk&);

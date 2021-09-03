@@ -219,11 +219,16 @@ void Player_c::on_left_click(int delayMS)
 void Player_c::on_right_click(int delayMS)
 {
     if (breakTime >= 300) {
-        if (world->get_node(placePos.x, placePos.y, placePos.z).id == 0)
-            world->set_node(
+        if (bag.items[wieldItemIndex].num > 0 &&
+            world->get_node(placePos.x, placePos.y, placePos.z).id == 0) {
+            bool ret = world->set_node(
                 placePos.x, placePos.y, placePos.z,
                 bag.items[wieldItemIndex].id.c_str());
-        breakTime = 0;
+            if (ret) {
+                bag.items[wieldItemIndex].num -= 1;
+            }
+            breakTime = 0;
+        }
     } else {
         breakTime += delayMS;
     }

@@ -160,10 +160,10 @@ Block& World::get_node(int x, int y, int z)
     return new_chunk.blocks[x % 16][y % 16][z % 16];
 }
 
-void World::set_node(int x, int y, int z, const char* name)
+bool World::set_node(int x, int y, int z, const char* name)
 {
     if (y < 0)
-        return;
+        return false;
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         Chunk& testChunk = worldmap[i];
         if (testChunk.blocks[0][0][0].x <= x &&
@@ -177,9 +177,10 @@ void World::set_node(int x, int y, int z, const char* name)
                 typemanager->nameToID(name);
             testChunk.update();
             updateLightForChunk(testChunk);
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 Chunk& World::get_chunk(int x, int y, int z)
