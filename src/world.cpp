@@ -162,7 +162,7 @@ Block& World::get_node(int x, int y, int z)
 
 void World::set_node(int x, int y, int z, const char* name)
 {
-    if (x < 0 || y < 0 || z < 0)
+    if (y < 0)
         return;
     for (int i = 0, l = worldmap.size(); i < l; i++) {
         Chunk& testChunk = worldmap[i];
