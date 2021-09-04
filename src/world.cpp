@@ -435,6 +435,11 @@ World::World()
     seed(888);
     srand(888);
 }
+
+string World::nodeIDtoItemID(int16_t nodeID)
+{
+    return typemanager->idToName(nodeID);
+}
 /*
 Mapgen::Mapgen(unsigned int worldSeed)
 {

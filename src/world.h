@@ -25,6 +25,7 @@ public:
     Chunk& get_chunk(int x, int y, int z);
     void updateLightForChunk(Chunk&);
     void updateTime(); // Call it every second
+    string nodeIDtoItemID(int16_t nodeID);
 
     TypeManager* typemanager;
     vector<Chunk> worldmap;

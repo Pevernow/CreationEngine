@@ -24,14 +24,17 @@ class ItemStack
 public:
     ItemStack();
     ItemStack(string id, int num);
+    uint8_t get(int n); // Return the number of items successfully got
+    uint8_t put(int n); // Return the number of items successfully put
     string id;
-    uint16_t num;
+    uint8_t num;
 };
 
 class Inventory
 {
 public:
     vector<ItemStack> items;
+    bool putItem(ItemStack item);
 };
 
 class TypeManager

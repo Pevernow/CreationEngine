@@ -208,6 +208,9 @@ if (yaw < -180)
 void Player_c::on_left_click(int delayMS)
 {
     if (breakTime >= 1000) {
+        string itemID = world->nodeIDtoItemID(
+            world->get_node(choosepos.x, choosepos.y, choosepos.z).id);
+        bag.putItem(ItemStack(itemID, 1));
         world->set_node(choosepos.x, choosepos.y, choosepos.z, "air");
         breakTime = 0;
     } else {
