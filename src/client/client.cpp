@@ -36,7 +36,7 @@ Client::Client(World* localserverworldptr) : net(&localTM)
     gui.init(
         renderer.sdl_window, &FPS, &localPlayer.position,
         &localPlayer.pointThing, &localPlayer.yaw, &localPlayer.pitch, &localTM,
-        &localPlayer.bag, &localPlayer.wieldItemIndex);
+        &localPlayer.bag, &localPlayer.wieldItemIndex, &localworld->time);
 }
 
 void Client::shutdown()
@@ -77,6 +77,7 @@ void Client::mainloop()
             _FPS_Timer = nowFrame;
             renderer.makeDrawCache(); // Force reflush drawcache
             net.keepAlive();
+            localworld->updateTime();
         }
         lastFrame = nowFrame;
         FPS_count++;
@@ -84,6 +85,7 @@ void Client::mainloop()
         localPlayer.view();
 
         renderer.DrawBlock();
+        renderer.RenderSky();
 
         bgfx::frame();
     }

@@ -9,7 +9,8 @@
 void GUImanager::init(
     SDL_Window* sdl_window_ptr, int* FPS_ptr, glm::vec3* playerPos_ptr,
     string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr,
-    TypeManager_c* tm_ptr, Inventory* bag_ptr, int* wielditem_ptr)
+    TypeManager_c* tm_ptr, Inventory* bag_ptr, int* wielditem_ptr,
+    uint16_t* time_ptr)
 {
     sdl_window = sdl_window_ptr;
     FPS = FPS_ptr;
@@ -20,6 +21,7 @@ void GUImanager::init(
     tm = tm_ptr;
     bag = bag_ptr;
     wielditem = wielditem_ptr;
+    time = time_ptr;
 
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -73,6 +75,7 @@ void GUImanager::showdebuginfo()
         "Yaw:" + std::to_string(*yaw) + " Pitch : " + std::to_string(*pitch);
     std::string choose = "PointThing:" + *pointThing;
     ImGui::Text("%d draw calls", bgfx::getStats()->numDraw);
+    ImGui::Text("Time: %d:%d", *time / 60, *time % 60);
     ImGui::Text(choose.c_str());
     ImGui::Text(fps.c_str());
 

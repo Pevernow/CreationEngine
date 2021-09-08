@@ -4,6 +4,7 @@
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 #include "typemanager_c.h"
+#include "utils.h"
 #include <SDL2/SDL.h>
 #include <bx/math.h>
 
@@ -85,11 +86,11 @@ bool Renderer::GenBlockModel()
     block_tex = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
 
     std::string vshader;
-    if (!fileops::read_file("shader/v_simple.bin", vshader)) {
+    if (!fileops::read_file("shader/block/v_simple.bin", vshader)) {
         return 1;
     }
     std::string fshader;
-    if (!fileops::read_file("shader/f_simple.bin", fshader)) {
+    if (!fileops::read_file("shader/block/f_simple.bin", fshader)) {
         return 1;
     }
     bgfx::ShaderHandle vsh = createShader(vshader, "vshader");
@@ -155,6 +156,7 @@ bool Renderer::init(
     bgfx::setViewRect(0, 0, 0, width, height);
 
     GenBlockModel();
+    sky_tex = loadTextureRAW("textures/sky.png")->m_data;
     SDL_ShowCursor(SDL_DISABLE);
     return 0;
 }
@@ -295,4 +297,11 @@ void Renderer::shutdown()
 Renderer::~Renderer()
 {
     ;
+}
+
+void Renderer::RenderSky()
+{
+    uint32_t col =
+        ((uint32_t*)&sky_tex)[max(int(float(world->time) / 1440 * 1024), 1023)];
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, col, 1.0f, 0);
 }

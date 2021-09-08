@@ -12,6 +12,7 @@ public:
     ~Renderer();
     bool init(int width, int height, World* world, TypeManager_c* typemanager);
     void DrawBlock();
+    void RenderSky();
     void shutdown();
     void makeDrawCache();
     bool cache;
@@ -19,6 +20,7 @@ public:
     SDL_Window* sdl_window;
 
 private:
+    void* sky_tex;
     World* world;
     TypeManager_c* typemanager;
     bgfx::VertexBufferHandle block_vbh;

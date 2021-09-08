@@ -10,7 +10,8 @@ public:
     void init(
         SDL_Window* sdl_window_ptr, int* FPS_ptr, glm::vec3* playerPos_ptr,
         std::string* pointThing_ptr, float* yaw_ptr, float* pitch_ptr,
-        TypeManager_c* tm_ptr, Inventory* bag_ptr, int* wielditem_ptr);
+        TypeManager_c* tm_ptr, Inventory* bag_ptr, int* wielditem_ptr,
+        uint16_t* time_ptr);
     void view();
 
 private:
@@ -27,4 +28,5 @@ private:
     const int* FPS;
     const Inventory* bag; // Just use for hot bar
     const int* wielditem;
+    const uint16_t* time;
 };
