@@ -156,7 +156,8 @@ bool Renderer::init(
     bgfx::setViewRect(0, 0, 0, width, height);
 
     GenBlockModel();
-    sky_tex = loadTextureRAW("textures/sky.png")->m_data;
+    auto sky = loadTextureRAW("textures/sky.png");
+    sky_tex = sky->m_data;
     SDL_ShowCursor(SDL_DISABLE);
     return 0;
 }
@@ -315,7 +316,7 @@ Renderer::~Renderer()
 
 void Renderer::RenderSky()
 {
-    uint32_t col =
-        ((uint32_t*)&sky_tex)[max(int(float(world->time) / 1440 * 1024), 1023)];
+    uint32_t col = ((
+        uint32_t*)sky_tex)[(max(int(float(world->time) / 1440 * 1024), 1023))];
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, col, 1.0f, 0);
 }
