@@ -163,6 +163,20 @@ bool Renderer::init(
 
 void Renderer::makeDrawCache()
 {
+    // Calc Light Offset by time
+    double SkyLightOffset = 0;
+    if (world->time <= 4.5 * 60) { // Before 4.5am
+        SkyLightOffset = -7;
+    } else if (world->time > 4.5 * 60 && world->time <= 8 * 60) { // Morning
+        SkyLightOffset = max(-7 + (world->time - 4.5 * 60) * 0.034, 0.0);
+    } else if (world->time > 8 * 60 && world->time <= 17 * 60) {
+        SkyLightOffset = 0;
+    } else if (world->time > 17 * 60 && world->time <= 19 * 60) {
+        SkyLightOffset = min(0 - (world->time - 17 * 60) * 0.06, -7.0);
+    } else if (world->time > 19 * 60) {
+        SkyLightOffset = -7;
+    }
+
     int tmSize = typemanager->blockmodel.size();
 
     vector<Block*> renderList;
@@ -240,7 +254,7 @@ void Renderer::makeDrawCache()
         bx::mtxTranslate(mtx, block->x, block->y, block->z);
         float* id = (float*)&data[64];
         id[0] = block->id - 1;
-        id[1] = block->sun_light;
+        id[1] = max(min(block->sun_light + (int)SkyLightOffset, 15), 0);
         id[2] = 0;
         id[3] = 0;
         /*
