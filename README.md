@@ -13,13 +13,9 @@ Copyright (c) 2020-2021 Pevernow <3450354617@qq.com>
 
 ![creation](https://user-images.githubusercontent.com/29888010/131216383-692b30e0-f77d-4a02-b0b0-18692d79cb32.png)
 
-
-2021/8/28
-
-This game is not finished
---------------------------
-- Don't expect it to work as well as a finished game will.
-- Please join in the project if you want it will become better.
+## Notice
+2022/7/17
+This version has been stopped and will be released on steam after rewriting.
 
 ## Compiling
 
