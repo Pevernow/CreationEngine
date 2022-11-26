@@ -51,7 +51,7 @@ jobs:
     env:
       VCPKG_VERSION: eefee7408133f3a0fef711ef9c6a3677b7e06fd7
       # 2022.11
-      vcpkg_packages: sdl2,bgfx[tools, multithreaded],luajit
+      vcpkg_packages: sdl2 bgfx[tools,multithreaded] luajit
     strategy:
       fail-fast: false
       matrix:
