@@ -22,7 +22,7 @@
       }
     },
     {
-      "name": "msvc-17-vcpkg",
+      "name": "msvc-16-vcpkg",
       "displayName": "Visual Studio 2019 (vcpkg)",
       "description": "Configure with vcpkg toolchain and generate Visual Studio 2022 project files for all configurations",
       "generator": "Visual Studio 16 2019",
