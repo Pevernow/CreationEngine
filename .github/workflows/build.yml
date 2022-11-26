@@ -50,6 +50,7 @@ jobs:
     runs-on: windows-2019
     env:
       VCPKG_VERSION: eefee7408133f3a0fef711ef9c6a3677b7e06fd7
+      VCPKG_FEATURE_FLAGS: registries,manifests
     strategy:
       fail-fast: false
       matrix:
