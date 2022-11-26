@@ -86,6 +86,8 @@ jobs:
         with:
           configurePreset: 'ninja-multi-vcpkg'
           configurePresetCmdString: "[`--preset`, `$[env.CONFIGURE_PRESET_NAME]`, `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`, `-DOPENBLACK_WARNINGS_AS_ERRORS=ON`]"
+          # This is the name of the CMakePresets.json's configuration to build the project.
+          buildPreset: 'ninja-multi-vcpkg'
 
 
       - name: CPack
