@@ -1,0 +1,114 @@
+name: CMake
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  linux:
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Linux dependencies
+      run: sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev libgl1-mesa-dev libgles2-mesa-dev libsdl2-dev
+
+    - name: Install bgfx-cmake
+      run: |
+          git clone https://github.com/bkaradzic/bgfx.cmake.git
+          cd bgfx.cmake
+          git submodule init
+          git submodule update
+          mkdir build
+          cd build
+          cmake ..
+          sudo cmake --build "${{ env.CMAKE_BUILD_DIR }}" --target install --config ${{env.BUILD_TYPE}} -j16
+
+
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j16
+
+  windows:
+    name: VS 2019 ${{ matrix.config.arch }}-${{ matrix.type }}
+    runs-on: windows-2019
+    env:
+      VCPKG_VERSION: eefee7408133f3a0fef711ef9c6a3677b7e06fd7
+      # 2022.11
+      vcpkg_packages: sdl2,bgfx[tools, multithreaded],luajit
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              arch: x86,
+              generator: "-G'Visual Studio 16 2019' -A Win32",
+              vcpkg_triplet: x86-windows
+            }
+          - {
+              arch: x64,
+              generator: "-G'Visual Studio 16 2019' -A x64",
+              vcpkg_triplet: x64-windows
+            }
+        type: [portable]
+#        type: [portable, installer]
+# The installer type is working, but disabled, to save runner jobs.
+# Enable it, when working on the installer.
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore from cache and run vcpkg
+        uses: lukka/run-vcpkg@v7
+        with:
+          vcpkgArguments: ${{env.vcpkg_packages}}
+          vcpkgDirectory: '${{ github.workspace }}\vcpkg'
+          appendedCacheKey: ${{ matrix.config.vcpkg_triplet }}
+          vcpkgGitCommitId: ${{ env.VCPKG_VERSION }}
+          vcpkgTriplet: ${{ matrix.config.vcpkg_triplet }}
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j16
+
+      - name: CPack
+        run: |
+          If ($env:TYPE -eq "installer")
+          {
+            cpack -G WIX -B "$env:GITHUB_WORKSPACE\Package"
+          }
+          ElseIf($env:TYPE -eq "portable")
+          {
+            cpack -G ZIP -B "$env:GITHUB_WORKSPACE\Package"
+          }
+        env:
+          TYPE: ${{matrix.type}}
+
+      - name: Package Clean
+        run: rm -r $env:GITHUB_WORKSPACE\Package\_CPack_Packages
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: msvc-${{ matrix.config.arch }}-${{ matrix.type }}
+          path: .\Package\
