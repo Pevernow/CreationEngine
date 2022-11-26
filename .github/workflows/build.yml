@@ -84,10 +84,10 @@ jobs:
       - name: Configure CMake+vcpkg+Ninja to generate.
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: 'ninja-multi-vcpkg'
+          configurePreset: 'msvc-16-vcpkg'
           configurePresetCmdString: "[`--preset`, `$[env.CONFIGURE_PRESET_NAME]`, `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`, `-DOPENBLACK_WARNINGS_AS_ERRORS=ON`]"
           # This is the name of the CMakePresets.json's configuration to build the project.
-          buildPreset: 'ninja-multi-vcpkg'
+          buildPreset: 'msvc-16-vcpkg-release'
 
 
       - name: CPack
