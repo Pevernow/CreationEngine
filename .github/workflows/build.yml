@@ -78,6 +78,7 @@ jobs:
         uses: lukka/run-vcpkg@v10
         with:
           vcpkgDirectory: '${{ github.workspace }}\vcpkg'
+          vcpkgJsonGlob: 'vcpkg.json'
           appendedCacheKey: ${{ matrix.config.vcpkg_triplet }}
           vcpkgGitCommitId: ${{ env.VCPKG_VERSION }}
 
