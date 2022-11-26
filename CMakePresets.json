@@ -36,6 +36,6 @@
       "displayName": "Build msvc-16-vcpkg-release",
       "description": "Build msvc-16-vcpkg Release configuration",
       "configuration": "Release"
-    },
+    }
   ]
 }
