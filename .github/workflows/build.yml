@@ -50,8 +50,6 @@ jobs:
     runs-on: windows-2019
     env:
       VCPKG_VERSION: eefee7408133f3a0fef711ef9c6a3677b7e06fd7
-      # 2022.11
-      vcpkg_packages: sdl2 bgfx[tools,multithreaded] luajit
     strategy:
       fail-fast: false
       matrix:
@@ -74,14 +72,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: lukka/get-cmake@latest
+
       - name: Restore from cache and run vcpkg
-        uses: lukka/run-vcpkg@v7
+        uses: lukka/run-vcpkg@v10
         with:
-          vcpkgArguments: ${{env.vcpkg_packages}}
           vcpkgDirectory: '${{ github.workspace }}\vcpkg'
           appendedCacheKey: ${{ matrix.config.vcpkg_triplet }}
           vcpkgGitCommitId: ${{ env.VCPKG_VERSION }}
-          vcpkgTriplet: ${{ matrix.config.vcpkg_triplet }}
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
