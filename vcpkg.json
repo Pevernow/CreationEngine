@@ -1,5 +1,5 @@
 {
-    "name": "CreationEngine",
+    "name": "creationengine",
     "version-string": "0.0.1-dev",
     "dependencies": [
         {
