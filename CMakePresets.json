@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "template-vcpkg",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/cmake-build-presets/${presetName}",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        "OPENBLACK_USE_VCPKG": true
+      }
+    },
+    {
+      "name": "template-system-deps",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/cmake-build-presets/${presetName}",
+      "cacheVariables": {
+        "OPENBLACK_USE_VCPKG": false
+      }
+    },
+    {
+      "name": "msvc-17-vcpkg",
+      "displayName": "Visual Studio 2019 (vcpkg)",
+      "description": "Configure with vcpkg toolchain and generate Visual Studio 2022 project files for all configurations",
+      "generator": "Visual Studio 16 2019",
+      "inherits": "template-vcpkg"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc-16-vcpkg-release",
+      "configurePreset": "msvc-16-vcpkg",
+      "displayName": "Build msvc-16-vcpkg-release",
+      "description": "Build msvc-16-vcpkg Release configuration",
+      "configuration": "Release"
+    },
+  ]
+}
