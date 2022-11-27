@@ -50,6 +50,7 @@ jobs:
     runs-on: windows-2019
     env:
       VCPKG_FEATURE_FLAGS: registries,manifests
+      VCPKG_VERSION: 6f7ffeb18f99796233b958aaaf14ec7bd4fb64b2
     strategy:
       fail-fast: false
       matrix:
@@ -74,7 +75,6 @@ jobs:
         with:
           vcpkgDirectory: '${{ github.workspace }}\vcpkg'
           vcpkgJsonGlob: 'vcpkg.json'
-          vcpkgGitCommitId: 6f7ffeb18f99796233b958aaaf14ec7bd4fb64b2
           appendedCacheKey: ${{ matrix.config.vcpkg_triplet }}
           vcpkgGitCommitId: ${{ env.VCPKG_VERSION }}
 
